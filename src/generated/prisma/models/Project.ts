@@ -555,10 +555,6 @@ export type EnumProjectStatusFieldUpdateOperationsInput = {
   set?: $Enums.ProjectStatus
 }
 
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-}
-
 export type ProjectCreateNestedOneWithoutRepositoriesInput = {
   create?: Prisma.XOR<Prisma.ProjectCreateWithoutRepositoriesInput, Prisma.ProjectUncheckedCreateWithoutRepositoriesInput>
   connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutRepositoriesInput

@@ -8,6 +8,9 @@
  *
  * 🟢 You can import this file directly.
  */
+export type * from './models/User'
+export type * from './models/Session'
+export type * from './models/Account'
 export type * from './models/Profile'
 export type * from './models/SocialLink'
 export type * from './models/SkillCategory'
@@ -18,4 +21,5 @@ export type * from './models/ProjectImage'
 export type * from './models/ProjectSkill'
 export type * from './models/Experience'
 export type * from './models/Education'
+export type * from './models/Verification'
 export type * from './commonInputTypes'

@@ -1,8 +1,282 @@
+
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider        = "prisma-client"
+  output          = "../src/generated/prisma"
+  previewFeatures = ["partialIndexes"]
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+// -----------------------------------------------------
+// ENUMS
+// -----------------------------------------------------
+
+enum SocialPlatform {
+  GITHUB
+  LINKEDIN
+  EMAIL
+  WEBSITE
+  X
+  YOUTUBE
+  INSTAGRAM
+  DISCORD
+  CUSTOM
+  OTHER
+}
+
+enum ProjectStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum ProjectImageType {
+  COVER
+  GALLERY
+}
+
+enum EmploymentType {
+  INTERNSHIP
+  FULL_TIME
+  PART_TIME
+  FREELANCE
+  VOLUNTEERING
+  PERSONAL_PROJECT
+  OTHER
+}
+
+enum EducationType {
+  FORMAL
+  CERTIFICATION
+  COURSE
+  SPECIALIZATION
+  OTHER
+}
+
+// -----------------------------------------------------
+// PROFILE
+// -----------------------------------------------------
+
+model Profile {
+  id             String   @id @default("main") @db.VarChar(20)
+  fullName       String   @db.VarChar(120)
+  headline       String   @db.VarChar(160)
+  shortBio       String   @db.VarChar(280)
+  biography      String   @db.Text
+  location       String?  @db.VarChar(120)
+  email          String?  @db.VarChar(254)
+  photoUrl       String?  @db.Text
+  photoPublicId  String?  @db.VarChar(255)
+  isPublished    Boolean  @default(false)
+  createdAt      DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt      DateTime @updatedAt @db.Timestamptz(3)
+
+  socialLinks    SocialLink[]
+  experiences    Experience[]
+  education      Education[]
+}
+
+// -----------------------------------------------------
+// SOCIAL LINKS
+// -----------------------------------------------------
+
+model SocialLink {
+  id          String         @id @default(uuid()) @db.Uuid
+  platform    SocialPlatform
+  label       String         @db.VarChar(80)
+  url         String         @db.VarChar(2048)
+  isActive    Boolean        @default(true)
+  displayOrder Int           @default(0)
+
+  profileId   String         @default("main") @db.VarChar(20)
+  profile     Profile        @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime       @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime       @updatedAt @db.Timestamptz(3)
+
+  @@index([profileId, isActive, displayOrder])
+}
+
+// -----------------------------------------------------
+// SKILL CATEGORIES
+// -----------------------------------------------------
+
+model SkillCategory {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @unique @db.VarChar(80)
+  slug        String   @unique @db.VarChar(100)
+  description String?  @db.Text
+  displayOrder Int     @default(0)
+  isActive    Boolean  @default(true)
+
+  skills      Skill[]
+
+  createdAt   DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(3)
+
+  @@index([isActive, displayOrder])
+}
+
+// -----------------------------------------------------
+// SKILLS
+// -----------------------------------------------------
+
+model Skill {
+  id          String        @id @default(uuid()) @db.Uuid
+  name        String        @db.VarChar(80)
+  slug        String        @unique @db.VarChar(100)
+  description String?       @db.Text
+  icon        String?       @db.VarChar(150)
+  displayOrder Int          @default(0)
+  isActive    Boolean       @default(true)
+
+  categoryId  String        @db.Uuid
+  category    SkillCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+
+  projects    ProjectSkill[]
+
+  createdAt   DateTime      @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime      @updatedAt @db.Timestamptz(3)
+
+  @@index([categoryId, isActive, displayOrder])
+}
+
+// -----------------------------------------------------
+// PROJECTS
+// -----------------------------------------------------
+
+model Project {
+  id               String        @id @default(uuid()) @db.Uuid
+  title            String        @db.VarChar(120)
+  slug             String        @unique @db.VarChar(140)
+  shortDescription String        @db.VarChar(280)
+  description      String        @db.Text
+  repositoryUrl    String?       @db.VarChar(2048)
+  demoUrl          String?       @db.VarChar(2048)
+
+  isFeatured       Boolean       @default(false)
+  status           ProjectStatus @default(DRAFT)
+  displayOrder     Int           @default(0)
+
+  startDate        DateTime?     @db.Date
+  endDate          DateTime?     @db.Date
+
+  images           ProjectImage[]
+  skills           ProjectSkill[]
+
+  createdAt        DateTime      @default(now()) @db.Timestamptz(3)
+  updatedAt        DateTime      @updatedAt @db.Timestamptz(3)
+
+  @@index([status, isFeatured, displayOrder])
+}
+
+// -----------------------------------------------------
+// PROJECT IMAGES
+// -----------------------------------------------------
+
+model ProjectImage {
+  id          String           @id @default(uuid()) @db.Uuid
+  type        ProjectImageType
+
+  publicId    String           @unique @db.VarChar(255)
+  secureUrl   String           @db.Text
+
+  alt         String           @db.VarChar(250)
+  width       Int
+  height      Int
+  format      String           @db.VarChar(20)
+
+  displayOrder Int             @default(0)
+
+  projectId   String           @db.Uuid
+  project     Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime         @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime         @updatedAt @db.Timestamptz(3)
+
+  // Un proyecto puede tener como máximo una portada.
+  @@unique([projectId], where: { type: "COVER" })
+
+  // Evita posiciones repetidas dentro de la galería.
+  @@unique([projectId, displayOrder], where: { type: "GALLERY" })
+
+  @@index([projectId, type, displayOrder])
+}
+
+// -----------------------------------------------------
+// PROJECT - SKILL (EXPLICIT MANY-TO-MANY)
+// -----------------------------------------------------
+
+model ProjectSkill {
+  projectId   String   @db.Uuid
+  skillId     String   @db.Uuid
+  displayOrder Int     @default(0)
+
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  skill       Skill    @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@id([projectId, skillId])
+  @@unique([projectId, displayOrder])
+  @@index([skillId])
+}
+
+// -----------------------------------------------------
+// EXPERIENCE
+// -----------------------------------------------------
+
+model Experience {
+  id             String         @id @default(uuid()) @db.Uuid
+  company        String         @db.VarChar(160)
+  jobTitle       String         @db.VarChar(120)
+  description    String         @db.Text
+  location       String?        @db.VarChar(120)
+
+  employmentType EmploymentType
+
+  startDate      DateTime       @db.Date
+  endDate        DateTime?      @db.Date
+  isCurrent      Boolean        @default(false)
+
+  isActive       Boolean        @default(true)
+  displayOrder   Int            @default(0)
+
+  profileId      String         @default("main") @db.VarChar(20)
+  profile        Profile        @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  createdAt      DateTime       @default(now()) @db.Timestamptz(3)
+  updatedAt      DateTime       @updatedAt @db.Timestamptz(3)
+
+  @@index([profileId, isActive, displayOrder])
+}
+
+// -----------------------------------------------------
+// EDUCATION
+// -----------------------------------------------------
+
+model Education {
+  id             String        @id @default(uuid()) @db.Uuid
+  institution    String        @db.VarChar(160)
+  degree         String        @db.VarChar(160)
+  fieldOfStudy   String        @db.VarChar(160)
+  description    String?       @db.Text
+  location       String?       @db.VarChar(120)
+
+  type           EducationType @default(FORMAL)
+  credentialUrl  String?       @db.VarChar(2048)
+
+  startDate      DateTime?     @db.Date
+  endDate        DateTime?     @db.Date
+  isCurrent      Boolean       @default(false)
+
+  isActive       Boolean       @default(true)
+  displayOrder   Int           @default(0)
+
+  profileId      String        @default("main") @db.VarChar(20)
+  profile        Profile       @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  createdAt      DateTime      @default(now()) @db.Timestamptz(3)
+  updatedAt      DateTime      @updatedAt @db.Timestamptz(3)
+
+  @@index([profileId, isActive, displayOrder])
 }

@@ -9,7 +9,57 @@
 * 🟢 You can import this file directly.
 */
 
+export const SocialPlatform = {
+  GITHUB: 'GITHUB',
+  LINKEDIN: 'LINKEDIN',
+  EMAIL: 'EMAIL',
+  WEBSITE: 'WEBSITE',
+  X: 'X',
+  YOUTUBE: 'YOUTUBE',
+  INSTAGRAM: 'INSTAGRAM',
+  DISCORD: 'DISCORD',
+  CUSTOM: 'CUSTOM',
+  OTHER: 'OTHER'
+} as const
+
+export type SocialPlatform = (typeof SocialPlatform)[keyof typeof SocialPlatform]
 
 
-// This file is empty because there are no enums in the schema.
-export {}
+export const ProjectStatus = {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED'
+} as const
+
+export type ProjectStatus = (typeof ProjectStatus)[keyof typeof ProjectStatus]
+
+
+export const ProjectImageType = {
+  COVER: 'COVER',
+  GALLERY: 'GALLERY'
+} as const
+
+export type ProjectImageType = (typeof ProjectImageType)[keyof typeof ProjectImageType]
+
+
+export const EmploymentType = {
+  INTERNSHIP: 'INTERNSHIP',
+  FULL_TIME: 'FULL_TIME',
+  PART_TIME: 'PART_TIME',
+  FREELANCE: 'FREELANCE',
+  VOLUNTEERING: 'VOLUNTEERING',
+  PERSONAL_PROJECT: 'PERSONAL_PROJECT',
+  OTHER: 'OTHER'
+} as const
+
+export type EmploymentType = (typeof EmploymentType)[keyof typeof EmploymentType]
+
+
+export const EducationType = {
+  FORMAL: 'FORMAL',
+  CERTIFICATION: 'CERTIFICATION',
+  COURSE: 'COURSE',
+  SPECIALIZATION: 'SPECIALIZATION',
+  OTHER: 'OTHER'
+} as const
+
+export type EducationType = (typeof EducationType)[keyof typeof EducationType]

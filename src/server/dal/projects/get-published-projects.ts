@@ -51,6 +51,17 @@ export async function getPublishedProjects() {
           },
         },
       },
+
+      repositories: {
+        orderBy: {
+          displayOrder: "asc",
+        },
+        select: {
+          type: true,
+          url: true,
+          displayOrder: true,
+        },
+      },
     },
   });
 

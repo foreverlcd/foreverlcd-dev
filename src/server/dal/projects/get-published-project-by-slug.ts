@@ -14,7 +14,6 @@ export async function getPublishedProjectBySlug(slug: string) {
       slug: true,
       shortDescription: true,
       description: true,
-      repositoryUrl: true,
       demoUrl: true,
       isFeatured: true,
       startDate: true,
@@ -46,6 +45,17 @@ export async function getPublishedProjectBySlug(slug: string) {
               icon: true,
             },
           },
+        },
+      },
+
+      repositories: {
+        orderBy: {
+          displayOrder: "asc",
+        },
+        select: {
+          type: true,
+          url: true,
+          displayOrder: true,
         },
       },
     },

@@ -33,6 +33,15 @@ export const ProjectStatus = {
 export type ProjectStatus = (typeof ProjectStatus)[keyof typeof ProjectStatus]
 
 
+export const ProjectRepositoryType = {
+  BACKEND: 'BACKEND',
+  FRONTEND: 'FRONTEND',
+  OTHER: 'OTHER'
+} as const
+
+export type ProjectRepositoryType = (typeof ProjectRepositoryType)[keyof typeof ProjectRepositoryType]
+
+
 export const ProjectImageType = {
   COVER: 'COVER',
   GALLERY: 'GALLERY'

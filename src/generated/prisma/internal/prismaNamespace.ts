@@ -402,6 +402,7 @@ export const ModelName = {
   SkillCategory: 'SkillCategory',
   Skill: 'Skill',
   Project: 'Project',
+  ProjectRepository: 'ProjectRepository',
   ProjectImage: 'ProjectImage',
   ProjectSkill: 'ProjectSkill',
   Experience: 'Experience',
@@ -421,7 +422,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "profile" | "socialLink" | "skillCategory" | "skill" | "project" | "projectImage" | "projectSkill" | "experience" | "education"
+    modelProps: "profile" | "socialLink" | "skillCategory" | "skill" | "project" | "projectRepository" | "projectImage" | "projectSkill" | "experience" | "education"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -792,6 +793,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ProjectCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ProjectCountAggregateOutputType> | number
+        }
+      }
+    }
+    ProjectRepository: {
+      payload: Prisma.$ProjectRepositoryPayload<ExtArgs>
+      fields: Prisma.ProjectRepositoryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ProjectRepositoryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectRepositoryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ProjectRepositoryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectRepositoryPayload>
+        }
+        findFirst: {
+          args: Prisma.ProjectRepositoryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectRepositoryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ProjectRepositoryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectRepositoryPayload>
+        }
+        findMany: {
+          args: Prisma.ProjectRepositoryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectRepositoryPayload>[]
+        }
+        create: {
+          args: Prisma.ProjectRepositoryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectRepositoryPayload>
+        }
+        createMany: {
+          args: Prisma.ProjectRepositoryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ProjectRepositoryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectRepositoryPayload>[]
+        }
+        delete: {
+          args: Prisma.ProjectRepositoryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectRepositoryPayload>
+        }
+        update: {
+          args: Prisma.ProjectRepositoryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectRepositoryPayload>
+        }
+        deleteMany: {
+          args: Prisma.ProjectRepositoryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ProjectRepositoryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ProjectRepositoryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectRepositoryPayload>[]
+        }
+        upsert: {
+          args: Prisma.ProjectRepositoryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectRepositoryPayload>
+        }
+        aggregate: {
+          args: Prisma.ProjectRepositoryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateProjectRepository>
+        }
+        groupBy: {
+          args: Prisma.ProjectRepositoryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProjectRepositoryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ProjectRepositoryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProjectRepositoryCountAggregateOutputType> | number
         }
       }
     }
@@ -1199,7 +1274,6 @@ export const ProjectScalarFieldEnum = {
   slug: 'slug',
   shortDescription: 'shortDescription',
   description: 'description',
-  repositoryUrl: 'repositoryUrl',
   demoUrl: 'demoUrl',
   isFeatured: 'isFeatured',
   status: 'status',
@@ -1211,6 +1285,19 @@ export const ProjectScalarFieldEnum = {
 } as const
 
 export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
+
+
+export const ProjectRepositoryScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  url: 'url',
+  displayOrder: 'displayOrder',
+  projectId: 'projectId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ProjectRepositoryScalarFieldEnum = (typeof ProjectRepositoryScalarFieldEnum)[keyof typeof ProjectRepositoryScalarFieldEnum]
 
 
 export const ProjectImageScalarFieldEnum = {
@@ -1386,6 +1473,20 @@ export type EnumProjectStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$Pr
  * Reference to a field of type 'ProjectStatus[]'
  */
 export type ListEnumProjectStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProjectStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ProjectRepositoryType'
+ */
+export type EnumProjectRepositoryTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProjectRepositoryType'>
+    
+
+
+/**
+ * Reference to a field of type 'ProjectRepositoryType[]'
+ */
+export type ListEnumProjectRepositoryTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProjectRepositoryType[]'>
     
 
 
@@ -1600,6 +1701,7 @@ export type GlobalOmitConfig = {
   skillCategory?: Prisma.SkillCategoryOmit
   skill?: Prisma.SkillOmit
   project?: Prisma.ProjectOmit
+  projectRepository?: Prisma.ProjectRepositoryOmit
   projectImage?: Prisma.ProjectImageOmit
   projectSkill?: Prisma.ProjectSkillOmit
   experience?: Prisma.ExperienceOmit

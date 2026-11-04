@@ -43,6 +43,11 @@ export type Skill = Prisma.SkillModel
  */
 export type Project = Prisma.ProjectModel
 /**
+ * Model ProjectRepository
+ * 
+ */
+export type ProjectRepository = Prisma.ProjectRepositoryModel
+/**
  * Model ProjectImage
  * 
  */

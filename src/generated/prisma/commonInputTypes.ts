@@ -236,6 +236,23 @@ export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
 }
 
+export type EnumProjectRepositoryTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.ProjectRepositoryType | Prisma.EnumProjectRepositoryTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ProjectRepositoryType[] | Prisma.ListEnumProjectRepositoryTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ProjectRepositoryType[] | Prisma.ListEnumProjectRepositoryTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumProjectRepositoryTypeFilter<$PrismaModel> | $Enums.ProjectRepositoryType
+}
+
+export type EnumProjectRepositoryTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ProjectRepositoryType | Prisma.EnumProjectRepositoryTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ProjectRepositoryType[] | Prisma.ListEnumProjectRepositoryTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ProjectRepositoryType[] | Prisma.ListEnumProjectRepositoryTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumProjectRepositoryTypeWithAggregatesFilter<$PrismaModel> | $Enums.ProjectRepositoryType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumProjectRepositoryTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumProjectRepositoryTypeFilter<$PrismaModel>
+}
+
 export type EnumProjectImageTypeFilter<$PrismaModel = never> = {
   equals?: $Enums.ProjectImageType | Prisma.EnumProjectImageTypeFieldRefInput<$PrismaModel>
   in?: $Enums.ProjectImageType[] | Prisma.ListEnumProjectImageTypeFieldRefInput<$PrismaModel>
@@ -518,6 +535,23 @@ export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumProjectRepositoryTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.ProjectRepositoryType | Prisma.EnumProjectRepositoryTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ProjectRepositoryType[] | Prisma.ListEnumProjectRepositoryTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ProjectRepositoryType[] | Prisma.ListEnumProjectRepositoryTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumProjectRepositoryTypeFilter<$PrismaModel> | $Enums.ProjectRepositoryType
+}
+
+export type NestedEnumProjectRepositoryTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ProjectRepositoryType | Prisma.EnumProjectRepositoryTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ProjectRepositoryType[] | Prisma.ListEnumProjectRepositoryTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ProjectRepositoryType[] | Prisma.ListEnumProjectRepositoryTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumProjectRepositoryTypeWithAggregatesFilter<$PrismaModel> | $Enums.ProjectRepositoryType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumProjectRepositoryTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumProjectRepositoryTypeFilter<$PrismaModel>
 }
 
 export type NestedEnumProjectImageTypeFilter<$PrismaModel = never> = {

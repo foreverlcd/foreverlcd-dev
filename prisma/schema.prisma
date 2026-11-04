@@ -1,4 +1,3 @@
-
 generator client {
   provider        = "prisma-client"
   output          = "../src/generated/prisma"
@@ -7,6 +6,69 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+}
+
+// -----------------------------------------------------
+// USERS
+// -----------------------------------------------------
+
+model User {
+  id            String    @id
+  name          String
+  email         String
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+
+  @@unique([email])
+  @@map("user")
+}
+
+// -----------------------------------------------------
+// SESSIONS
+// -----------------------------------------------------
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+// -----------------------------------------------------
+// ACCOUNTS
+// -----------------------------------------------------
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
 }
 
 // -----------------------------------------------------
@@ -29,6 +91,12 @@ enum SocialPlatform {
 enum ProjectStatus {
   DRAFT
   PUBLISHED
+}
+
+enum ProjectRepositoryType {
+  BACKEND
+  FRONTEND
+  OTHER
 }
 
 enum ProjectImageType {
@@ -59,22 +127,22 @@ enum EducationType {
 // -----------------------------------------------------
 
 model Profile {
-  id             String   @id @default("main") @db.VarChar(20)
-  fullName       String   @db.VarChar(120)
-  headline       String   @db.VarChar(160)
-  shortBio       String   @db.VarChar(280)
-  biography      String   @db.Text
-  location       String?  @db.VarChar(120)
-  email          String?  @db.VarChar(254)
-  photoUrl       String?  @db.Text
-  photoPublicId  String?  @db.VarChar(255)
-  isPublished    Boolean  @default(false)
-  createdAt      DateTime @default(now()) @db.Timestamptz(3)
-  updatedAt      DateTime @updatedAt @db.Timestamptz(3)
+  id            String   @id @default("main") @db.VarChar(20)
+  fullName      String   @db.VarChar(120)
+  headline      String   @db.VarChar(160)
+  shortBio      String   @db.VarChar(280)
+  biography     String   @db.Text
+  location      String?  @db.VarChar(120)
+  email         String?  @db.VarChar(254)
+  photoUrl      String?  @db.Text
+  photoPublicId String?  @db.VarChar(255)
+  isPublished   Boolean  @default(false)
+  createdAt     DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt     DateTime @updatedAt @db.Timestamptz(3)
 
-  socialLinks    SocialLink[]
-  experiences    Experience[]
-  education      Education[]
+  socialLinks SocialLink[]
+  experiences Experience[]
+  education   Education[]
 }
 
 // -----------------------------------------------------
@@ -82,18 +150,18 @@ model Profile {
 // -----------------------------------------------------
 
 model SocialLink {
-  id          String         @id @default(uuid()) @db.Uuid
-  platform    SocialPlatform
-  label       String         @db.VarChar(80)
-  url         String         @db.VarChar(2048)
-  isActive    Boolean        @default(true)
-  displayOrder Int           @default(0)
+  id           String         @id @default(uuid()) @db.Uuid
+  platform     SocialPlatform
+  label        String         @db.VarChar(80)
+  url          String         @db.VarChar(2048)
+  isActive     Boolean        @default(true)
+  displayOrder Int            @default(0)
 
-  profileId   String         @default("main") @db.VarChar(20)
-  profile     Profile        @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId String  @default("main") @db.VarChar(20)
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
-  createdAt   DateTime       @default(now()) @db.Timestamptz(3)
-  updatedAt   DateTime       @updatedAt @db.Timestamptz(3)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
 
   @@index([profileId, isActive, displayOrder])
 }
@@ -103,17 +171,17 @@ model SocialLink {
 // -----------------------------------------------------
 
 model SkillCategory {
-  id          String   @id @default(uuid()) @db.Uuid
-  name        String   @unique @db.VarChar(80)
-  slug        String   @unique @db.VarChar(100)
-  description String?  @db.Text
+  id           String  @id @default(uuid()) @db.Uuid
+  name         String  @unique @db.VarChar(80)
+  slug         String  @unique @db.VarChar(100)
+  description  String? @db.Text
   displayOrder Int     @default(0)
-  isActive    Boolean  @default(true)
+  isActive     Boolean @default(true)
 
-  skills      Skill[]
+  skills Skill[]
 
-  createdAt   DateTime @default(now()) @db.Timestamptz(3)
-  updatedAt   DateTime @updatedAt @db.Timestamptz(3)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
 
   @@index([isActive, displayOrder])
 }
@@ -123,21 +191,21 @@ model SkillCategory {
 // -----------------------------------------------------
 
 model Skill {
-  id          String        @id @default(uuid()) @db.Uuid
-  name        String        @db.VarChar(80)
-  slug        String        @unique @db.VarChar(100)
-  description String?       @db.Text
-  icon        String?       @db.VarChar(150)
-  displayOrder Int          @default(0)
-  isActive    Boolean       @default(true)
+  id           String  @id @default(uuid()) @db.Uuid
+  name         String  @db.VarChar(80)
+  slug         String  @unique @db.VarChar(100)
+  description  String? @db.Text
+  icon         String? @db.VarChar(150)
+  displayOrder Int     @default(0)
+  isActive     Boolean @default(true)
 
-  categoryId  String        @db.Uuid
-  category    SkillCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  categoryId String        @db.Uuid
+  category   SkillCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict)
 
-  projects    ProjectSkill[]
+  projects ProjectSkill[]
 
-  createdAt   DateTime      @default(now()) @db.Timestamptz(3)
-  updatedAt   DateTime      @updatedAt @db.Timestamptz(3)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
 
   @@index([categoryId, isActive, displayOrder])
 }
@@ -147,28 +215,48 @@ model Skill {
 // -----------------------------------------------------
 
 model Project {
-  id               String        @id @default(uuid()) @db.Uuid
-  title            String        @db.VarChar(120)
-  slug             String        @unique @db.VarChar(140)
-  shortDescription String        @db.VarChar(280)
-  description      String        @db.Text
-  repositoryUrl    String?       @db.VarChar(2048)
-  demoUrl          String?       @db.VarChar(2048)
+  id               String  @id @default(uuid()) @db.Uuid
+  title            String  @db.VarChar(120)
+  slug             String  @unique @db.VarChar(140)
+  shortDescription String  @db.VarChar(280)
+  description      String  @db.Text
+  demoUrl          String? @db.VarChar(2048)
 
-  isFeatured       Boolean       @default(false)
-  status           ProjectStatus @default(DRAFT)
-  displayOrder     Int           @default(0)
+  isFeatured   Boolean       @default(false)
+  status       ProjectStatus @default(DRAFT)
+  displayOrder Int           @default(0)
 
-  startDate        DateTime?     @db.Date
-  endDate          DateTime?     @db.Date
+  startDate DateTime? @db.Date
+  endDate   DateTime? @db.Date
 
-  images           ProjectImage[]
-  skills           ProjectSkill[]
+  images       ProjectImage[]
+  skills       ProjectSkill[]
+  repositories ProjectRepository[]
 
-  createdAt        DateTime      @default(now()) @db.Timestamptz(3)
-  updatedAt        DateTime      @updatedAt @db.Timestamptz(3)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
 
   @@index([status, isFeatured, displayOrder])
+}
+
+// -----------------------------------------------------
+// PROJECT REPOSITORIES
+// -----------------------------------------------------
+
+model ProjectRepository {
+  id           String                @id @default(uuid()) @db.Uuid
+  type         ProjectRepositoryType
+  url          String                @db.VarChar(2048)
+  displayOrder Int                   @default(0)
+
+  projectId String  @db.Uuid
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  @@unique([projectId, url])
+  @@index([projectId, displayOrder])
 }
 
 // -----------------------------------------------------
@@ -176,31 +264,29 @@ model Project {
 // -----------------------------------------------------
 
 model ProjectImage {
-  id          String           @id @default(uuid()) @db.Uuid
-  type        ProjectImageType
+  id   String           @id @default(uuid()) @db.Uuid
+  type ProjectImageType
 
-  publicId    String           @unique @db.VarChar(255)
-  secureUrl   String           @db.Text
+  publicId  String @unique @db.VarChar(255)
+  secureUrl String @db.Text
 
-  alt         String           @db.VarChar(250)
-  width       Int
-  height      Int
-  format      String           @db.VarChar(20)
+  alt    String @db.VarChar(250)
+  width  Int
+  height Int
+  format String @db.VarChar(20)
 
-  displayOrder Int             @default(0)
+  displayOrder Int @default(0)
 
-  projectId   String           @db.Uuid
-  project     Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String  @db.Uuid
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
-  createdAt   DateTime         @default(now()) @db.Timestamptz(3)
-  updatedAt   DateTime         @updatedAt @db.Timestamptz(3)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
 
   // Un proyecto puede tener como máximo una portada.
   @@unique([projectId], where: { type: "COVER" })
-
   // Evita posiciones repetidas dentro de la galería.
   @@unique([projectId, displayOrder], where: { type: "GALLERY" })
-
   @@index([projectId, type, displayOrder])
 }
 
@@ -209,12 +295,12 @@ model ProjectImage {
 // -----------------------------------------------------
 
 model ProjectSkill {
-  projectId   String   @db.Uuid
-  skillId     String   @db.Uuid
-  displayOrder Int     @default(0)
+  projectId    String @db.Uuid
+  skillId      String @db.Uuid
+  displayOrder Int    @default(0)
 
-  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  skill       Skill    @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  skill   Skill   @relation(fields: [skillId], references: [id], onDelete: Cascade)
 
   @@id([projectId, skillId])
   @@unique([projectId, displayOrder])
@@ -226,26 +312,26 @@ model ProjectSkill {
 // -----------------------------------------------------
 
 model Experience {
-  id             String         @id @default(uuid()) @db.Uuid
-  company        String         @db.VarChar(160)
-  jobTitle       String         @db.VarChar(120)
-  description    String         @db.Text
-  location       String?        @db.VarChar(120)
+  id          String  @id @default(uuid()) @db.Uuid
+  company     String  @db.VarChar(160)
+  jobTitle    String  @db.VarChar(120)
+  description String  @db.Text
+  location    String? @db.VarChar(120)
 
   employmentType EmploymentType
 
-  startDate      DateTime       @db.Date
-  endDate        DateTime?      @db.Date
-  isCurrent      Boolean        @default(false)
+  startDate DateTime  @db.Date
+  endDate   DateTime? @db.Date
+  isCurrent Boolean   @default(false)
 
-  isActive       Boolean        @default(true)
-  displayOrder   Int            @default(0)
+  isActive     Boolean @default(true)
+  displayOrder Int     @default(0)
 
-  profileId      String         @default("main") @db.VarChar(20)
-  profile        Profile        @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId String  @default("main") @db.VarChar(20)
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
-  createdAt      DateTime       @default(now()) @db.Timestamptz(3)
-  updatedAt      DateTime       @updatedAt @db.Timestamptz(3)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
 
   @@index([profileId, isActive, displayOrder])
 }
@@ -255,28 +341,44 @@ model Experience {
 // -----------------------------------------------------
 
 model Education {
-  id             String        @id @default(uuid()) @db.Uuid
-  institution    String        @db.VarChar(160)
-  degree         String        @db.VarChar(160)
-  fieldOfStudy   String        @db.VarChar(160)
-  description    String?       @db.Text
-  location       String?       @db.VarChar(120)
+  id           String  @id @default(uuid()) @db.Uuid
+  institution  String  @db.VarChar(160)
+  degree       String  @db.VarChar(160)
+  fieldOfStudy String  @db.VarChar(160)
+  description  String? @db.Text
+  location     String? @db.VarChar(120)
 
-  type           EducationType @default(FORMAL)
-  credentialUrl  String?       @db.VarChar(2048)
+  type          EducationType @default(FORMAL)
+  credentialUrl String?       @db.VarChar(2048)
 
-  startDate      DateTime?     @db.Date
-  endDate        DateTime?     @db.Date
-  isCurrent      Boolean       @default(false)
+  startDate DateTime? @db.Date
+  endDate   DateTime? @db.Date
+  isCurrent Boolean   @default(false)
 
-  isActive       Boolean       @default(true)
-  displayOrder   Int           @default(0)
+  isActive     Boolean @default(true)
+  displayOrder Int     @default(0)
 
-  profileId      String        @default("main") @db.VarChar(20)
-  profile        Profile       @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId String  @default("main") @db.VarChar(20)
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
-  createdAt      DateTime      @default(now()) @db.Timestamptz(3)
-  updatedAt      DateTime      @updatedAt @db.Timestamptz(3)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
 
   @@index([profileId, isActive, displayOrder])
+}
+
+// -----------------------------------------------------
+// VERIFICATION
+// -----------------------------------------------------
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
 }

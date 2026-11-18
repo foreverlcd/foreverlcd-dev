@@ -1,26 +1,25 @@
 import type { Metadata } from "next";
-import { Archivo, IBM_Plex_Mono, Newsreader } from "next/font/google";
+import { Geist, Geist_Mono, Unbounded } from "next/font/google";
 import "./globals.css";
 
-const newsreader = Newsreader({
+const unbounded = Unbounded({
   subsets: ["latin"],
-  variable: "--font-newsreader",
-  axes: ["opsz"],
-  style: ["normal", "italic"],
+  variable: "--font-unbounded",
+  weight: "700",
   display: "swap",
 });
 
-const archivo = Archivo({
+const geist = Geist({
   subsets: ["latin"],
-  variable: "--font-archivo",
-  axes: ["wdth"],
+  variable: "--font-geist",
+  weight: ["400", "500"],
   display: "swap",
 });
 
-const plexMono = IBM_Plex_Mono({
+const geistMono = Geist_Mono({
   subsets: ["latin"],
-  variable: "--font-plex-mono",
-  weight: ["400", "500", "600"],
+  variable: "--font-geist-mono",
+  weight: ["400", "500"],
   display: "swap",
 });
 
@@ -37,7 +36,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="es"
-      className={`${newsreader.variable} ${archivo.variable} ${plexMono.variable} h-full`}
+      className={`${unbounded.variable} ${geist.variable} ${geistMono.variable} h-full`}
     >
       <body className="flex min-h-full flex-col bg-surface text-fg antialiased">
         <a href="#contenido" className="skip-link">

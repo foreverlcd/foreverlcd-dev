@@ -27,9 +27,9 @@
   --color-signal-400: #ff6b3d;
 
   /* Tipografía */
-  --font-display: var(--font-newsreader), ui-serif, Georgia, "Times New Roman", serif;
-  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-display: var(--font-unbounded), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
 
   /* Escala tipográfica */
   --text-2xs: 0.6875rem;
@@ -111,6 +111,17 @@
   --color-accent-text: var(--accent-text);
   --color-focus: var(--focus);
   --color-stroke-strong: var(--border-strong);
+}
+
+/* Paleta SIGNAL / ESTRUCTURA (docs/ART-DIRECTION.md): tokens del sitio público */
+:root {
+  --bg: #050507;
+  --fog: #0b0a14;
+  --ink: #e8f0f2;
+  --ash: #7c8388;
+  --signal: #d4ff3a;
+  --uv: #7b5cff;
+  --coral: #ff4d2e;
 }
 
 :root {

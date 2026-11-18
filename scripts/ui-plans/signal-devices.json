@@ -1,0 +1,27 @@
+{
+  "name": "signal-devices",
+  "baseUrl": "http://localhost:3100",
+  "runs": [
+    { "name": "phone-360", "viewport": { "w": 360, "h": 740 }, "mobile": true },
+    { "name": "phone-390", "viewport": { "w": 390, "h": 844 }, "mobile": true },
+    { "name": "tablet-768", "viewport": { "w": 768, "h": 1024 }, "mobile": true },
+    { "name": "tablet-land-1024", "viewport": { "w": 1024, "h": 768 }, "mobile": true },
+    { "name": "desk-1440", "viewport": { "w": 1440, "h": 900 } },
+    { "name": "desk-2560", "viewport": { "w": 2560, "h": 1440 } },
+    { "name": "reduced-1440", "viewport": { "w": 1440, "h": 900 }, "reducedMotion": true }
+  ],
+  "steps": [
+    { "goto": "/" },
+    { "wait": 4000 },
+    { "shot": "hero" },
+    { "scrollTo": "#proyectos" },
+    { "wait": 2500 },
+    { "shot": "proyectos" },
+    { "scrollTo": "#trayectoria" },
+    { "wait": 2000 },
+    { "shot": "trayectoria" },
+    { "scrollTo": "#contacto" },
+    { "wait": 2000 },
+    { "shot": "contacto" }
+  ]
+}

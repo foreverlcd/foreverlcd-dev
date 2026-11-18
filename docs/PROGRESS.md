@@ -34,11 +34,10 @@
 - Guía de despliegue: `docs/DEPLOY.md`.
 
 ## Siguiente paso
-1. Revisión de arte (`art-reviewer`) de `.shots/signal-devices/` y decidir `passes` de pub-hero, pub-projects, pub-path, pub-stack, pub-contact y pub-webgl-fallback.
-2. Rediseñar el dashboard con la paleta y las tipografías SIGNAL. Hoy hereda las fuentes nuevas, pero conserva el layout antiguo.
-3. SEO: metadatos, OG, sitemap y robots (pub-seo).
-4. Despliegue en Vercel Hobby con Postgres gratuito (Neon); variables en el panel, nunca en el repo.
-5. Contenido real del dueño desde el dashboard. No inventar datos.
+1. Despliegue (requiere cuentas del dueño): Vercel + Neon + Cloudinary según `docs/DEPLOY.md` (ops-deploy).
+2. Contenido real desde el dashboard: foto en Cloudinary, stack y enlaces por proyecto (el CV no los trae; no inventar).
+3. Verificar en el navegador y marcar: pub-hero (nueva revisión de arte), pub-projects, pub-stack, pub-webgl-fallback, pub-reading-mode y adm-* (credenciales malas, action sin sesión, imágenes).
+4. Fusionar `feat/signal-experience` en `main` con un PR.
 
 ## Datos de prueba locales
 En la base local quedan datos de prueba E2E: el admin `e2e-admin@example.test`, el perfil "E2E Perfil" sin publicar y la red "E2E enlace". No usan datos reales; se sobrescriben desde el dashboard.

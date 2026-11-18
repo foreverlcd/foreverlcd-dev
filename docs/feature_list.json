@@ -65,7 +65,7 @@
         "Datos activos",
         "Scroll a #trayectoria"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "pub-stack",
@@ -95,7 +95,7 @@
         "Perfil con email/redes",
         "Scroll a #contacto"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "pub-webgl-fallback",
@@ -135,7 +135,7 @@
         "Inspeccionar <head>",
         "/sitemap.xml y /robots.txt responden"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "pub-budgets",

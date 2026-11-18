@@ -21,6 +21,18 @@
   - `delegate.sh` con `REVIEW_PATHS` y el prompt en archivo para agy y opencode.
   - Lecciones en `docs/harness/LOG.md`.
 
+## Actualización (2026-11-18, tarde)
+- Datos reales del CV del dueño cargados en la base LOCAL con `.harness/seed-cv.ts` (ignorado por git). La foto provisional es el avatar de GitHub, solo en local.
+- Los datos reales revelaron fallos que el DEMO ocultaba, y ya están corregidos:
+  - nombre de 4 palabras en móvil y tableta;
+  - iniciales (J.Q);
+  - correo largo partido a mitad de palabra;
+  - tipo de empleo "Otro" visible;
+  - publicar sin foto daba 500.
+- SEO: metadatos, OG, canónica, `sitemap.xml`, `robots.txt` y `/opengraph-image`, todo estático.
+- Dashboard con lenguaje SIGNAL (regla HUD y línea de estado).
+- Guía de despliegue: `docs/DEPLOY.md`.
+
 ## Siguiente paso
 1. Revisión de arte (`art-reviewer`) de `.shots/signal-devices/` y decidir `passes` de pub-hero, pub-projects, pub-path, pub-stack, pub-contact y pub-webgl-fallback.
 2. Rediseñar el dashboard con la paleta y las tipografías SIGNAL. Hoy hereda las fuentes nuevas, pero conserva el layout antiguo.

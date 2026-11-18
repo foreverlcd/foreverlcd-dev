@@ -7,6 +7,7 @@
 | `ARCHITECTURE.md` | Antes de tocar rutas, datos, caché, auth o la capa WebGL |
 | `GOLDEN-PRINCIPLES.md` | Antes de cualquier cambio |
 | `ART-DIRECTION.md` | Antes de tocar la web pública (diseño, 3D, movimiento) |
+| `DEPLOY.md` | Al desplegar en Vercel + Neon + Cloudinary (pasos del dueño y comprobaciones) |
 | `HARNESS.md` | Para delegar, revisar o mejorar el arnés |
 | `QUALITY-SCORE.md` | Al planificar: qué áreas están débiles |
 | `exec-plans/` | `TEMPLATE.md`, `active/` (en curso), `completed/`, `tech-debt-tracker.md` |

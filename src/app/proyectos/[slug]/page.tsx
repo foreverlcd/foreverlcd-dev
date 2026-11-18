@@ -17,13 +17,27 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const project = await getPublishedProjectBySlug(slug);
   if (!project) return { title: "Proyecto no encontrado" };
+  const images = project.cover
+    ? [{ url: project.cover.secureUrl, width: project.cover.width, height: project.cover.height, alt: project.cover.alt }]
+    : undefined;
   return {
     title: project.title,
     description: project.shortDescription,
+    alternates: { canonical: `/proyectos/${slug}` },
     openGraph: {
+      type: "article",
+      locale: "es_PE",
+      siteName: "foreverlcd.dev",
+      url: `/proyectos/${slug}`,
       title: project.title,
       description: project.shortDescription,
-      images: project.cover ? [project.cover.secureUrl] : [],
+      ...(images && { images }),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: project.title,
+      description: project.shortDescription,
+      ...(images && { images: images.map((i) => i.url) }),
     },
   };
 }

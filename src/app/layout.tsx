@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Unbounded } from "next/font/google";
 import "./globals.css";
+import { getSiteUrl } from "@/lib/site-url";
 
 const unbounded = Unbounded({
   subsets: ["latin"],
@@ -30,6 +31,13 @@ export const metadata: Metadata = {
   },
   description: "Portfolio profesional de desarrollo de software.",
   applicationName: "foreverlcd.dev",
+  metadataBase: getSiteUrl(),
+  openGraph: {
+    type: "website",
+    locale: "es_PE",
+    siteName: "foreverlcd.dev",
+  },
+  twitter: { card: "summary_large_image" },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

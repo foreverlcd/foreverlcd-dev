@@ -25,10 +25,21 @@ export async function generateMetadata(): Promise<Metadata> {
     };
   }
 
+  const title = `${profile.fullName.trim() || "Portfolio"} — foreverlcd.dev`;
   return {
-    title: { absolute: `${profile.fullName.trim() || "Portfolio"} — foreverlcd.dev` },
+    title: { absolute: title },
     description: profile.shortBio,
+    alternates: { canonical: "/" },
     robots: { index: true, follow: true },
+    openGraph: {
+      type: "website",
+      locale: "es_PE",
+      siteName: "foreverlcd.dev",
+      url: "/",
+      title,
+      description: profile.shortBio,
+    },
+    twitter: { card: "summary_large_image", title, description: profile.shortBio },
   };
 }
 

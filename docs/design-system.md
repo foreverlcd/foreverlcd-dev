@@ -1438,6 +1438,17 @@ No cambian la dirección artística; precisan cómo debe implementarse:
 8. **Token `fg-strong`.** Se añade para las etiquetas técnicas de §8.4: `graphite-700` en papel y `bone-300` en tinta. No altera la paleta; solo da nombre semántico a un uso ya previsto.
 9. **Tokens de estado y control.** Se añaden `fg-disabled`, `control-strong-*` y `status-*` como variables semánticas por superficie. Sus valores provienen de §5.1, §8.2 y §8.6; no introducen colores nuevos.
 
+### 2026-11-14 — Etapa 3.1: estructura pública y hero editorial
+
+Precisiones de implementación, sin cambiar la dirección artística:
+
+1. **Navegación basada en anclas existentes.** Solo se enlazan secciones presentes en la página. En esta etapa son `01 Portada` y `02 Contacto` cuando el perfil tiene correo o enlaces sociales. Las secciones futuras se incorporarán al índice cuando existan, conforme a §9.1.
+2. **Sin menú móvil en esta etapa.** Con dos enlaces la barra cabe en móvil; §14 prohíbe convertir la navegación en hamburguesa si los enlaces caben. Cuando el número de secciones lo exija se añadirá un Client Component aislado con el comportamiento de §8.1.
+3. **Hero sin copy inventado.** El titular usa `headline` y el texto de apoyo usa `shortBio` del perfil administrable. El apoyo se compone en Archivo para esta etapa, separando claramente titular editorial y texto de lectura.
+4. **Visual topográfico estático.** El hero usa un SVG inline, decorativo y `aria-hidden`, con curvas de nivel, retícula tenue y un único punto de señal. No se instala Three.js ni Anime.js todavía.
+5. **Página de espera.** Sin perfil publicado se renderiza el estado de §9.10 con `noindex`; si el perfil guarda un correo, se ofrece como único canal de contacto.
+6. **Consulta compartida y render dinámico.** `getPublishedProfile` se envuelve en `cache` de React para compartir la lectura entre `generateMetadata` y la página. La ruta `/` se renderiza dinámicamente para reflejar los cambios del perfil sin esperar una recompilación.
+
 ---
 
 *Fin del documento. Cualquier cambio de dirección debe registrarse aquí con fecha y justificación antes de implementarse.*

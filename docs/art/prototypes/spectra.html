@@ -1,0 +1,671 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nombre Apellido — Ingeniería de software</title>
+<meta name="description" content="Ingeniería de software — full stack, backend e IA aplicada.">
+<meta name="color-scheme" content="dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500&family=JetBrains+Mono:wght@400&family=Syncopate:wght@700&display=swap" rel="stylesheet">
+<script>
+(function(){var d=document.documentElement;
+if(matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('rm');}
+else{d.classList.add('js');setTimeout(function(){d.classList.add('ready');},7000);}})();
+</script>
+<style>
+:root{
+  --bg:#030305; --fg:#F4F4F6; --mute:#8A8A96; --line:rgba(244,244,246,.2);
+  --gx:clamp(1.25rem,4vw,4rem);
+  --display:'Syncopate','Arial Black',sans-serif;
+  --body:'Inter Tight',system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg);scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+html.rm{scroll-behavior:auto}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-weight:300;line-height:1.5;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--fg);color:var(--bg)}
+a:focus-visible,.proj:focus-visible{outline:1px solid var(--fg);outline-offset:6px}
+
+#gl{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
+html.nogl #gl{display:none}
+html.nogl body{background:
+  radial-gradient(ellipse 38% 46% at 74% 46%,rgba(120,220,230,.14),transparent 70%),
+  conic-gradient(from 210deg at 74% 46%,#030305 0deg,#1a3a40 70deg,#3b2a1c 140deg,#26143a00 200deg,#0f3a2a 270deg,#030305 360deg) fixed;
+  background-color:var(--bg)}
+.scrim{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(90deg,rgba(3,3,5,.82) 0%,rgba(3,3,5,.55) 34%,rgba(3,3,5,0) 62%)}
+.frame{position:fixed;inset:14px;z-index:2;pointer-events:none}
+.frame i{position:absolute;width:14px;height:14px;border:0 solid var(--line)}
+.frame i:nth-child(1){top:0;left:0;border-top-width:1px;border-left-width:1px}
+.frame i:nth-child(2){top:0;right:0;border-top-width:1px;border-right-width:1px}
+.frame i:nth-child(3){bottom:0;left:0;border-bottom-width:1px;border-left-width:1px}
+.frame i:nth-child(4){bottom:0;right:0;border-bottom-width:1px;border-right-width:1px}
+
+/* intro hidden states */
+.js:not(.ready) .ih{opacity:0}
+.js:not(.ready) .hl{transform:scaleX(0)}
+.hl{display:block;height:1px;background:var(--line);transform-origin:left center}
+
+.nav{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;justify-content:space-between;align-items:center;
+  padding:1.6rem calc(var(--gx) + 14px) 1.1rem;font-family:var(--mono);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase}
+.nav::after{content:"";position:absolute;left:calc(var(--gx) + 14px);right:calc(var(--gx) + 14px);bottom:0;height:1px;background:var(--line)}
+.nav::before{content:"";position:absolute;inset:0 0 -1rem;background:linear-gradient(180deg,rgba(3,3,5,.85),rgba(3,3,5,0));z-index:-1;pointer-events:none}
+.brand{font-family:var(--display);font-weight:700;letter-spacing:.2em;font-size:.8rem}
+.nav nav{display:flex;gap:clamp(1rem,3vw,2.6rem)}
+.nav nav a{color:var(--mute);transition:color .3s;display:flex;gap:.55em;align-items:baseline}
+.nav nav a span{opacity:.55;font-size:.68em}
+.nav nav a:hover,.nav nav a.act{color:var(--fg)}
+.nav nav a.act span{opacity:1}
+
+main{position:relative;z-index:3}
+.sec{min-height:100svh;padding:clamp(7rem,16vh,10rem) calc(var(--gx) + 14px) clamp(4rem,10vh,7rem);position:relative}
+.col{width:min(100%,60vw)}
+.lab{font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);display:flex;gap:1rem;align-items:center;margin-bottom:2.2rem}
+.lab b{font-weight:400;color:var(--fg)}
+
+/* hero */
+.hero{display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:clamp(3rem,10vh,6rem)}
+.boot{font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;color:var(--mute);margin-bottom:1.6rem;text-transform:uppercase}
+.name{font-family:var(--display);font-weight:700;text-transform:uppercase;letter-spacing:.03em;line-height:.98;
+  font-size:clamp(3rem,7.7vw,9.2rem);margin-bottom:clamp(1.4rem,3.5vh,2.6rem)}
+.name-l{display:block;white-space:nowrap}
+.headline{font-size:clamp(1.05rem,1.55vw,1.5rem);font-weight:300;max-width:31ch;color:var(--fg);line-height:1.35}
+.headline .w{white-space:nowrap}
+.hero .hl{margin:clamp(1.6rem,4vh,2.6rem) 0 1rem;width:min(100%,60vw)}
+.hero-meta{display:flex;gap:2.2rem;font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.hero-meta .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--fg);margin-right:.7em;vertical-align:1px;animation:blink 2.4s infinite}
+@keyframes blink{50%{opacity:.25}}
+html.rm .hero-meta .dot{animation:none}
+
+/* projects */
+.proj-list{list-style:none;border-top:1px solid var(--line)}
+.proj-list li{border-bottom:1px solid var(--line);position:relative}
+.proj{display:grid;grid-template-columns:3.4rem 1fr auto;gap:0 1rem;padding:clamp(1.5rem,3.4vh,2.4rem) 0;position:relative;cursor:pointer;
+  transition:opacity .5s,transform .6s cubic-bezier(.2,.8,.2,1)}
+.p-n{font-family:var(--mono);font-size:.75rem;color:var(--mute);padding-top:.7em;letter-spacing:.1em}
+.p-t{font-family:var(--display);font-weight:700;text-transform:uppercase;font-size:clamp(1.3rem,3.5vw,3.5rem);line-height:1.1;letter-spacing:.04em;
+  transition:letter-spacing .7s cubic-bezier(.2,.8,.2,1),transform .7s cubic-bezier(.2,.8,.2,1);white-space:nowrap}
+.p-d{margin-top:.8rem;font-size:clamp(.98rem,1.2vw,1.12rem);color:var(--fg);max-width:46ch}
+.p-s{margin-top:.7rem;font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);transition:color .4s}
+.p-y{font-family:var(--mono);font-size:.78rem;color:var(--mute);padding-top:.8em;transition:color .4s}
+.p-fill{position:absolute;left:0;right:0;bottom:-1px;height:1px;background:var(--fg);transform:scaleX(0);transform-origin:left;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.proj-list.hov .proj{opacity:.32}
+.proj-list.hov .proj.on{opacity:1}
+.proj.on .p-t{letter-spacing:.11em;transform:translateX(.9rem)}
+.proj.on .p-s,.proj.on .p-y{color:var(--fg)}
+.proj.on ~ .p-fill{transform:scaleX(1)}
+.proj:hover ~ .p-fill,.proj:focus-visible ~ .p-fill{transform:scaleX(1)}
+
+/* trayectoria */
+.tl{list-style:none;border-top:1px solid var(--line)}
+.tl li{display:grid;grid-template-columns:11rem 1fr;gap:1rem;padding:1.7rem 0;border-bottom:1px solid var(--line)}
+.tl .y{font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;color:var(--mute);padding-top:.35em}
+.tl h3{font-family:var(--display);font-weight:700;text-transform:uppercase;font-size:clamp(1rem,1.7vw,1.6rem);letter-spacing:.05em;line-height:1.2}
+.tl p{margin-top:.5rem;color:var(--mute);font-size:1rem}
+.tl p b{font-weight:400;color:var(--fg)}
+
+/* contacto */
+.contact{display:flex;flex-direction:column;justify-content:center}
+.mail{font-family:var(--display);font-weight:700;text-transform:uppercase;letter-spacing:.02em;display:inline-block;
+  font-size:clamp(1.15rem,4.3vw,5rem);line-height:1.1;position:relative;padding-bottom:.35em;white-space:nowrap}
+.mail::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--fg);transform:scaleX(.18);transform-origin:left;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.mail:hover::after,.mail:focus-visible::after{transform:scaleX(1)}
+.contact p.s{margin-top:1.6rem;color:var(--mute);max-width:40ch;font-size:1.05rem}
+.foot{margin-top:clamp(4rem,12vh,8rem);font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);display:flex;justify-content:space-between;gap:1rem;width:min(100%,60vw);border-top:1px solid var(--line);padding-top:1rem}
+
+.hud{position:fixed;right:calc(var(--gx) + 14px);bottom:1.7rem;z-index:5;font-family:var(--mono);font-size:.68rem;letter-spacing:.12em;color:var(--mute);text-transform:uppercase;pointer-events:none;text-align:right;line-height:1.7}
+.hud b{font-weight:400;color:var(--fg)}
+.reticle{position:fixed;left:0;top:0;width:30px;height:30px;margin:-15px 0 0 -15px;border:1px solid rgba(244,244,246,.75);border-radius:50%;z-index:20;pointer-events:none;
+  mix-blend-mode:difference;transition:width .35s,height .35s,margin .35s,opacity .3s;opacity:0}
+.reticle.vis{opacity:1}
+.reticle.on{width:62px;height:62px;margin:-31px 0 0 -31px}
+.reticle::after{content:"";position:absolute;left:50%;top:50%;width:3px;height:3px;margin:-1.5px;background:#fff;border-radius:50%}
+@media (hover:none){.reticle{display:none}}
+
+@media (max-width:999px){.col,.foot,.hero .hl{width:min(100%,82vw)}}
+@media (max-width:759px),(max-aspect-ratio:4/5){
+  .scrim{background:linear-gradient(0deg,rgba(3,3,5,.94) 0%,rgba(3,3,5,.78) 48%,rgba(3,3,5,.1) 80%,rgba(3,3,5,0) 100%)}
+  .nav{padding:1.15rem calc(1.25rem + 10px) .8rem;font-size:.66rem;letter-spacing:.1em}
+  .nav::after{left:calc(1.25rem + 10px);right:calc(1.25rem + 10px)}
+  .brand{font-size:.7rem}
+  .nav nav{gap:.9rem}
+  .nav nav a span{display:none}
+  .frame{inset:8px}
+  .sec{padding:6rem calc(1.25rem + 6px) 4rem}
+  .col,.foot,.hero .hl{width:100%}
+  .hero{justify-content:flex-end;padding-bottom:2.2rem}
+  .name{font-size:clamp(2.2rem,10.4vw,4rem)}
+  .headline{font-size:1.1rem;max-width:26ch}
+  .hero-meta{gap:1.2rem;font-size:.64rem}
+  .proj{grid-template-columns:2rem 1fr;padding:1.4rem 0}
+  .p-y{grid-column:2;padding-top:.7rem}
+  .p-t{font-size:clamp(1.2rem,6vw,1.8rem);white-space:normal}
+  .proj.on .p-t{transform:none}
+  .tl li{grid-template-columns:1fr;gap:.4rem}
+  .mail{font-size:5vw}
+  .contact{justify-content:flex-end}
+  .hud{display:none}
+  .foot{flex-direction:column;gap:.4rem}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<script type="importmap">{"imports":{
+"three":"https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.module.js",
+"three/addons/":"https://cdn.jsdelivr.net/npm/three@0.187.0/examples/jsm/",
+"animejs":"https://cdn.jsdelivr.net/npm/animejs@4.5.0/dist/bundles/anime.esm.min.js"}}</script>
+</head>
+<body>
+<canvas id="gl" aria-hidden="true"></canvas>
+<div class="scrim" aria-hidden="true"></div>
+<div class="frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+<header class="nav">
+  <a class="brand ih" href="#top" aria-label="Inicio">N—A</a>
+  <nav aria-label="Principal">
+    <a class="ih" href="#proyectos" data-i="1"><span>01</span>Proyectos</a>
+    <a class="ih" href="#trayectoria" data-i="2"><span>02</span>Trayectoria</a>
+    <a class="ih" href="#contacto" data-i="3"><span>03</span>Contacto</a>
+  </nav>
+</header>
+
+<main>
+  <section id="top" class="sec hero" data-i="0">
+    <p class="boot ih" id="boot">Escáner 000%</p>
+    <h1 class="name" aria-label="Nombre Apellido"><span class="name-l ih" aria-hidden="true">Nombre</span><span class="name-l ih" aria-hidden="true">Apellido</span></h1>
+    <p class="headline ih">Ingeniería de software — full stack, backend e IA aplicada</p>
+    <span class="hl"></span>
+    <div class="hero-meta ih"><span><i class="dot"></i>Disponible</span><span>Desplazar ↓</span></div>
+  </section>
+
+  <section id="proyectos" class="sec" data-i="1" aria-labelledby="h-proy">
+    <div class="col">
+      <p class="lab rv"><b>01</b> <span id="h-proy">Proyectos</span></p>
+      <ol class="proj-list" id="projList">
+        <li class="rv" data-d="0">
+          <article class="proj" tabindex="0" data-p="0">
+            <span class="p-n">01</span>
+            <div><h3 class="p-t">Proyecto Uno</h3>
+              <p class="p-d">Plataforma web full stack con búsqueda en tiempo real y panel de métricas.</p>
+              <p class="p-s">TypeScript · Next.js · PostgreSQL</p></div>
+            <span class="p-y">2025</span>
+          </article><i class="p-fill"></i>
+        </li>
+        <li class="rv" data-d="90">
+          <article class="proj" tabindex="0" data-p="1">
+            <span class="p-n">02</span>
+            <div><h3 class="p-t">Proyecto Dos</h3>
+              <p class="p-d">Servicio de colas y caché distribuida, desplegado en contenedores.</p>
+              <p class="p-s">Node.js · Redis · Docker</p></div>
+            <span class="p-y">2024</span>
+          </article><i class="p-fill"></i>
+        </li>
+        <li class="rv" data-d="180">
+          <article class="proj" tabindex="0" data-p="2">
+            <span class="p-n">03</span>
+            <div><h3 class="p-t">Proyecto Tres</h3>
+              <p class="p-d">API de inferencia para un modelo de visión entrenado con PyTorch.</p>
+              <p class="p-s">Python · PyTorch · FastAPI</p></div>
+            <span class="p-y">2023</span>
+          </article><i class="p-fill"></i>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="trayectoria" class="sec" data-i="2" aria-labelledby="h-tray">
+    <div class="col">
+      <p class="lab rv"><b>02</b> <span id="h-tray">Trayectoria</span></p>
+      <ol class="tl">
+        <li class="rv" data-d="0"><span class="y">2024 — Presente</span><div><h3>Ingeniero de software sénior</h3><p><b>Empresa Uno</b> · Arquitectura de servicios y producto de IA aplicada.</p></div></li>
+        <li class="rv" data-d="90"><span class="y">2021 — 2024</span><div><h3>Ingeniero backend</h3><p><b>Empresa Dos</b> · APIs, mensajería y plataformas de datos.</p></div></li>
+        <li class="rv" data-d="180"><span class="y">2018 — 2021</span><div><h3>Desarrollador full stack</h3><p><b>Empresa Tres</b> · Aplicaciones web de extremo a extremo.</p></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="contacto" class="sec contact" data-i="3" aria-labelledby="h-con">
+    <p class="lab rv"><b>03</b> <span id="h-con">Contacto</span></p>
+    <a class="mail rv" id="mail" href="mailto:hola@ejemplo.com">hola@ejemplo.com</a>
+    <p class="s rv">Disponible para nuevos proyectos y colaboraciones.</p>
+    <div class="foot rv"><span>© 2026 Nombre Apellido</span><span>Ingeniería de software</span></div>
+  </section>
+</main>
+
+<div class="hud ih" id="hud" aria-hidden="true"></div>
+<div class="reticle" id="ret" aria-hidden="true"></div>
+
+<script type="module">
+import * as THREE from 'three';
+
+/* ---------- Anime.js (con degradación si no carga) ---------- */
+let AN = null;
+try { AN = await import('animejs'); } catch (e) { AN = null; }
+const animate = AN && AN.animate, createTimeline = AN && AN.createTimeline, stagger = AN && AN.stagger,
+      splitText = AN && AN.splitText, scrambleText = AN && AN.scrambleText, utils = AN && AN.utils;
+
+const root = document.documentElement;
+const reduced = root.classList.contains('rm');
+const $ = (s, c = document) => c.querySelector(s);
+const $$ = (s, c = document) => [...c.querySelectorAll(s)];
+
+/* ---------- Uniforms (animados por Anime.js) ---------- */
+const V2 = (x, y) => new THREE.Vector2(x, y);
+const U = {
+  uRes: { value: V2(2, 2) }, uMouse: { value: V2(.4, .2) }, uOff: { value: V2(0, 0) },
+  uTime: { value: 0 }, uSpin: { value: 0 }, uImpulse: { value: 0 }, uPulse: { value: 1 },
+  uFreq: { value: 1.7 }, uFreqH: { value: 0 }, uBias: { value: 0 }, uThick: { value: .3 },
+  uYaw: { value: .55 }, uYawX: { value: 0 }, uPitch: { value: .32 }, uDist: { value: 5.4 },
+  uReveal: { value: 3.4 }, uPlane: { value: 5 }, uPlaneYaw: { value: .9 }, uPlanePitch: { value: .5 }, uWob: { value: .15 },
+  uFilm: { value: 380 }, uFilmH: { value: 0 }, uDisp: { value: .045 }, uInt: { value: 1 },
+  uSteps: { value: 64 }, uAgit: { value: 0 }
+};
+const C = { tMap: { value: null }, uTexel: { value: V2(1, 1) }, uRes: { value: V2(1, 1) }, uTime: { value: 0 } };
+const introYaw = { v: 0 };
+
+/* helper: animar o asignar (movimiento reducido / sin Anime) */
+let renderOnce = () => {};
+function to(target, props, duration = 1800, ease = 'inOutCubic') {
+  if (reduced || !animate || duration === 0) {
+    for (const k in props) target[k] = Array.isArray(props[k]) ? props[k][props[k].length - 1] : props[k];
+    if (reduced) renderOnce();
+    return null;
+  }
+  return animate(target, { ...props, duration, ease });
+}
+
+/* ---------- Estados por sección ---------- */
+const SEC = [
+  { freq: 1.7, yaw: .55, pitch: .32, dist: 5.4, pyaw: .9, ppitch: .5, plane: .55, thick: .30, int: 1, film: 380, disp: .045, fx: .73 },
+  { freq: 2.6, yaw: 1.9, pitch: -.15, dist: 5.0, pyaw: 1.57, ppitch: .05, plane: .35, thick: .34, int: .9, film: 470, disp: .05, fx: .76 },
+  { freq: 3.6, yaw: 3.5, pitch: .45, dist: 4.7, pyaw: .3, ppitch: 1.2, plane: .1, thick: .3, int: .75, film: 540, disp: .05, fx: .76 },
+  { freq: 1.2, yaw: 5.2, pitch: .1, dist: 4.5, pyaw: 0, ppitch: 0, plane: 5, thick: .38, int: .85, film: 340, disp: .06, fx: .74 }
+];
+const isMobile = () => innerWidth < 760 || innerWidth / innerHeight < .8;
+function target(i) {
+  const s = { ...SEC[i] }, m = isMobile(), asp = innerWidth / innerHeight;
+  s.ox = m ? 0 : (s.fx - .5) * asp;
+  s.oy = m ? [.21, .3, .3, .3][i] : 0;
+  if (m) { s.dist *= 1.9; s.int = i ? Math.min(s.int, .6) : .95; }
+  return s;
+}
+let cur = 0, ready = false;
+function applySection(i, instant) {
+  const s = target(i), d = instant ? 0 : 1900;
+  to(U.uFreq, { value: s.freq }, d); to(U.uYaw, { value: s.yaw }, d); to(U.uPitch, { value: s.pitch }, d);
+  to(U.uDist, { value: s.dist }, d); to(U.uPlaneYaw, { value: s.pyaw }, d); to(U.uPlanePitch, { value: s.ppitch }, d);
+  to(U.uPlane, { value: s.plane }, d); to(U.uThick, { value: s.thick }, d); to(U.uInt, { value: s.int }, d);
+  to(U.uFilm, { value: s.film }, d); to(U.uDisp, { value: s.disp }, d);
+  to(U.uOff.value, { x: s.ox, y: s.oy }, d);
+}
+
+/* ---------- WebGL ---------- */
+const canvas = $('#gl');
+let renderer = null, rt, rtScene, scrScene, cam, qScale = .58, dpr = 1;
+
+const VERT = `void main(){ gl_Position = vec4(position.xy, 0.0, 1.0); }`;
+
+const RAY = `
+uniform vec2 uRes; uniform vec2 uMouse; uniform vec2 uOff;
+uniform float uTime, uSpin, uImpulse, uPulse, uFreq, uFreqH, uBias, uThick, uYaw, uYawX, uPitch, uDist;
+uniform float uReveal, uPlane, uPlaneYaw, uPlanePitch, uWob, uFilm, uFilmH, uDisp, uInt;
+uniform int uSteps;
+const float PI = 3.14159265;
+vec3 gRo, gRd, gPN; float gPlane;
+
+mat2 rot(float a){ float c = cos(a), s = sin(a); return mat2(c, -s, s, c); }
+float sdRoundBox(vec3 p, vec3 b, float r){ vec3 q = abs(p) - b + r; return length(max(q, 0.0)) + min(max(q.x, max(q.y, q.z)), 0.0) - r; }
+float cursorDist(vec3 p){ return length(cross(p - gRo, gRd)); }
+
+float map(vec3 p){
+  float f = uFreq + uFreqH;
+  vec3 s = p; s.xz = rot(uSpin) * s.xz;
+  vec3 q = s * f;
+  float g = dot(sin(q), cos(q.zxy)) + uBias;
+  float d = (abs(g) - uThick) / (f * 1.6);
+  float cd = cursorDist(p);
+  d += (0.045 + 0.07 * uImpulse) * exp(-cd * cd * 4.0);
+  float rr = (cd - uPulse * 2.2) * 3.0;
+  d += 0.05 * (1.0 - uPulse) * exp(-rr * rr);
+  d = max(d, sdRoundBox(p, vec3(1.3), 0.22));
+  d = max(d, abs(p.y) - uReveal);
+  d = max(d, dot(p, gPN) - gPlane);
+  return d;
+}
+
+vec3 calcN(vec3 p){
+  vec2 e = vec2(1.0, -1.0) * 0.0035;
+  return normalize(e.xyy * map(p + e.xyy) + e.yyx * map(p + e.yyx) + e.yxy * map(p + e.yxy) + e.xxx * map(p + e.xxx));
+}
+
+// interferencia de capa fina: reflectancia a dos haces por canal (R,G,B) con índices distintos
+vec3 thinFilm(float cosI, float th, vec3 ior){
+  vec3 sinT2 = (1.0 - cosI * cosI) / (ior * ior);
+  vec3 cosT = sqrt(max(1.0 - sinT2, 0.0));
+  vec3 lam = vec3(650.0, 540.0, 450.0);
+  vec3 delta = 4.0 * PI * ior * th * cosT / lam;
+  vec3 F = 0.5 - 0.5 * cos(delta);
+  return F * F * (3.0 - 2.0 * F);
+}
+
+vec3 env(vec3 r){
+  float top = smoothstep(0.2, 1.0, r.y);
+  float s1 = smoothstep(0.82, 0.97, dot(r, normalize(vec3(-0.7, 0.35, 0.6))));
+  float s2 = smoothstep(0.9, 0.99, dot(r, normalize(vec3(0.8, 0.1, -0.5)))) * 0.7;
+  float hz = exp(-abs(r.y + 0.1) * 5.0) * 0.25;
+  return vec3(0.05 + top * 0.6 + hz) + vec3(s1 * 2.2 + s2 * 1.6);
+}
+
+void main(){
+  float asp = uRes.x / uRes.y;
+  vec2 uv = (gl_FragCoord.xy - 0.5 * uRes) / uRes.y - uOff;
+  vec2 muv = uMouse * 0.5 * vec2(asp, 1.0) - uOff;
+  float yaw = uYaw + uYawX + uMouse.x * 0.15;
+  float pit = uPitch + uMouse.y * 0.08;
+  float cy = cos(pit), sy = sin(pit);
+  vec3 ro = uDist * vec3(cy * sin(yaw), sy, cy * cos(yaw));
+  vec3 fw = -normalize(ro);
+  vec3 rt = normalize(cross(fw, vec3(0.0, 1.0, 0.0)));
+  vec3 up = cross(rt, fw);
+  vec3 rd = normalize(uv.x * rt + uv.y * up + 1.6 * fw);
+  gRo = ro; gRd = normalize(muv.x * rt + muv.y * up + 1.6 * fw);
+  float py = uPlaneYaw + uMouse.x * 0.25, pp = uPlanePitch + uMouse.y * 0.2;
+  gPN = vec3(cos(pp) * sin(py), sin(pp), cos(pp) * cos(py));
+  gPlane = uPlane + uWob * sin(uTime * 0.45);
+
+  vec3 bg = vec3(3.0, 3.0, 5.0) / 255.0;
+  vec3 outc = bg;
+  float R = 2.3, b = dot(ro, rd), c = dot(ro, ro) - R * R, h = b * b - c;
+  if (h > 0.0){
+    h = sqrt(h);
+    float t = max(-b - h, 0.0), tf = -b + h, d = 1.0, hit = 0.0;
+    for (int i = 0; i < 64; i++){
+      if (i >= uSteps) break;
+      d = map(ro + rd * t);
+      if (d < 0.0012 * t + 0.0008){ hit = 1.0; break; }
+      t += d * 0.8;
+      if (t > tf) break;
+    }
+    if (hit > 0.5){
+      vec3 p = ro + rd * t, n = calcN(p), v = -rd;
+      if (dot(n, v) < 0.0) n = -n;
+      float cosT = clamp(dot(n, v), 0.0, 1.0);
+      float ao = 0.0;
+      for (int k = 1; k <= 4; k++){ float hh = 0.05 * float(k); ao += (hh - map(p + n * hh)) / pow(2.0, float(k)); }
+      ao = clamp(1.0 - ao * 2.5, 0.0, 1.0);
+
+      float cd = cursorDist(p);
+      float th = uFilm + 150.0 * sin(dot(p, vec3(1.3, 0.9, 1.7)) * 1.7 + uTime * 0.25) + 90.0 * sin(dot(n, vec3(2.0, 3.0, 1.0)) * 3.0);
+      th += (260.0 + 420.0 * uImpulse) * exp(-cd * cd * 3.5);
+      float rr = (cd - uPulse * 2.2) * 3.0;
+      th += 220.0 * (1.0 - uPulse) * exp(-rr * rr);
+      vec3 ior = 1.33 + vec3(-1.0, 0.0, 1.0) * uDisp;
+
+      vec3 F = thinFilm(cosT, th, ior);
+      vec3 E = env(reflect(rd, n));
+      vec3 col = F * (E * 1.1 + 0.05);
+
+      // el cursor es una fuente de luz delante de la superficie
+      float depth = uDist - 1.6;
+      vec3 lp = ro + gRd * (depth / dot(gRd, fw));
+      vec3 Ld = lp - p; float ll = length(Ld); vec3 L = Ld / ll;
+      float att = 1.6 / (1.0 + ll * ll * 0.35);
+      float diff = max(dot(n, L), 0.0);
+      float spec = pow(max(dot(n, normalize(L + v)), 0.0), 90.0);
+      vec3 F2 = thinFilm(clamp(dot(n, L), 0.02, 1.0), th, ior);
+      col += F2 * diff * att * 0.6;
+      col += F2 * spec * att * 4.0 + vec3(spec * att * 0.6);
+      col += pow(1.0 - cosT, 3.0) * F * 0.9;
+
+      // bordes de los planos de sección (tomografía)
+      float e1 = exp(-abs(dot(p, gPN) - gPlane) * 70.0) * (1.0 - smoothstep(3.0, 4.5, gPlane));
+      float e2 = exp(-abs(abs(p.y) - uReveal) * 70.0) * (1.0 - smoothstep(1.3, 1.6, uReveal));
+      vec3 edge = 0.5 + 0.5 * cos(6.2832 * (vec3(0.0, 0.33, 0.67) + dot(p, vec3(0.3, 0.2, 0.1)) + uTime * 0.1));
+      col += (e1 + e2) * edge * 1.4;
+
+      col *= ao * uInt;
+      col = col / (1.0 + col * 0.6);
+      outc = mix(bg, pow(col, vec3(0.4545)), 1.0);
+      outc = max(outc, bg);
+    }
+  }
+  gl_FragColor = vec4(outc, 1.0);
+}`;
+
+const COMP_V = `varying vec2 vUv; void main(){ vUv = position.xy * 0.5 + 0.5; gl_Position = vec4(position.xy, 0.0, 1.0); }`;
+const COMP_F = `
+uniform sampler2D tMap; uniform vec2 uTexel; uniform vec2 uRes; uniform float uTime;
+varying vec2 vUv;
+float hash(vec2 p){ return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
+void main(){
+  vec2 c = vUv - 0.5;
+  float r2 = dot(c, c);
+  float k = 0.006 + r2 * 0.012;
+  vec3 col;
+  col.r = texture2D(tMap, vUv - c * k).r;
+  col.g = texture2D(tMap, vUv).g;
+  col.b = texture2D(tMap, vUv + c * k).b;
+  vec2 o = uTexel * 5.0;
+  vec3 gl = texture2D(tMap, vUv + vec2(o.x, o.y)).rgb + texture2D(tMap, vUv + vec2(-o.x, o.y)).rgb
+          + texture2D(tMap, vUv + vec2(o.x, -o.y)).rgb + texture2D(tMap, vUv + vec2(-o.x, -o.y)).rgb;
+  gl *= 0.25;
+  col += max(gl - 0.09, 0.0) * 0.55;
+  col *= 1.0 - r2 * 0.55;
+  col += (hash(gl_FragCoord.xy + fract(uTime)) - 0.5) / 128.0;
+  gl_FragColor = vec4(col, 1.0);
+}`;
+
+function initGL() {
+  try {
+    const t = document.createElement('canvas'), g = t.getContext('webgl2');
+    if (!g) return false;
+    const ext = g.getExtension('WEBGL_lose_context'); if (ext) ext.loseContext();
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, depth: false, stencil: false, powerPreference: 'high-performance' });
+    renderer.setClearColor(0x030305, 1);
+    cam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    rt = new THREE.WebGLRenderTarget(2, 2, { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, depthBuffer: false });
+    const geo = new THREE.PlaneGeometry(2, 2);
+    const m1 = new THREE.ShaderMaterial({ vertexShader: VERT, fragmentShader: RAY, uniforms: U, depthTest: false, depthWrite: false });
+    const m2 = new THREE.ShaderMaterial({ vertexShader: COMP_V, fragmentShader: COMP_F, uniforms: C, depthTest: false, depthWrite: false });
+    const a = new THREE.Mesh(geo, m1), b = new THREE.Mesh(geo, m2); a.frustumCulled = b.frustumCulled = false;
+    rtScene = new THREE.Scene(); rtScene.add(a);
+    scrScene = new THREE.Scene(); scrScene.add(b);
+    C.tMap.value = rt.texture;
+    return true;
+  } catch (e) { renderer = null; return false; }
+}
+
+function sizeTargets() {
+  const w = innerWidth, h = innerHeight;
+  const rw = Math.max(2, Math.floor(w * dpr * qScale)), rh = Math.max(2, Math.floor(h * dpr * qScale));
+  rt.setSize(rw, rh);
+  U.uRes.value.set(rw, rh); C.uTexel.value.set(1 / rw, 1 / rh); C.uRes.value.set(w * dpr, h * dpr);
+}
+let lastW = 0;
+function resize() {
+  dpr = Math.min(window.devicePixelRatio || 1, 1.75);
+  renderer.setPixelRatio(dpr); renderer.setSize(innerWidth, innerHeight, false);
+  sizeTargets();
+  if (innerWidth !== lastW) { lastW = innerWidth; if (ready || reduced) applySection(cur, true); }
+  if (reduced) renderOnce();
+}
+function render() {
+  renderer.setRenderTarget(rt); renderer.render(rtScene, cam);
+  renderer.setRenderTarget(null); renderer.render(scrScene, cam);
+}
+
+/* ---------- Cursor ---------- */
+const mT = { x: .4, y: .2 }, mC = { x: .4, y: .2 };
+let lastMove = -1e9, imp = 0, spin = 0, scrollNow = 0, scrollSm = 0, px = 0, py = 0, rx = 0, ry = 0, down = false;
+const ret = $('#ret');
+addEventListener('pointermove', e => {
+  mT.x = (e.clientX / innerWidth) * 2 - 1; mT.y = -((e.clientY / innerHeight) * 2 - 1);
+  px = e.clientX; py = e.clientY; lastMove = performance.now(); ret.classList.add('vis');
+}, { passive: true });
+addEventListener('pointerdown', () => {
+  down = true; if (!reduced && animate && renderer) animate(U.uPulse, { value: [0, 1], duration: 1700, ease: 'outQuad' });
+});
+addEventListener('pointerup', () => { down = false; lastMove = performance.now(); });
+document.addEventListener('pointerover', e => ret.classList.toggle('on', !!(e.target.closest && e.target.closest('a,.proj'))));
+document.addEventListener('mouseleave', () => ret.classList.remove('vis'));
+const readScroll = () => { const m = document.documentElement.scrollHeight - innerHeight; scrollNow = m > 0 ? scrollY / m : 0; };
+addEventListener('scroll', readScroll, { passive: true });
+
+/* ---------- Bucle ---------- */
+let raf = 0, last = 0, ema = 16, fcount = 0;
+function update(dt) {
+  const now = performance.now();
+  U.uTime.value += dt; C.uTime.value = U.uTime.value;
+  spin += dt * (.05 + .45 * U.uAgit.value); U.uSpin.value = spin;
+  if (now - lastMove > 3500 && !down) { const t = U.uTime.value; mT.x = Math.sin(t * .35) * .55 + .25; mT.y = Math.cos(t * .27) * .4; }
+  const k = 1 - Math.exp(-dt * 9), ox = mC.x, oy = mC.y;
+  mC.x += (mT.x - mC.x) * k; mC.y += (mT.y - mC.y) * k;
+  imp = Math.max(imp * Math.exp(-dt * 2.5), Math.min(1, Math.hypot(mC.x - ox, mC.y - oy) * 14));
+  U.uImpulse.value = imp; U.uMouse.value.set(mC.x, mC.y);
+  scrollSm += (scrollNow - scrollSm) * (1 - Math.exp(-dt * 4));
+  U.uYawX.value = introYaw.v + scrollSm * 1.6;
+  U.uWob.value = .15 + .2 * U.uAgit.value;
+  rx += (px - rx) * (1 - Math.exp(-dt * 14)); ry += (py - ry) * (1 - Math.exp(-dt * 14));
+  ret.style.transform = `translate3d(${rx}px,${ry}px,0)`;
+}
+function frame(now) {
+  raf = requestAnimationFrame(frame);
+  if (document.hidden) return;
+  const dt = Math.min((now - last) / 1000, .05); last = now;
+  update(dt); render();
+  // calidad adaptativa
+  ema += (dt * 1000 - ema) * .05;
+  if (++fcount % 90 === 0) {
+    if (ema > 22 && (qScale > .42 || U.uSteps.value > 40)) { qScale = Math.max(.4, qScale - .06); U.uSteps.value = Math.max(40, U.uSteps.value - 8); sizeTargets(); }
+    else if (ema < 11 && qScale < .62) { qScale = Math.min(.62, qScale + .03); U.uSteps.value = Math.min(64, U.uSteps.value + 4); sizeTargets(); }
+  }
+}
+document.addEventListener('visibilitychange', () => {
+  if (!renderer || reduced) return;
+  if (document.hidden) { cancelAnimationFrame(raf); raf = 0; }
+  else if (!raf) { last = performance.now(); raf = requestAnimationFrame(frame); }
+});
+
+/* ---------- HUD ---------- */
+const hud = $('#hud'), pad = n => String(n).padStart(2, '0');
+function updateHud() {
+  const pl = U.uPlane.value;
+  hud.innerHTML = `Sec <b>${pad(cur + 1)}/04</b> · Celda <b>${(U.uFreq.value + U.uFreqH.value).toFixed(2)}</b><br>Corte <b>${pl > 4 ? '—' : (pl >= 0 ? '+' : '') + pl.toFixed(2)}</b> · Película <b>${Math.round(U.uFilm.value + U.uFilmH.value)} nm</b>`;
+}
+setInterval(updateHud, 120);
+
+/* ---------- Navegación / secciones ---------- */
+const navLinks = $$('.nav nav a');
+function setNav(i) { navLinks.forEach(a => a.classList.toggle('act', +a.dataset.i === i)); }
+const io = new IntersectionObserver(es => {
+  es.forEach(e => {
+    if (!e.isIntersecting) return;
+    const i = +e.target.dataset.i;
+    if (i === cur) return;
+    cur = i; setNav(i);
+    if (ready || reduced) applySection(i, false);
+  });
+}, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
+$$('main > section').forEach(s => io.observe(s));
+
+/* ---------- Hover en proyectos ---------- */
+const HOV = [{ fh: .9, b: .25, th: -150 }, { fh: 1.5, b: -.3, th: 170 }, { fh: .4, b: .55, th: 330 }];
+const list = $('#projList'), projs = $$('.proj');
+const scr = new Map();
+function scramble(el, text) {
+  if (reduced || !animate || !scrambleText) return;
+  const old = scr.get(el); if (old) { try { old.pause(); } catch (e) {} }
+  el.textContent = text;
+  try {
+    scr.set(el, animate(el, { innerHTML: scrambleText({ chars: 'A-Z0-9', revealRate: 40 }), duration: 650, ease: 'linear', onComplete: () => { el.textContent = text; } }));
+  } catch (e) { el.textContent = text; }
+}
+function hover(i) {
+  const h = i >= 0 ? HOV[i] : { fh: 0, b: 0, th: 0 };
+  to(U.uFreqH, { value: h.fh }, 1200, 'outExpo'); to(U.uBias, { value: h.b }, 1200, 'outExpo');
+  to(U.uFilmH, { value: h.th }, 1200, 'outExpo'); to(U.uAgit, { value: i >= 0 ? 1 : 0 }, 900, 'outQuad');
+  list.classList.toggle('hov', i >= 0);
+  projs.forEach((p, j) => p.classList.toggle('on', j === i));
+  if (i >= 0) { const t = projs[i].querySelector('.p-t'); scramble(t, t.dataset.t); }
+}
+projs.forEach((p, i) => {
+  const t = p.querySelector('.p-t'); t.dataset.t = t.textContent;
+  p.addEventListener('pointerenter', () => hover(i)); p.addEventListener('pointerleave', () => hover(-1));
+  p.addEventListener('focus', () => hover(i)); p.addEventListener('blur', () => hover(-1));
+});
+const mail = $('#mail');
+mail.addEventListener('pointerenter', () => { scramble(mail, 'hola@ejemplo.com'); to(U.uFreqH, { value: -.5 }, 1000, 'outExpo'); to(U.uFilmH, { value: 200 }, 1000, 'outExpo'); });
+mail.addEventListener('pointerleave', () => { to(U.uFreqH, { value: 0 }, 1000, 'outExpo'); to(U.uFilmH, { value: 0 }, 1000, 'outExpo'); });
+
+/* ---------- Reveals al hacer scroll ---------- */
+function setupReveals() {
+  if (reduced || !animate || !utils) return;
+  utils.set('.rv', { opacity: 0, translateY: 26 });
+  const rio = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    rio.unobserve(e.target);
+    animate(e.target, { opacity: 1, translateY: 0, duration: 1000, delay: +(e.target.dataset.d || 0), ease: 'outExpo' });
+  }), { rootMargin: '0px 0px -8% 0px' });
+  $$('.rv').forEach(el => rio.observe(el));
+}
+
+/* ---------- Entrada coreografiada ---------- */
+function showAll() { root.classList.add('ready'); }
+function intro() {
+  const t0 = target(0);
+  const names = $$('.name-l'), headline = $('.headline'), bootEl = $('#boot'), boot = { v: 0 };
+  const rest = [$('.brand'), ...navLinks, $('.hero-meta'), hud];
+  // estado inicial de la escena: un corte delgado
+  U.uReveal.value = .012; U.uInt.value = 0; U.uDist.value = t0.dist * 1.7; U.uPlane.value = 5; introYaw.v = 1.4;
+  let chars = [];
+  try { const sp = splitText(headline, { words: true, chars: true }); chars = sp.chars || []; utils.set(chars, { opacity: 0, translateY: '70%' }); } catch (e) { chars = []; }
+  const tl = createTimeline({ defaults: { ease: 'outExpo' }, onComplete: () => { showAll(); ready = true; if (cur !== 0) applySection(cur, false); setupReveals(); } });
+  // escena: el objeto se materializa desde un corte que se expande, luego un plano de sección lo barre
+  tl.add(U.uInt, { value: 1, duration: 900, ease: 'outQuad' }, 0)
+    .add(U.uReveal, { value: 1.5, duration: 2300, ease: 'inOutCubic' }, 0)
+    .add(U.uDist, { value: t0.dist, duration: 3000 }, 0)
+    .add(introYaw, { v: 0, duration: 3000 }, 0)
+    .add(U.uPlane, { value: t0.plane, duration: 1700, ease: 'inOutQuart' }, 1250)
+    .add(boot, { v: 100, duration: 2500, ease: 'inOutQuad', onUpdate: () => { bootEl.textContent = 'Escáner ' + pad(Math.round(boot.v)).padStart(3, '0') + '%'; } }, 0)
+    .add('.hl', { scaleX: [0, 1], duration: 1600 }, 600);
+  // tipografía: nombre con scrambleText, titular con splitText + stagger
+  names.forEach((el, i) => {
+    tl.add(el, { opacity: [0, 1], duration: 160, ease: 'linear' }, 250 + i * 220);
+    if (scrambleText) tl.add(el, { innerHTML: scrambleText({ chars: 'A-Z0-9', revealRate: 40 }), duration: 1500, ease: 'linear' }, 250 + i * 220);
+  });
+  if (chars.length) tl.add(chars, { opacity: [0, 1], translateY: ['70%', '0%'], duration: 900, delay: stagger(16) }, 1000);
+  tl.add(headline, { opacity: [1, 1], duration: 1 }, 0);
+  utils.set(headline, { opacity: 1 });
+  tl.add(rest, { opacity: [0, 1], translateY: [10, 0], duration: 900, delay: stagger(90) }, 1500);
+}
+
+/* ---------- Arranque ---------- */
+const hasGL = initGL();
+if (!hasGL) root.classList.add('nogl');
+readScroll();
+if (hasGL) { resize(); addEventListener('resize', resize); }
+else { addEventListener('resize', () => { if (innerWidth !== lastW) { lastW = innerWidth; if (ready || reduced) applySection(cur, true); } }); }
+renderOnce = () => { if (!hasGL) return; update(0); render(); };
+
+if (reduced) {
+  // versión estática: un solo fotograma, sin animación continua
+  applySection(0, true);
+  U.uTime.value = 7; U.uReveal.value = 3.4; U.uInt.value = target(0).int; U.uMouse.value.set(.35, .1);
+  mT.x = mC.x = .35; mT.y = mC.y = .1;
+  updateHud(); setNav(0);
+  if (hasGL) { renderOnce(); addEventListener('scroll', () => { /* secciones actualizan el cuadro */ }, { passive: true }); }
+} else {
+  applySection(0, true);
+  if (AN && createTimeline && splitText && utils) {
+    try { intro(); } catch (e) { U.uReveal.value = 3.4; U.uInt.value = 1; U.uDist.value = target(0).dist; introYaw.v = 0; U.uPlane.value = target(0).plane; showAll(); ready = true; }
+  } else {
+    U.uReveal.value = 3.4; U.uInt.value = 1; showAll(); ready = true;
+  }
+  if (hasGL) { last = performance.now(); raf = requestAnimationFrame(frame); }
+}
+</script>
+</body>
+</html>

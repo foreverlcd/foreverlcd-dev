@@ -9,7 +9,7 @@ El dashboard creado en `2026-11-18-admin-dashboard.md` funciona a medias: el có
 
 ## Contexto mínimo
 - `AGENTS.md`, `docs/GOLDEN-PRINCIPLES.md`, `docs/ARCHITECTURE.md`.
-- Plan anterior: `docs/exec-plans/active/2026-11-18-admin-dashboard.md` (requisitos completos).
+- Plan anterior: `docs/exec-plans/completed/2026-11-18-admin-dashboard.md` (requisitos completos).
 - Código: `src/app/admin/**`, `src/components/admin/**`, `src/server/actions/**`, `src/server/auth/**`, `src/server/dal/**`, `src/app/proyectos/[slug]/page.tsx`, `proxy.ts`.
 - Salida de `node scripts/check-boundaries.mjs` (8 violaciones R2) y `pnpm lint` (1 error).
 

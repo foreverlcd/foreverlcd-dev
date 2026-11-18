@@ -1,18 +1,39 @@
 # Progreso
 
 ## Estado (2026-11-18)
-- Rama de trabajo: `feat/adding-admin-user` con TODO sin commit (Etapa 3.1 + dirección Runtime + backend en curso). Pendiente de autorización del dueño para commits y push.
-- Web pública: datos reales, portada estática con traza; **dirección de arte rechazada** → prototipos SPECTRA / SIGNAL / MEGASTRUCTURE en evaluación (fuera del repo).
-- Backend/dashboard: delegado a codex (`docs/exec-plans/active/` → brief de dashboard); pendiente de verificación del planificador.
-- Arnés: documentos y roles creados; scripts delegados a sonnet (`docs/exec-plans/active/2026-11-18-harness-scripts.md`).
+- **Ramas:**
+  - `main` tiene Next 16.4.6, el parche de seguridad.
+  - `feat/adding-admin-user` contiene el backend y el dashboard.
+  - `feat/signal-experience` contiene el arnés, la dirección SIGNAL y la portada nueva, e incorpora `main`.
+  - Todas están subidas a GitHub.
+- **Web pública:**
+  - Portada SIGNAL / ESTRUCTURA implementada (`src/components/signal/`), estática con revalidación diaria.
+  - JS inicial: 196,6 kB gzip; Three.js va diferido.
+  - Verificada con GPU real (RTX 3050 Ti) en 7 viewports, de 360 a 2560 px, más el modo reducido: 60 fps y 0 errores en contenido DEMO.
+  - Niveles T2/T1/T0 con degradación adaptativa.
+- **Dashboard:**
+  - CRUD completo de perfil, redes, skills, proyectos (repos, skills, imágenes), experiencia y formación.
+  - E2E con la base real: login y creación de red; sin perfil devuelve un mensaje claro (antes daba 500 por la FK).
+  - Revisión cruzada de codex aplicada.
+- **Arnés:**
+  - `gate.sh` (GATE_STRICT con base de datos).
+  - `ui-shots.mjs` con `GPU=1`.
+  - `delegate.sh` con `REVIEW_PATHS` y el prompt en archivo para agy y opencode.
+  - Lecciones en `docs/harness/LOG.md`.
 
 ## Siguiente paso
-1. Verificar scripts del arnés y el dashboard (gate + capturas + revisión cruzada).
-2. Presentar prototipos al dueño; reescribir `ART-DIRECTION.md` con el elegido.
-3. Implementar la dirección elegida en `src/` reutilizando traza, modo lectura y bus.
-4. Commits por etapa y push (con autorización).
+1. Revisión de arte (`art-reviewer`) de `.shots/signal-devices/` y decidir `passes` de pub-hero, pub-projects, pub-path, pub-stack, pub-contact y pub-webgl-fallback.
+2. Rediseñar el dashboard con la paleta y las tipografías SIGNAL. Hoy hereda las fuentes nuevas, pero conserva el layout antiguo.
+3. SEO: metadatos, OG, sitemap y robots (pub-seo).
+4. Despliegue en Vercel Hobby con Postgres gratuito (Neon); variables en el panel, nunca en el repo.
+5. Contenido real del dueño desde el dashboard. No inventar datos.
+
+## Datos de prueba locales
+En la base local quedan datos de prueba E2E: el admin `e2e-admin@example.test`, el perfil "E2E Perfil" sin publicar y la red "E2E enlace". No usan datos reales; se sobrescriben desde el dashboard.
 
 ## Decisiones recientes
+- 2026-11-18: dirección de arte SIGNAL (base) + MEGASTRUCTURE (acentos), elegida por el dueño; debe verse en todos los dispositivos (`ART-DIRECTION.md`).
+- 2026-11-18: Next 16.4.3 → 16.4.6 por aviso de seguridad, parche manual (no `--agent=security`), fusionado a `main` con autorización del dueño.
 - 2026-11-18: el planificador (Opus) diseña y revisa; la ejecución va a motores baratos (`docs/HARNESS.md`).
 - 2026-11-18: portada estática con `revalidate = 86400` por el plan gratuito (Vercel Hobby + Postgres con suspensión).
 - 2026-11-18: Three.js r187 sin React Three Fiber; WebGLRenderer + GLSL propio.

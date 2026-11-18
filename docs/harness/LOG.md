@@ -4,6 +4,7 @@ Cada vez que un agente falla o entrega algo incorrecto se anota **qué le faltó
 
 | Fecha | Motor / rol | Qué pasó | Qué le faltó | Qué agregamos |
 |---|---|---|---|---|
+| 2026-11-18 | next dev 16.4.6 | `init.sh` no arrancó: Next 16.4.6 permite un solo `next dev` por carpeta y había uno DEMO en :3100. | Saberlo. | Reutilizar el servidor existente (`BASE_URL=http://localhost:3100`); el admin usa la base real también en modo DEMO. |
 | 2026-11-18 | agy / reviewer | 1) `Argument list too long`: el diff iba como argumento. 2) Con el prompt en archivo, igual intentó ejecutar un comando, se lo negaron y no produjo nada. | Pasar prompts largos por archivo; un revisor headless fiable. | `delegate.sh` escribe `*.prompt.md` y pasa una orden corta (agy, opencode). Revisión cruzada por defecto: `codex reviewer` (read-only). agy queda solo para uso interactivo. |
 | 2026-11-18 | next dev | El servidor de desarrollo murió en plena sesión, ya sirviendo páginas, con el aviso de vulnerabilidad de Next 16.4.3. | Saber que el aviso no solo sale al arrancar. | Si `ui-shots` dice "No responde", relanzar `scripts/init.sh`; otro motivo más para el upgrade de seguridad (pendiente del dueño). |
 | 2026-11-18 | sonnet / implementer (dashboard) | Gate verde, pero el `<button>` del login no tenía `type`, y el plan `admin.json` (`button[type=submit]`) no podía entrar. | Prueba en navegador antes de declarar terminado. | `type="submit"` explícito; el planificador siempre corre `ui-shots` con la base real tras el gate. |

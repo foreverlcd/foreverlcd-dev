@@ -89,7 +89,9 @@ try {
         else if (step.shot) {
           n++;
           const file = path.join(outDir, `${safe(run.name)}-${String(n).padStart(2, "0")}-${safe(step.shot)}.png`);
-          await page.screenshot({ path: file });
+          // caret "initial": ocultar el cursor inyecta style en los inputs y, si la hidratación no terminó,
+          // React lo reporta como "attributes didn't match" (falso positivo, ver docs/harness/LOG.md).
+          await page.screenshot({ path: file, caret: "initial" });
         } else if (step.text) {
           const t = (await page.locator(step.text).first().innerText({ timeout: 5000 })).replace(/\s+/g, " ").trim();
           texts.push(`${step.text}: ${t.slice(0, 200)}`);

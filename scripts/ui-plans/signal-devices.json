@@ -1,6 +1,6 @@
 {
   "name": "signal-devices",
-  "baseUrl": "http://localhost:3100",
+  "baseUrl": "http://localhost:3000",
   "runs": [
     { "name": "phone-360", "viewport": { "w": 360, "h": 740 }, "mobile": true },
     { "name": "phone-390", "viewport": { "w": 390, "h": 844 }, "mobile": true },

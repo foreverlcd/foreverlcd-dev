@@ -54,7 +54,7 @@ export default async function SkillsPage() {
                 {category._count.skills} habilidades
                 <Badge tone={category.isActive ? "signal" : "muted"}>{category.isActive ? "Activo" : "Oculto"}</Badge>
               </p>
-              <ActionForm action={saveCategory} className="grid gap-3 sm:grid-cols-2">
+              <ActionForm action={saveCategory} className="grid gap-3 sm:grid-cols-2" secondary>
                 <input type="hidden" name="id" value={category.id} />
                 <TextField name="name" label="Nombre" defaultValue={category.name} required />
                 <TextField name="description" label="Descripción" defaultValue={category.description} />
@@ -125,7 +125,7 @@ export default async function SkillsPage() {
                 {skill.category.name}
                 <Badge tone={skill.isActive ? "signal" : "muted"}>{skill.isActive ? "Activo" : "Oculto"}</Badge>
               </p>
-              <ActionForm action={saveSkill} className="grid gap-3 sm:grid-cols-2">
+              <ActionForm action={saveSkill} className="grid gap-3 sm:grid-cols-2" secondary>
                 <input type="hidden" name="id" value={skill.id} />
                 <TextField name="name" label="Nombre" defaultValue={skill.name} required />
                 <SelectField

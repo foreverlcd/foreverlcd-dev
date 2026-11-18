@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { getAdminSession } from "@/server/auth/require-admin";
+import { monoLabelClass } from "@/components/admin/styles";
 import LoginForm from "./login-form";
 
 export default async function LoginPage() {
@@ -16,6 +17,12 @@ export default async function LoginPage() {
         </p>
         <h1 className="mt-3 font-display text-2xl font-bold tracking-tight">Iniciar sesión</h1>
         <LoginForm />
+        <p className={`mt-8 flex justify-between border-t border-rule pt-3 ${monoLabelClass} text-[0.6875rem]`}>
+          <span>X +0.000 Y +0.000</span>
+          <span>
+            ESTADO <span className="text-accent-text">BLOQUEADO</span>
+          </span>
+        </p>
       </section>
     </main>
   );

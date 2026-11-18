@@ -105,7 +105,7 @@ export default async function ExperiencePage() {
               <summary className={`${monoLabelClass} inline-flex min-h-10 cursor-pointer items-center text-accent-text`}>
                 Editar
               </summary>
-              <ActionForm action={saveExperience} className="mt-3 grid gap-3 sm:grid-cols-2">
+              <ActionForm action={saveExperience} className="mt-3 grid gap-3 sm:grid-cols-2" secondary>
                 <input type="hidden" name="id" value={row.id} />
                 <ExperienceFields row={row} />
               </ActionForm>

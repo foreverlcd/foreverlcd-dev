@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { MobileNav } from "@/components/admin/mobile-nav";
 import { NavLink } from "@/components/admin/nav-link";
 import { getAdminSession } from "@/server/auth/require-admin";
 
@@ -70,10 +71,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             Ver web ↗
           </Link>
         </div>
-        <nav aria-label="Administración" className="flex overflow-x-auto border-t border-rule">
+        <MobileNav>
           {items}
           <SignOut />
-        </nav>
+        </MobileNav>
       </header>
       <aside className="fixed inset-y-0 left-0 hidden w-60 flex-col border-r border-rule bg-surface p-5 md:flex">
         <Brand />
@@ -91,7 +92,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <SignOut />
         </div>
       </aside>
-      <main className="mx-auto max-w-5xl px-5 py-8 md:ml-60 md:px-10 md:py-10">{children}</main>
+      <main className="md:pl-60">
+        <div className="mx-auto max-w-[1100px] px-5 py-8 md:px-10 md:py-10">{children}</div>
+      </main>
     </div>
   );
 }

@@ -139,6 +139,9 @@ type BackdropFrame = {
   flash: number;
   signalColor: THREE.Vector3;
   signalMix: number;
+  nameBox: THREE.Vector4;
+  nameDim: number;
+  leftDim: number;
 };
 
 type Backdrop = {
@@ -177,6 +180,9 @@ function createStructureBackdrop(renderer: THREE.WebGLRenderer): Backdrop {
     uRes: uniform(new THREE.Vector2(2, 2)),
     uBoot: uniform(0),
     uTime: uniform(0),
+    uNameBox: uniform(new THREE.Vector4()),
+    uNameDim: uniform(0),
+    uLeftDim: uniform(0),
   };
 
   const target = new THREE.WebGLRenderTarget(2, 2, {
@@ -230,6 +236,9 @@ function createStructureBackdrop(renderer: THREE.WebGLRenderer): Backdrop {
       march.uTime.value = f.time;
       composite.uTime.value = f.time;
       composite.uBoot.value = f.boot;
+      (composite.uNameBox.value as THREE.Vector4).copy(f.nameBox);
+      composite.uNameDim.value = f.nameDim;
+      composite.uLeftDim.value = f.leftDim;
     },
     render() {
       renderer.setRenderTarget(target);
@@ -360,6 +369,7 @@ export async function createSignalScene(options: SignalSceneOptions): Promise<Si
     uHot: uniform(0),
     uGain: uniform(0),
     uTrail: uniform(TIERS[tier].trail ? 1 : 0),
+    uHotAmp: uniform(TIERS[tier].trail ? 45 : 12),
     uView: uniform(new THREE.Vector2(10, 6)),
     tA: uniform<THREE.Texture | null>(null),
     tB: uniform<THREE.Texture | null>(null),
@@ -376,7 +386,7 @@ export async function createSignalScene(options: SignalSceneOptions): Promise<Si
   };
   const VELOCITY_UNIFORMS = [
     "uTime", "uDt", "uAssemble", "uMorph", "uFlow", "uScrollV", "uPress", "uMouseOn", "uMouse",
-    "uMouseVel", "uMouseR", "uFlowAngle", "uCurl", "uSpeed", "uHot", "uTrail", "uView", "tA", "tB",
+    "uMouseVel", "uMouseR", "uFlowAngle", "uCurl", "uSpeed", "uHot", "uTrail", "uHotAmp", "uView", "tA", "tB",
   ] as const;
 
   /* ---------- plano de figuras y simulación ---------- */
@@ -503,7 +513,31 @@ export async function createSignalScene(options: SignalSceneOptions): Promise<Si
     ? createStructureBackdrop(renderer)
     : createFogBackdrop(renderer);
 
+  /** Los puntos crecen con el ancho de pantalla para que el nombre no se diluya en 2K+. */
+  const pointSize = () => dpr * clamp(innerWidth / 1500, 1, 1.8);
+
+  /** Caja del nombre en coordenadas de documento (px). */
+  const nameBox = { x0: 0, y0: 0, x1: 0, y1: 0 };
+  const measureNameBox = () => {
+    let x0 = Infinity;
+    let y0 = Infinity;
+    let x1 = -Infinity;
+    let y1 = -Infinity;
+    for (const line of nameLines) {
+      const r = line.getBoundingClientRect();
+      if (r.width === 0) continue;
+      x0 = Math.min(x0, r.left);
+      x1 = Math.max(x1, r.right);
+      y0 = Math.min(y0, r.top + window.scrollY);
+      y1 = Math.max(y1, r.bottom + window.scrollY);
+    }
+    if (x0 === Infinity) x0 = y0 = x1 = y1 = 0;
+    Object.assign(nameBox, { x0, y0, x1, y1 });
+  };
+
   const resizeBuffers = () => {
+    D.uPx.value = pointSize();
+    measureNameBox();
     renderer.setSize(innerWidth, innerHeight, false);
     camera.aspect = innerWidth / innerHeight;
     camera.updateProjectionMatrix();
@@ -685,8 +719,9 @@ export async function createSignalScene(options: SignalSceneOptions): Promise<Si
     tier = next;
     dpr = Math.min(window.devicePixelRatio || 1, TIERS[next].maxDpr);
     renderer.setPixelRatio(dpr);
-    D.uPx.value = dpr;
+    D.uPx.value = pointSize();
     U.uTrail.value = TIERS[next].trail ? 1 : 0;
+    U.uHotAmp.value = TIERS[next].trail ? 45 : 12;
     backdrop.dispose();
     backdrop = TIERS[next].structure ? createStructureBackdrop(renderer) : createFogBackdrop(renderer);
     buildSim(TIERS[next].simSize);
@@ -724,7 +759,11 @@ export async function createSignalScene(options: SignalSceneOptions): Promise<Si
   const backdropFrame: BackdropFrame = {
     time: 0, boot: 0, dt: 0, snap: false, aspect: 1, scrollProgress: 0, lanternX: 0, lanternY: 0,
     flash: 0, signalColor: new THREE.Vector3(...SIGNAL_RGB), signalMix: 0,
+    nameBox: new THREE.Vector4(), nameDim: 0, leftDim: 0,
   };
+
+  let nameDimK = 0;
+  let leftDimK = 0;
 
   const updateBackdrop = (dt: number, snap: boolean) => {
     updateLantern(dt, snap);
@@ -740,6 +779,19 @@ export async function createSignalScene(options: SignalSceneOptions): Promise<Si
     f.flash = flash;
     f.signalColor.copy(D.uSig.value);
     f.signalMix = signalMix.value;
+    const nameTarget = activeSection === 0 ? 1 : 0;
+    const leftTarget = activeSection >= 1 && innerWidth >= 761 ? 1 : 0;
+    nameDimK = snap ? nameTarget : damp(nameDimK, nameTarget, 3, dt);
+    leftDimK = snap ? leftTarget : damp(leftDimK, leftTarget, 3, dt);
+    f.nameDim = nameDimK;
+    f.leftDim = leftDimK;
+    const sy = window.scrollY;
+    f.nameBox.set(
+      nameBox.x0 / innerWidth,
+      1 - (nameBox.y1 - sy) / innerHeight,
+      nameBox.x1 / innerWidth,
+      1 - (nameBox.y0 - sy) / innerHeight,
+    );
     backdrop.update(f);
   };
 

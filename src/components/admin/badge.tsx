@@ -16,7 +16,7 @@ export function Badge({ children, tone = "muted" }: BadgeProps) {
   // Explicit min width: Chromium kept a stale intrinsic width for this flex item after the mono font swapped in.
   const minWidth = `calc(${text.length}ch + ${text.length * 0.1}em + 18px)`;
   return (
-    <span className="shrink-0" style={{ minWidth, display: "inline-block" }}>
+    <span className="shrink-0" style={{ minWidth, display: "inline-block", fontSize: "0.6875rem" }}>
       <span className={`${base} ${tones[tone]}`}>{text}</span>
     </span>
   );

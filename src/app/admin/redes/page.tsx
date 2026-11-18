@@ -55,7 +55,7 @@ export default async function SocialLinksPage() {
         {links.map((link, index) => (
           <article key={link.id} className={panelClass}>
             <p className="mb-3"><Badge tone={link.isActive ? "signal" : "muted"}>{link.isActive ? "Activo" : "Oculto"}</Badge></p>
-            <ActionForm action={saveSocialLink} className="grid gap-3 sm:grid-cols-2">
+            <ActionForm action={saveSocialLink} className="grid gap-3 sm:grid-cols-2" secondary>
               <input type="hidden" name="id" value={link.id} />
               <SelectField
                 name="platform"

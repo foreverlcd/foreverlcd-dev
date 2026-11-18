@@ -77,7 +77,11 @@ try {
         if (step.goto !== undefined) {
           await page.goto(new URL(step.goto, baseUrl + "/").toString(), { waitUntil: "load" });
         } else if (step.waitFor) await page.waitForSelector(step.waitFor, { timeout: 15000 });
-        else if (step.scrollTo) await page.locator(step.scrollTo).first().scrollIntoViewIfNeeded();
+        else if (step.scrollTo) {
+          // scrollIntoView({block:"start"}) respeta scroll-margin-top como un clic en un ancla real;
+          // scrollIntoViewIfNeeded no, y deja el título bajo la cabecera fija (falso positivo).
+          await page.locator(step.scrollTo).first().evaluate((el) => el.scrollIntoView({ block: "start" }));
+        }
         else if (step.hover) await page.locator(step.hover).first().hover();
         else if (step.click) await page.locator(step.click).first().click();
         else if (step.fill) {

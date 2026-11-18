@@ -30,7 +30,7 @@ vec3 curl(vec3 p){
 /** Velocidad: campo laminar + curl, muelle a la figura, repulsor/vórtice/estela del puntero. */
 export const VELOCITY_FRAG = /* glsl */ `
 uniform float uTime,uDt,uAssemble,uMorph,uFlow,uScrollV,uPress,uMouseOn,uMouseR;
-uniform float uFlowAngle,uCurl,uSpeed,uHot,uTrail;
+uniform float uFlowAngle,uCurl,uSpeed,uHot,uTrail,uHotAmp;
 uniform vec3 uMouse; uniform vec2 uMouseVel,uView; uniform sampler2D tA,tB;
 ${NOISE}
 void main(){
@@ -54,7 +54,7 @@ void main(){
   vec3 acc=(F-v)*2.2*(1.-asmb);
 
   acc+=(tgt-p)*30.*asmb;
-  acc+=curl(p*1.3+vec3(0.,0.,uTime*.15))*(1.6+90.*uHot)*asmb;
+  acc+=curl(p*1.3+vec3(0.,0.,uTime*.15))*(1.6+uHotAmp*uHot)*asmb;
 
   vec3 d=p-uMouse; d.z*=.3;
   float R=uMouseR*(1.+uPress*.8);
@@ -96,7 +96,7 @@ void main(){
   float h=fract(sin(dot(aRef,vec2(12.9898,78.233)))*43758.5453);
   t=clamp(t+uHot*step(h,.45)+uAcid*step(h,.16),0.,1.);
   vC=mix(vec3(.91,.941,.949),uSig,t);
-  gl_PointSize=clamp(uPx*(1.55+1.7*t)*(uDepth/max(-mv.z,.1)),1.,16.);
+  gl_PointSize=clamp(uPx*(1.55+1.7*t)*(uDepth/max(-mv.z,.1)),1.,28.);
   vA=uGain*(.85+.5*t)*clamp(1.2-abs(p.z)*.1,.3,1.);
 }`;
 
@@ -294,7 +294,8 @@ precision highp float;
 varying vec2 vUv;
 uniform sampler2D tMap;
 uniform vec2 uRes;
-uniform float uBoot,uTime;
+uniform float uBoot,uTime,uNameDim,uLeftDim;
+uniform vec4 uNameBox;
 float h21(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}
 void main(){
   vec2 c=vUv-0.5;
@@ -303,6 +304,12 @@ void main(){
   vec3 col=vec3(texture2D(tMap,vUv+off).r,texture2D(tMap,vUv).g,texture2D(tMap,vUv-off).b);
   col*=mix(0.55,1.0,smoothstep(1.25,0.3,r));
   col*=smoothstep(0.0,1.0,uBoot);
+  // Detrás del nombre (sección 0) y de la columna de texto (resto) la estructura cede.
+  vec2 e=vec2(0.04,0.06);
+  float inBox=smoothstep(uNameBox.x-e.x,uNameBox.x+e.x,vUv.x)*smoothstep(uNameBox.z+e.x,uNameBox.z-e.x,vUv.x)
+    *smoothstep(uNameBox.y-e.y,uNameBox.y+e.y,vUv.y)*smoothstep(uNameBox.w+e.y,uNameBox.w-e.y,vUv.y);
+  col*=1.0-0.7*inBox*uNameDim;
+  col*=1.0-0.45*smoothstep(0.7,0.1,vUv.x)*uLeftDim;
   col+=(h21(vUv*uRes+fract(uTime)*91.0)-0.5)*0.03;
   gl_FragColor=vec4(max(col,0.0),1.0);
 }`;

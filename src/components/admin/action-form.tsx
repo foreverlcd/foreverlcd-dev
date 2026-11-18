@@ -8,7 +8,7 @@ import {
   type ReactNode,
 } from "react";
 import { initialActionState, type ActionState } from "@/server/actions/action-state";
-import { primaryButtonClass } from "./styles";
+import { primaryButtonClass, secondaryButtonClass } from "./styles";
 
 type ActionFormProps = {
   action: (state: ActionState, formData: FormData) => Promise<ActionState>;
@@ -17,6 +17,8 @@ type ActionFormProps = {
   submitLabel?: string;
   pendingLabel?: string;
   resetOnSuccess?: boolean;
+  /** Per-row forms use the secondary style so each screen keeps a single primary button. */
+  secondary?: boolean;
 };
 
 export function ActionForm({
@@ -26,6 +28,7 @@ export function ActionForm({
   submitLabel = "Guardar",
   pendingLabel = "Guardando…",
   resetOnSuccess = false,
+  secondary = false,
 }: ActionFormProps) {
   const [state, dispatch, pending] = useActionState(action, initialActionState);
   const formRef = useRef<HTMLFormElement>(null);
@@ -62,7 +65,7 @@ export function ActionForm({
           )}
         </div>
       )}
-      <button disabled={pending} type="submit" className={primaryButtonClass}>
+      <button disabled={pending} type="submit" className={secondary ? secondaryButtonClass : primaryButtonClass}>
         {pending ? pendingLabel : submitLabel}
       </button>
     </form>

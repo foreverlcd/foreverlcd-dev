@@ -182,7 +182,7 @@ export function SignalPage({ portfolio }: { portfolio: Portfolio }) {
               ) : null}
               {profile && hasContact ? (
                 <a className="sg-cta sg-cta-ghost" href="#contacto">
-                  Contacto
+                  Contacto <span aria-hidden="true">↓</span>
                 </a>
               ) : null}
               {!profile && email ? (

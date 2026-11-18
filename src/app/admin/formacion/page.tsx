@@ -103,7 +103,7 @@ export default async function EducationPage() {
               <summary className={`${monoLabelClass} inline-flex min-h-10 cursor-pointer items-center text-accent-text`}>
                 Editar
               </summary>
-              <ActionForm action={saveEducation} className="mt-3 grid gap-3 sm:grid-cols-2">
+              <ActionForm action={saveEducation} className="mt-3 grid gap-3 sm:grid-cols-2" secondary>
                 <input type="hidden" name="id" value={row.id} />
                 <EducationFields row={row} />
               </ActionForm>

@@ -49,10 +49,12 @@ export type RasterOptions = {
 type Zone = { cx: number; cy: number; mw: number; mh: number };
 
 /** Zona de las figuras de sección: a la derecha en escritorio, arriba en móvil. */
-const zoneFor = (viewportWidth: number): Zone =>
-  viewportWidth <= 760
-    ? { cx: 0.72, cy: 0.2, mw: 0.5, mh: 0.17 }
-    : { cx: 0.79, cy: 0.53, mw: 0.34, mh: 0.46 };
+const zoneFor = (viewportWidth: number): Zone => {
+  if (viewportWidth <= 760) return { cx: 0.72, cy: 0.2, mw: 0.5, mh: 0.17 };
+  // Tableta: columna de texto al 58 %; la figura queda a la derecha, fuera de ella.
+  if (viewportWidth <= 1024) return { cx: 0.8, cy: 0.5, mw: 0.28, mh: 0.3 };
+  return { cx: 0.79, cy: 0.53, mw: 0.34, mh: 0.46 };
+};
 
 const ALPHA_THRESHOLD = 110;
 const Z_JITTER = 0.3;

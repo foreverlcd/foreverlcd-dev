@@ -37,9 +37,16 @@ export function ReadingToggle() {
   };
 
   return (
-    <button type="button" className="reading-toggle" aria-pressed={on} onClick={toggle}>
+    <button
+      type="button"
+      className="reading-toggle"
+      aria-pressed={on}
+      aria-label="Modo lectura"
+      title="Modo lectura"
+      onClick={toggle}
+    >
       <span className="reading-toggle__box" aria-hidden="true" />
-      Modo lectura
+      <span className="reading-toggle__label">Modo lectura</span>
     </button>
   );
 }

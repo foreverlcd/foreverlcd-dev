@@ -96,6 +96,35 @@ function scramble(el: HTMLElement, delay: number, duration: number, track: (a: R
   );
 }
 
+/**
+ * Nombre en retrato (≤ 1024): el bloque no pasa de ~38 % (móvil) o ~34 % (tableta) del alto.
+ * Si sobra espacio se estira en vertical (--stretch-want, máx. 1.85); si falta, se reduce (--fit).
+ */
+function fitName(root: HTMLElement) {
+  const h1 = root.querySelector<HTMLElement>("#signal-name");
+  if (!h1) return;
+  h1.style.removeProperty("--fit");
+  h1.style.removeProperty("--stretch-want");
+  if (!window.matchMedia("(max-width: 1024px) and (orientation: portrait)").matches) return;
+  const natural = h1.getBoundingClientRect().height;
+  if (natural <= 0) return;
+  const widest = Math.max(
+    ...[...h1.querySelectorAll<HTMLElement>("[data-name-line]")].map(
+      (ln) => ln.getBoundingClientRect().width,
+    ),
+  );
+  // Ninguna línea puede pasar del 90 % del ancho, aunque el nombre tenga letras anchas.
+  const widthFit = Math.min(1, (innerWidth * 0.9) / Math.max(widest, 1));
+  const height = natural * widthFit;
+  const max = innerHeight * (innerWidth <= 760 ? 0.38 : 0.34);
+  if (height > max) {
+    h1.style.setProperty("--fit", (widthFit * (max / height)).toFixed(3));
+  } else {
+    if (widthFit < 1) h1.style.setProperty("--fit", widthFit.toFixed(3));
+    h1.style.setProperty("--stretch-want", Math.min(2.2, max / height).toFixed(3));
+  }
+}
+
 /* ------------------------------------------------------------------ */
 /* Director                                                            */
 /* ------------------------------------------------------------------ */
@@ -126,9 +155,13 @@ export function SignalDirector() {
     const navLinks = [...root.querySelectorAll<HTMLAnchorElement>("[data-nav]")];
     const rows = [...root.querySelectorAll<HTMLElement>("[data-project]")];
 
+    fitName(root);
+    const onResize = () => fitName(root);
+    window.addEventListener("resize", onResize);
+
     const created: Revertible[] = [];
     const track = (a: Revertible) => void created.push(a);
-    const disposers: (() => void)[] = [];
+    const disposers: (() => void)[] = [() => window.removeEventListener("resize", onResize)];
     const scrambled = new Map<HTMLElement, string>();
     const hidden: HTMLElement[] = [];
 

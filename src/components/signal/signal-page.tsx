@@ -27,22 +27,44 @@ const SIGNAL_CYCLE = [
   { sig: "var(--coral)", text: "var(--coral)" },
 ];
 
-/** Reparte el nombre en una o dos líneas equilibradas. */
+/**
+ * Reparte el nombre en líneas equilibradas: una palabra por línea con 1-2 palabras,
+ * 2 líneas con 3-4 y 3 líneas con 5 o más (se minimiza la línea más larga).
+ */
 function splitName(fullName: string): string[] {
   const words = fullName.trim().split(/\s+/).filter(Boolean);
   if (words.length <= 2) return words.length ? words : [fullName];
-  const cut = Math.ceil(words.length / 2);
-  return [words.slice(0, cut).join(" "), words.slice(cut).join(" ")];
+  const groups = words.length >= 5 ? 3 : 2;
+
+  let best: string[] = [words.join(" ")];
+  let bestMax = Infinity;
+  const search = (start: number, left: number, acc: string[]) => {
+    if (left === 1) {
+      const lines = [...acc, words.slice(start).join(" ")];
+      const longest = Math.max(...lines.map((l) => l.length));
+      if (longest < bestMax) {
+        bestMax = longest;
+        best = lines;
+      }
+      return;
+    }
+    for (let end = start + 1; end <= words.length - (left - 1); end++) {
+      search(end, left - 1, [...acc, words.slice(start, end).join(" ")]);
+    }
+  };
+  search(0, groups, []);
+  return best;
 }
 
-const initialsOf = (name: string) =>
-  name
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((word) => word[0].toUpperCase())
-    .join(".");
+/** Iniciales: primera palabra y la de índice ceil(n/2) (3 y 4 palabras: la 1.ª y la 3.ª). */
+function initialsOf(name: string) {
+  const words = name.trim().split(/\s+/).filter(Boolean);
+  if (words.length === 0) return "";
+  const second = words[Math.min(Math.ceil(words.length / 2), words.length - 1)];
+  return words.length === 1
+    ? words[0][0].toUpperCase()
+    : `${words[0][0]}.${second[0]}`.toUpperCase();
+}
 
 type Section = { id: string; label: string };
 
@@ -148,20 +170,15 @@ export function SignalPage({ portfolio }: { portfolio: Portfolio }) {
             style={{ "--n": longestLine } as CSSProperties}
           >
             {heroLines.map((line, i) => (
-              <span key={`${line}-${i}`} className="grp">
+              <span key={`${line}-${i}`}>
                 {i > 0 ? " " : null}
-                {line.split(/\s+/).map((word, w) => (
-                  <span key={`${word}-${w}`}>
-                    {w > 0 ? " " : null}
-                    <span
-                      className="ln"
-                      data-name-line
-                      style={{ "--ln": word.length } as CSSProperties}
-                    >
-                      {word}
-                    </span>
-                  </span>
-                ))}
+                <span
+                  className="ln"
+                  data-name-line
+                  style={{ "--ln": line.length } as CSSProperties}
+                >
+                  {line}
+                </span>
               </span>
             ))}
           </h1>
@@ -296,7 +313,10 @@ export function SignalPage({ portfolio }: { portfolio: Portfolio }) {
                         </span>
                         <h4>{item.jobTitle}</h4>
                         <p className="sg-org">
-                          {item.company} · {EMPLOYMENT_LABEL[item.employmentType] ?? item.employmentType}
+                          {item.company}
+                          {item.employmentType !== "OTHER"
+                            ? ` · ${EMPLOYMENT_LABEL[item.employmentType] ?? item.employmentType}`
+                            : ""}
                           {item.location ? ` · ${item.location}` : ""}
                         </p>
                         <p>{item.description}</p>
@@ -371,8 +391,15 @@ export function SignalPage({ portfolio }: { portfolio: Portfolio }) {
                 Hablemos
               </h2>
               {email ? (
-                <a className="sg-mail" href={`mailto:${email}`} data-rv>
-                  {email}
+                <a
+                  className={email.length > 24 ? "sg-mail sg-mail--long" : "sg-mail"}
+                  href={`mailto:${email}`}
+                  data-rv
+                >
+                  {/* Corte permitido antes de "@": un correo largo nunca se parte a mitad de palabra. */}
+                  <span className="sg-mail-part">{email.slice(0, email.indexOf("@"))}</span>
+                  <wbr />
+                  <span className="sg-mail-part">{email.slice(email.indexOf("@"))}</span>
                 </a>
               ) : null}
               {socials.length ? (

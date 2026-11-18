@@ -293,6 +293,7 @@ body:has(.signal) {
 
 .reading-toggle {
   display: inline-flex;
+  white-space: nowrap;
   align-items: center;
   gap: 0.5rem;
   min-height: 28px;
@@ -797,6 +798,15 @@ body:has(.signal) {
   color: var(--signal);
 }
 
+.sg-mail-part {
+  white-space: nowrap;
+}
+
+/* Correos largos: dos líneas cortadas en "@" y un cuerpo menor. */
+.sg-mail--long {
+  font-size: clamp(16px, 2.9vw, 44px);
+}
+
 .sg-socials {
   display: flex;
   flex-wrap: wrap;
@@ -959,10 +969,11 @@ body:has(.signal) {
   }
 }
 
-/* Retrato (móvil y tableta): una palabra por línea, cada una llena el ancho útil. */
+/* Retrato (móvil y tableta): cada línea llena el ancho útil; el director ajusta --fit/--stretch-want. */
 @media (max-width: 1024px) and (orientation: portrait) {
   .sg-name {
-    --stretch: 1.85;
+    --stretch: var(--stretch-want, 1);
+    line-height: 0.95;
   }
 
   /* T0/lectura: la textura de puntos (background-clip) no sigue la transformación; sin estirar. */
@@ -971,27 +982,32 @@ body:has(.signal) {
     --stretch: 1;
   }
 
-  .sg-name .grp {
-    display: contents;
-  }
-
   .sg-name .ln {
-    display: block;
-    width: max-content;
-    max-width: 100%;
-    font-size: min(calc(89vw / (var(--ln) * 0.93)), 22svh);
+    font-size: calc(min(calc(89vw / (var(--ln) * 0.8)), 22svh) * var(--fit, 1));
     transform: scaleY(var(--stretch));
     transform-origin: 0 0;
     margin-bottom: calc(0.95em * (var(--stretch) - 1));
   }
-
-  /* `contents` pierde el espacio entre palabras: cada palabra ya es un bloque. */
-  .sg-name .grp > span {
-    display: block;
-  }
 }
 
 @media (min-width: 761px) and (max-width: 1024px) {
+  .sg-brand-id {
+    display: none;
+  }
+
+  .reading-toggle__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .reading-toggle {
+    min-width: 44px;
+    min-height: 44px;
+    justify-content: center;
+  }
   /* Tableta: el texto ocupa la columna izquierda y las figuras la derecha. */
   .sg-col,
   .sg-col-wide {
@@ -1108,17 +1124,35 @@ body:has(.signal) {
   }
 
   .sg-hero-meta {
-    gap: 10px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 8px;
   }
 
   .sg-hero-meta > .sg-cta {
-    width: 100%;
-    max-width: 20rem;
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+    padding: 12px 12px;
+  }
+
+  .sg-stack-line,
+  .sg-meta-line {
+    flex-basis: 100%;
+  }
+
+  .sg-lede {
+    font-size: clamp(17px, 5vw, 22px);
   }
 
   .sg-bio {
     margin-top: 8px;
     font-size: 14px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .sg-name {
@@ -1126,9 +1160,12 @@ body:has(.signal) {
   }
 
 
-  .sg-hero-foot,
-  .sg-hero-meta {
+  .sg-hero-foot {
     flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .sg-hero-meta {
     align-items: flex-start;
   }
 
@@ -1148,6 +1185,15 @@ body:has(.signal) {
 
   .sg-mail {
     font-size: clamp(15px, 5.4vw, 28px);
+  }
+
+  .sg-mail--long {
+    font-size: clamp(14px, 5vw, 22px);
+  }
+
+  .sg-mail-part {
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 
   .signal h2 {

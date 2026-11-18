@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 
-const inputClass = "border border-rule bg-ink-900 px-3 py-2 text-base";
+import { inputClass, primaryButtonClass } from "@/components/admin/styles";
 
 export default function LoginForm() {
   const [error, setError] = useState("");
@@ -28,7 +28,7 @@ export default function LoginForm() {
 
   return (
     <form action={submit} className="mt-8 grid gap-5">
-      <label className="grid gap-2 text-sm">
+      <label className="grid gap-2 font-mono text-xs uppercase tracking-wider text-fg-muted">
         Correo
         <input
           required
@@ -38,7 +38,7 @@ export default function LoginForm() {
           className={inputClass}
         />
       </label>
-      <label className="grid gap-2 text-sm">
+      <label className="grid gap-2 font-mono text-xs uppercase tracking-wider text-fg-muted">
         Contraseña
         <input
           required
@@ -49,14 +49,14 @@ export default function LoginForm() {
         />
       </label>
       {error && (
-        <p role="alert" className="text-sm text-red-300">
+        <p role="alert" className="font-mono text-xs uppercase tracking-wider text-status-danger">
           {error}
         </p>
       )}
       <button
         type="submit"
         disabled={pending}
-        className="bg-paper-100 px-4 py-3 font-medium text-ink-950 disabled:opacity-50"
+        className={`${primaryButtonClass} min-h-11 w-full justify-center`}
       >
         {pending ? "Ingresando…" : "Ingresar"}
       </button>

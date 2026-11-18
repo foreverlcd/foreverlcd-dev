@@ -111,6 +111,7 @@
   --color-accent-text: var(--accent-text);
   --color-focus: var(--focus);
   --color-stroke-strong: var(--border-strong);
+  --color-surface-deep: var(--surface-deep, var(--surface));
 }
 
 /* Paleta SIGNAL / ESTRUCTURA (docs/ART-DIRECTION.md): tokens del sitio público */
@@ -167,25 +168,26 @@
 }
 
 [data-surface="ink"] {
-  --surface: var(--color-ink-950);
-  --surface-raised: var(--color-ink-900);
-  --fg: var(--color-paper-50);
-  --fg-muted: var(--color-bone-300);
-  --fg-strong: var(--color-bone-300);
-  --fg-disabled: var(--color-graphite-400);
-  --rule: var(--color-ink-700);
-  --accent-graphic: var(--color-signal-400);
-  --accent-text: var(--color-signal-400);
-  --focus: var(--color-signal-400);
-  --border-strong: #5f6e79;
-  --control-strong-bg: var(--color-paper-100);
-  --control-strong-fg: var(--color-ink-950);
-  --control-strong-hover-bg: var(--color-signal-400);
-  --control-strong-hover-fg: var(--color-ink-950);
-  --status-success: #4ade80;
-  --status-warning: #fbbf24;
-  --status-danger: #f87171;
-  --status-info: #60a5fa;
+  --surface: var(--bg);
+  --surface-raised: #12111c;
+  --surface-deep: #0b0a14;
+  --fg: var(--ink);
+  --fg-muted: var(--ash);
+  --fg-strong: var(--ink);
+  --fg-disabled: #565c61;
+  --rule: rgb(232 240 242 / 0.1);
+  --accent-graphic: var(--signal);
+  --accent-text: var(--signal);
+  --focus: var(--signal);
+  --border-strong: rgb(232 240 242 / 0.3);
+  --control-strong-bg: var(--signal);
+  --control-strong-fg: #050507;
+  --control-strong-hover-bg: var(--ink);
+  --control-strong-hover-fg: #050507;
+  --status-success: var(--signal);
+  --status-warning: var(--signal);
+  --status-danger: var(--coral);
+  --status-info: var(--uv);
   color-scheme: dark;
 }
 
@@ -262,7 +264,7 @@
   }
 
   [data-surface="ink"] ::selection {
-    background-color: var(--color-signal-400);
+    background-color: var(--signal);
     color: var(--color-ink-950);
   }
 
@@ -306,8 +308,8 @@
     }
 
     [data-surface="ink"] {
-      --rule: #5f6e79;
-      --border-strong: var(--color-bone-300);
+      --rule: rgb(232 240 242 / 0.4);
+      --border-strong: var(--ink);
     }
   }
 

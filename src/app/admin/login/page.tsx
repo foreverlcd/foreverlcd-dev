@@ -10,11 +10,11 @@ export default async function LoginPage() {
       data-surface="ink"
       className="grid min-h-screen place-items-center bg-surface px-5 text-fg"
     >
-      <section className="w-full max-w-md border border-rule bg-surface-raised p-8">
+      <section className="w-full max-w-md rounded-[2px] border border-rule bg-surface-raised p-8">
         <p className="font-mono text-xs uppercase tracking-widest text-accent-text">
-          Administración
+          <span aria-hidden>■ </span>ACCESO RESTRINGIDO
         </p>
-        <h1 className="mt-3 font-display text-4xl">Iniciar sesión</h1>
+        <h1 className="mt-3 font-display text-2xl font-bold tracking-tight">Iniciar sesión</h1>
         <LoginForm />
       </section>
     </main>

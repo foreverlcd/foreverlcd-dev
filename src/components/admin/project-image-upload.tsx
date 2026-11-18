@@ -86,8 +86,8 @@ export function ProjectImageUpload({ projectId, nextOrder = 0 }: ProjectImageUpl
   }
 
   return (
-    <form action={submit} className="mt-4 grid max-w-xl gap-3 border border-rule p-4">
-      <h3 className="font-display text-2xl">Subir imagen</h3>
+    <form action={submit} className="mt-4 grid max-w-xl gap-3 rounded-[2px] border border-rule bg-surface-deep p-4">
+      <h3 className="font-display text-lg font-bold tracking-tight">Subir imagen</h3>
       <label className="grid gap-1 text-sm">
         Archivo
         <input required type="file" name="file" accept="image/*" className={inputClass} />
@@ -106,7 +106,7 @@ export function ProjectImageUpload({ projectId, nextOrder = 0 }: ProjectImageUpl
       {message && (
         <p
           role={message.ok ? "status" : "alert"}
-          className={`text-sm ${message.ok ? "text-green-300" : "text-red-300"}`}
+          className={`text-sm ${message.ok ? "text-accent-text" : "text-status-danger"}`}
         >
           {message.text}
         </p>

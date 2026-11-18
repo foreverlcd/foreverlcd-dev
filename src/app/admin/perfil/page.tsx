@@ -1,7 +1,9 @@
+import { Badge } from "@/components/admin/badge";
+import { PageHeader } from "@/components/admin/page-header";
 import { ActionForm } from "@/components/admin/action-form";
 import { TextAreaField, TextField } from "@/components/admin/fields";
 import { InlineForm } from "@/components/admin/inline-form";
-import { emptyStateClass } from "@/components/admin/styles";
+import { emptyStateClass, monoLabelClass } from "@/components/admin/styles";
 import { setProfilePublished, updateProfile } from "@/server/actions/profile";
 import { requireAdmin } from "@/server/auth/require-admin";
 import { getAdminProfile } from "@/server/dal/admin/get-admin-dashboard";
@@ -14,15 +16,18 @@ export default async function ProfilePage() {
 
   return (
     <>
-      <h1 className="font-display text-h1">Perfil</h1>
+      <PageHeader index="02" label="Perfil" title="Perfil" />
       {!profile && (
         <p className={emptyStateClass}>
           Aún no hay perfil. Completa el formulario y guarda para crearlo; después podrás publicarlo.
         </p>
       )}
       {profile && (
-        <section className="mt-6 flex flex-wrap items-center gap-4">
-          <p>Estado: {profile.isPublished ? "Publicado" : "Sin publicar"}</p>
+        <section className="flex flex-wrap items-center gap-4">
+          <p className={monoLabelClass}>Estado</p>
+          <Badge tone={profile.isPublished ? "signal" : "muted"}>
+            {profile.isPublished ? "Publicado" : "Borrador"}
+          </Badge>
           <InlineForm
             action={setProfilePublished}
             fields={{ published: profile.isPublished ? "false" : "true" }}

@@ -48,8 +48,11 @@ export function ActionForm({
     <form ref={formRef} onSubmit={onSubmit} className={className}>
       {children}
       {state.message && (
-        <div role={state.ok ? "status" : "alert"} className={state.ok ? "text-green-300" : "text-red-300"}>
-          <p>{state.message}</p>
+        <div
+          role={state.ok ? "status" : "alert"}
+          className={state.ok ? "text-accent-text" : "text-status-danger"}
+        >
+          <p className="font-mono text-xs uppercase tracking-widest">{state.message}</p>
           {errors.length > 0 && (
             <ul className="list-disc pl-5 text-sm">
               {errors.map((error) => (

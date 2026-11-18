@@ -372,10 +372,13 @@ body:has(.signal) {
   transition: color 1.2s ease 1.4s;
 }
 
-.sg-name .ln {
+/* Cada línea es un `.grp`; cada palabra, un `.ln` que la escena rasteriza por separado. */
+.sg-name .grp {
   display: block;
-  width: max-content;
-  max-width: 100%;
+}
+
+.sg-name .ln {
+  display: inline-block;
 }
 
 /* Con la escena viva, las partículas forman el nombre; el texto sigue ahí para lectores y selección. */
@@ -1041,9 +1044,34 @@ body:has(.signal) {
     line-height: 0.95;
   }
 
-  /* Cada línea del nombre llena el ancho útil. */
+  /* Móvil: una palabra por línea, cada una llena el ancho útil y se estira en vertical. */
+  .sg-name {
+    --stretch: 1.85;
+  }
+
+  /* T0/lectura: la textura de puntos (background-clip) no sigue la transformación; sin estirar. */
+  .signal:has([data-scene][data-status="fallback"]) .sg-name,
+  .signal:has([data-scene][data-status="reading"]) .sg-name {
+    --stretch: 1;
+  }
+
+  .sg-name .grp {
+    display: contents;
+  }
+
   .sg-name .ln {
-    font-size: min(calc(92vw / (var(--ln) * 0.86)), 22svh);
+    display: block;
+    width: max-content;
+    max-width: 100%;
+    font-size: min(calc(89vw / (var(--ln) * 0.93)), 22svh);
+    transform: scaleY(var(--stretch));
+    transform-origin: 0 0;
+    margin-bottom: calc(0.95em * (var(--stretch) - 1));
+  }
+
+  /* `contents` pierde el espacio entre palabras: cada palabra ya es un bloque. */
+  .sg-name .grp > span {
+    display: block;
   }
 
   .sg-hero-foot,

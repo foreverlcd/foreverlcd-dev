@@ -1,8 +1,10 @@
+import { Badge } from "@/components/admin/badge";
+import { PageHeader } from "@/components/admin/page-header";
 import { ActionForm } from "@/components/admin/action-form";
 import { CheckField, SelectField, TextAreaField, TextField } from "@/components/admin/fields";
 import { InlineForm } from "@/components/admin/inline-form";
 import { MoveButtons } from "@/components/admin/move-buttons";
-import { emptyStateClass, panelClass } from "@/components/admin/styles";
+import { emptyStateClass, formPanelClass, monoLabelClass, panelClass } from "@/components/admin/styles";
 import {
   deleteExperience,
   reorderTimeline,
@@ -73,16 +75,16 @@ export default async function ExperiencePage() {
 
   return (
     <>
-      <h1 className="font-display text-h1">Experiencia</h1>
+      <PageHeader index="06" label="Experiencia" title="Experiencia" />
 
       <ActionForm
         action={saveExperience}
         submitLabel="Añadir experiencia"
         pendingLabel="Añadiendo…"
         resetOnSuccess
-        className="mt-8 grid max-w-3xl gap-3 border border-rule p-5 sm:grid-cols-2"
+        className={`mt-8 grid max-w-3xl gap-3 ${formPanelClass} sm:grid-cols-2`}
       >
-        <h2 className="font-display text-2xl sm:col-span-2">Añadir experiencia</h2>
+        <h2 className="font-display text-lg font-bold tracking-tight sm:col-span-2">Añadir experiencia</h2>
         <ExperienceFields />
       </ActionForm>
 
@@ -96,9 +98,13 @@ export default async function ExperiencePage() {
             <p className="font-medium">
               {row.jobTitle} · {row.company}
             </p>
-            <p className="mb-3 text-sm text-fg-muted">{row.isActive ? "Visible" : "Oculta"}</p>
+            <p className="mb-3">
+              <Badge tone={row.isActive ? "signal" : "muted"}>{row.isActive ? "Activo" : "Oculto"}</Badge>
+            </p>
             <details>
-              <summary className="cursor-pointer text-sm underline">Editar</summary>
+              <summary className={`${monoLabelClass} inline-flex min-h-10 cursor-pointer items-center text-accent-text`}>
+                Editar
+              </summary>
               <ActionForm action={saveExperience} className="mt-3 grid gap-3 sm:grid-cols-2">
                 <input type="hidden" name="id" value={row.id} />
                 <ExperienceFields row={row} />

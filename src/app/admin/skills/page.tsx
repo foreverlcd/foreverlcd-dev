@@ -1,8 +1,10 @@
+import { Badge } from "@/components/admin/badge";
+import { PageHeader } from "@/components/admin/page-header";
 import { ActionForm } from "@/components/admin/action-form";
 import { CheckField, SelectField, TextField } from "@/components/admin/fields";
 import { InlineForm } from "@/components/admin/inline-form";
 import { MoveButtons } from "@/components/admin/move-buttons";
-import { emptyStateClass, panelClass } from "@/components/admin/styles";
+import { emptyStateClass, formPanelClass, panelClass } from "@/components/admin/styles";
 import {
   deleteCategory,
   deleteSkill,
@@ -25,18 +27,18 @@ export default async function SkillsPage() {
 
   return (
     <>
-      <h1 className="font-display text-h1">Skills</h1>
+      <PageHeader index="05" label="Skills" title="Skills" />
 
       <section className="mt-8">
-        <h2 className="font-display text-2xl">Categorías</h2>
+        <h2 className="font-display text-lg font-bold tracking-tight">Categorías</h2>
         <ActionForm
           action={saveCategory}
           submitLabel="Crear categoría"
           pendingLabel="Creando…"
           resetOnSuccess
-          className="mt-4 grid max-w-xl gap-3 border border-rule p-4"
+          className={`mt-4 grid max-w-xl gap-3 ${formPanelClass}`}
         >
-          <h3 className="font-medium">Nueva categoría</h3>
+          <h3 className="font-mono text-xs uppercase tracking-widest text-fg-muted">Nueva categoría</h3>
           <TextField name="name" label="Nombre" required />
           <TextField name="description" label="Descripción" />
           <CheckField name="isActive" label="Activa" defaultChecked />
@@ -48,8 +50,9 @@ export default async function SkillsPage() {
         <div className="mt-4 grid gap-3">
           {categories.map((category, index) => (
             <article key={category.id} className={panelClass}>
-              <p className="mb-3 text-sm text-fg-muted">
-                {category._count.skills} habilidades · {category.isActive ? "Activa" : "Inactiva"}
+              <p className="mb-3 flex flex-wrap items-center gap-3 font-mono text-xs uppercase tracking-widest text-fg-muted">
+                {category._count.skills} habilidades
+                <Badge tone={category.isActive ? "signal" : "muted"}>{category.isActive ? "Activo" : "Oculto"}</Badge>
               </p>
               <ActionForm action={saveCategory} className="grid gap-3 sm:grid-cols-2">
                 <input type="hidden" name="id" value={category.id} />
@@ -88,7 +91,7 @@ export default async function SkillsPage() {
       </section>
 
       <section className="mt-10">
-        <h2 className="font-display text-2xl">Habilidades</h2>
+        <h2 className="font-display text-lg font-bold tracking-tight">Habilidades</h2>
         {categories.length === 0 ? (
           <p className={emptyStateClass}>Crea primero una categoría para poder añadir habilidades.</p>
         ) : (
@@ -97,9 +100,9 @@ export default async function SkillsPage() {
             submitLabel="Crear habilidad"
             pendingLabel="Creando…"
             resetOnSuccess
-            className="mt-4 grid max-w-xl gap-3 border border-rule p-4"
+            className={`mt-4 grid max-w-xl gap-3 ${formPanelClass}`}
           >
-            <h3 className="font-medium">Nueva habilidad</h3>
+            <h3 className="font-mono text-xs uppercase tracking-widest text-fg-muted">Nueva habilidad</h3>
             <TextField name="name" label="Nombre" required />
             <SelectField
               name="categoryId"
@@ -118,8 +121,9 @@ export default async function SkillsPage() {
         <div className="mt-4 grid gap-3">
           {skills.map((skill, index) => (
             <article key={skill.id} className={panelClass}>
-              <p className="mb-3 text-sm text-fg-muted">
-                {skill.category.name} · {skill.isActive ? "Activa" : "Inactiva"}
+              <p className="mb-3 flex flex-wrap items-center gap-3 font-mono text-xs uppercase tracking-widest text-fg-muted">
+                {skill.category.name}
+                <Badge tone={skill.isActive ? "signal" : "muted"}>{skill.isActive ? "Activo" : "Oculto"}</Badge>
               </p>
               <ActionForm action={saveSkill} className="grid gap-3 sm:grid-cols-2">
                 <input type="hidden" name="id" value={skill.id} />

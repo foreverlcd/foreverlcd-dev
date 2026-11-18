@@ -148,15 +148,20 @@ export function SignalPage({ portfolio }: { portfolio: Portfolio }) {
             style={{ "--n": longestLine } as CSSProperties}
           >
             {heroLines.map((line, i) => (
-              <span key={`${line}-${i}`}>
+              <span key={`${line}-${i}`} className="grp">
                 {i > 0 ? " " : null}
-                <span
-                  className="ln"
-                  data-name-line
-                  style={{ "--ln": line.length } as CSSProperties}
-                >
-                  {line}
-                </span>
+                {line.split(/\s+/).map((word, w) => (
+                  <span key={`${word}-${w}`}>
+                    {w > 0 ? " " : null}
+                    <span
+                      className="ln"
+                      data-name-line
+                      style={{ "--ln": word.length } as CSSProperties}
+                    >
+                      {word}
+                    </span>
+                  </span>
+                ))}
               </span>
             ))}
           </h1>

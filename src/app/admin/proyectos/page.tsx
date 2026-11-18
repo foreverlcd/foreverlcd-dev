@@ -1,7 +1,9 @@
 import Link from "next/link";
+import { Badge } from "@/components/admin/badge";
+import { PageHeader } from "@/components/admin/page-header";
 import { InlineForm } from "@/components/admin/inline-form";
 import { MoveButtons } from "@/components/admin/move-buttons";
-import { emptyStateClass, linkClass, panelClass, primaryButtonClass } from "@/components/admin/styles";
+import { emptyStateClass, focusRing, linkClass, panelClass, primaryButtonClass } from "@/components/admin/styles";
 import {
   deleteProject,
   reorderProjects,
@@ -20,17 +22,21 @@ export default async function ProjectsPage() {
 
   return (
     <>
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="font-display text-h1">Proyectos</h1>
-        <Link className={primaryButtonClass} href="/admin/proyectos/nuevo">
-          Nuevo proyecto
-        </Link>
-      </div>
+      <PageHeader
+        index="04"
+        label="Proyectos"
+        title="Proyectos"
+        actions={
+          <Link className={primaryButtonClass} href="/admin/proyectos/nuevo">
+            Nuevo proyecto
+          </Link>
+        }
+      />
 
       {projects.length === 0 && (
         <div className={emptyStateClass}>
           <p>Aún no hay proyectos.</p>
-          <Link className={`${linkClass} mt-2 inline-block`} href="/admin/proyectos/nuevo">
+          <Link className={`${linkClass} mt-2 block w-fit`} href="/admin/proyectos/nuevo">
             Crea el primero
           </Link>
         </div>
@@ -41,12 +47,12 @@ export default async function ProjectsPage() {
           const published = project.status === "PUBLISHED";
           return (
             <article key={project.id} className={panelClass}>
-              <Link className={`font-medium ${linkClass}`} href={`/admin/proyectos/${project.id}`}>
+              <Link className={`font-display text-base font-bold ${focusRing}`} href={`/admin/proyectos/${project.id}`}>
                 {project.title}
               </Link>
-              <p className="text-sm text-fg-muted">
-                {published ? "Publicado" : "Borrador"}
-                {project.isFeatured ? " · Destacado" : ""}
+              <p className="mt-2 flex flex-wrap gap-2">
+                <Badge tone={published ? "signal" : "muted"}>{published ? "Publicado" : "Borrador"}</Badge>
+                {project.isFeatured && <Badge tone="coral">Destacado</Badge>}
               </p>
               <div className="mt-3 flex flex-wrap items-center gap-3">
                 <MoveButtons action={reorderProjects} ids={ids} index={index} />

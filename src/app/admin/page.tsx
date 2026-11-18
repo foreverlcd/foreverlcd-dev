@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { focusRing } from "@/components/admin/styles";
+import { Badge } from "@/components/admin/badge";
+import { PageHeader } from "@/components/admin/page-header";
+import { focusRing, panelClass, primaryButtonClass, secondaryButtonClass } from "@/components/admin/styles";
 import { requireAdmin } from "@/server/auth/require-admin";
 import { getAdminDashboard } from "@/server/dal/admin/get-admin-dashboard";
 
@@ -19,30 +21,43 @@ export default async function Dashboard() {
 
   return (
     <>
-      <p className="font-mono text-xs uppercase tracking-widest text-accent-text">Panel</p>
-      <h1 className="mt-2 font-display text-h1">Resumen</h1>
-      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-        {cards.map((card) => (
+      <PageHeader index="01" label="Resumen" title="Resumen" />
+      <section className={`${panelClass} flex flex-wrap items-center gap-4`} aria-label="Estado del portfolio">
+        <span className="font-mono text-xs uppercase tracking-widest text-fg-muted">Portfolio</span>
+        <Badge tone={profile?.isPublished ? "signal" : "muted"}>
+          {profile?.isPublished ? "Publicado" : "Sin publicar"}
+        </Badge>
+        <div className="flex flex-wrap gap-3 sm:ml-auto">
+          {profile ? (
+            <Link className={secondaryButtonClass} href="/admin/perfil">
+              Gestionar perfil
+            </Link>
+          ) : (
+            <Link className={primaryButtonClass} href="/admin/perfil">
+              Completa tu perfil
+            </Link>
+          )}
+          <Link className={secondaryButtonClass} href="/" target="_blank">
+            Abrir web ↗
+          </Link>
+        </div>
+      </section>
+      <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-5">
+        {cards.map((card, index) => (
           <Link
             key={card.href}
             href={card.href}
-            className={`border border-rule bg-surface-raised p-5 ${focusRing}`}
+            className={`${panelClass} p-5 hover:border-fg-muted ${focusRing}`}
           >
-            <span className="text-sm text-fg-muted">{card.label}</span>
-            <strong className="mt-3 block font-display text-4xl">{card.count}</strong>
+            <span className="font-mono text-xs uppercase tracking-widest text-fg-muted">
+              {String(index + 1).padStart(2, "0")} {card.label}
+            </span>
+            <strong className="mt-4 block font-mono text-5xl font-normal text-accent-text">
+              {String(card.count).padStart(2, "0")}
+            </strong>
           </Link>
         ))}
       </div>
-      <p className="mt-8">
-        Portafolio: {profile?.isPublished ? "Publicado" : "Sin publicar"} ·{" "}
-        <Link className="text-accent-text underline" href="/admin/perfil">
-          Gestionar perfil
-        </Link>{" "}
-        ·{" "}
-        <Link className="text-accent-text underline" href="/" target="_blank">
-          Abrir web
-        </Link>
-      </p>
     </>
   );
 }

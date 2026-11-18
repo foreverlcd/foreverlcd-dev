@@ -1,4 +1,5 @@
 import { ActionForm } from "@/components/admin/action-form";
+import { PageHeader } from "@/components/admin/page-header";
 import { ProjectFields } from "@/components/admin/project-fields";
 import { requireAdmin } from "@/server/auth/require-admin";
 import { getAdminSkills } from "@/server/dal/admin/get-admin-dashboard";
@@ -17,8 +18,8 @@ export default async function NewProject() {
 
   return (
     <>
-      <h1 className="font-display text-h1">Nuevo proyecto</h1>
-      <p className="mt-3 text-fg-muted">
+      <PageHeader index="04" label="Proyectos / Nuevo" title="Nuevo proyecto" />
+      <p className="text-fg-muted">
         Guarda el proyecto para poder subir sus imágenes desde la pantalla de edición.
       </p>
       <ActionForm

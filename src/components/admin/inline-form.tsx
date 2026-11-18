@@ -56,7 +56,7 @@ export function InlineForm({
       {state?.message && (
         <span
           role={state.ok ? "status" : "alert"}
-          className={`text-sm ${state.ok ? "text-green-300" : "text-red-300"}`}
+          className={`text-sm ${state.ok ? "text-accent-text" : "text-status-danger"}`}
         >
           {state.message}
         </span>

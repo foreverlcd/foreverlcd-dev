@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { NavLink } from "@/components/admin/nav-link";
 import { getAdminSession } from "@/server/auth/require-admin";
 
 const links = [
@@ -14,7 +15,6 @@ const links = [
 
 const focusRing =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-text";
-
 async function signOut() {
   "use server";
   const { headers } = await import("next/headers");
@@ -23,43 +23,75 @@ async function signOut() {
   redirect("/admin/login");
 }
 
+function Brand() {
+  return (
+    <Link
+      className={`inline-flex min-h-11 items-center gap-2 font-mono text-xs uppercase tracking-widest ${focusRing}`}
+      href="/admin"
+    >
+      <span aria-hidden className="text-accent-text">
+        ■
+      </span>
+      N.A / ADMIN
+    </Link>
+  );
+}
+
+function SignOut() {
+  return (
+    <form action={signOut}>
+      <button
+        className={`min-h-11 px-3 font-mono text-xs uppercase tracking-widest text-fg-muted hover:text-status-danger ${focusRing}`}
+      >
+        Cerrar sesión
+      </button>
+    </form>
+  );
+}
+
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getAdminSession();
   if (!session) return <>{children}</>;
 
+  const items = links.map(([label, href], index) => (
+    <NavLink key={href} href={href} index={String(index + 1).padStart(2, "0")} label={label} />
+  ));
+
   return (
     <div data-surface="ink" className="min-h-screen bg-surface text-fg">
-      <header className="border-b border-rule bg-surface-raised p-4 md:hidden">
-        <nav aria-label="Administración" className="flex flex-wrap gap-2">
-          {links.map(([label, href]) => (
-            <Link key={href} href={href} className={`rounded px-3 py-1 text-fg-muted ${focusRing}`}>
-              {label}
-            </Link>
-          ))}
+      <header className="sticky top-0 z-20 border-b border-rule bg-surface md:hidden">
+        <div className="flex items-center justify-between px-2">
+          <Brand />
+          <Link
+            href="/"
+            target="_blank"
+            className={`flex min-h-11 items-center px-3 font-mono text-xs uppercase tracking-widest text-accent-text ${focusRing}`}
+          >
+            Ver web ↗
+          </Link>
+        </div>
+        <nav aria-label="Administración" className="flex overflow-x-auto border-t border-rule">
+          {items}
+          <SignOut />
         </nav>
       </header>
-      <aside
-        className="fixed inset-y-0 left-0 hidden w-64 border-r border-rule bg-surface-raised p-6 md:block"
-      >
-        <Link className={`font-display text-2xl ${focusRing}`} href="/admin">
-          foreverlcd
-        </Link>
-        <nav aria-label="Administración" className="mt-10 grid gap-2">
-          {links.map(([label, href]) => (
-            <Link
-              key={href}
-              href={href}
-              className={`rounded px-3 py-2 text-fg-muted hover:bg-ink-800 hover:text-fg ${focusRing}`}
-            >
-              {label}
-            </Link>
-          ))}
+      <aside className="fixed inset-y-0 left-0 hidden w-60 flex-col border-r border-rule bg-surface p-5 md:flex">
+        <Brand />
+        <nav aria-label="Administración" className="mt-8 grid gap-1">
+          {items}
         </nav>
-        <form action={signOut} className="mt-10">
-          <button className={`text-sm text-fg-muted ${focusRing}`}>Cerrar sesión</button>
-        </form>
+        <div className="mt-auto grid gap-1 border-t border-rule pt-4">
+          <Link
+            href="/"
+            target="_blank"
+            className={`flex min-h-11 items-center px-3 font-mono text-xs uppercase tracking-widest text-accent-text ${focusRing}`}
+          >
+            Ver web ↗
+          </Link>
+          <SignOut />
+        </div>
       </aside>
-      <main className="mx-auto max-w-6xl px-5 py-10 md:ml-64 md:px-10">{children}</main>
+      <main className="mx-auto max-w-5xl px-5 py-8 md:ml-60 md:px-10 md:py-10">{children}</main>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useRef, useState } from "react";
-import { inputClass, secondaryButtonClass } from "./styles";
+import { dangerButtonClass, inputClass, secondaryButtonClass } from "./styles";
 
 type SkillOption = { id: string; name: string; category: string };
 type RepositoryType = "BACKEND" | "FRONTEND" | "OTHER";
@@ -134,7 +134,7 @@ export function ProjectRelations({ skills, initialSkillIds, initialRepositories 
             <button
               type="button"
               onClick={() => setRows((current) => current.filter((item) => item.key !== row.key))}
-              className={`${secondaryButtonClass} text-red-300`}
+              className={dangerButtonClass}
             >
               Quitar
             </button>

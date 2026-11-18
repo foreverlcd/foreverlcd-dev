@@ -1,8 +1,10 @@
+import { Badge } from "@/components/admin/badge";
+import { PageHeader } from "@/components/admin/page-header";
 import { ActionForm } from "@/components/admin/action-form";
 import { CheckField, SelectField, TextAreaField, TextField } from "@/components/admin/fields";
 import { InlineForm } from "@/components/admin/inline-form";
 import { MoveButtons } from "@/components/admin/move-buttons";
-import { emptyStateClass, panelClass } from "@/components/admin/styles";
+import { emptyStateClass, formPanelClass, monoLabelClass, panelClass } from "@/components/admin/styles";
 import {
   deleteEducation,
   reorderTimeline,
@@ -71,16 +73,16 @@ export default async function EducationPage() {
 
   return (
     <>
-      <h1 className="font-display text-h1">Formación</h1>
+      <PageHeader index="07" label="Formación" title="Formación" />
 
       <ActionForm
         action={saveEducation}
         submitLabel="Añadir formación"
         pendingLabel="Añadiendo…"
         resetOnSuccess
-        className="mt-8 grid max-w-3xl gap-3 border border-rule p-5 sm:grid-cols-2"
+        className={`mt-8 grid max-w-3xl gap-3 ${formPanelClass} sm:grid-cols-2`}
       >
-        <h2 className="font-display text-2xl sm:col-span-2">Añadir formación</h2>
+        <h2 className="font-display text-lg font-bold tracking-tight sm:col-span-2">Añadir formación</h2>
         <EducationFields />
       </ActionForm>
 
@@ -94,9 +96,13 @@ export default async function EducationPage() {
             <p className="font-medium">
               {row.degree} · {row.institution}
             </p>
-            <p className="mb-3 text-sm text-fg-muted">{row.isActive ? "Visible" : "Oculta"}</p>
+            <p className="mb-3">
+              <Badge tone={row.isActive ? "signal" : "muted"}>{row.isActive ? "Activo" : "Oculto"}</Badge>
+            </p>
             <details>
-              <summary className="cursor-pointer text-sm underline">Editar</summary>
+              <summary className={`${monoLabelClass} inline-flex min-h-10 cursor-pointer items-center text-accent-text`}>
+                Editar
+              </summary>
               <ActionForm action={saveEducation} className="mt-3 grid gap-3 sm:grid-cols-2">
                 <input type="hidden" name="id" value={row.id} />
                 <EducationFields row={row} />

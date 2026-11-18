@@ -17,7 +17,7 @@ export function TextField({
   placeholder?: string;
 }) {
   return (
-    <label className={`grid gap-1 text-sm ${className}`}>
+    <label className={`grid gap-1 font-mono text-xs uppercase tracking-wider text-fg-muted ${className}`}>
       {label}
       <input
         name={name}
@@ -40,7 +40,7 @@ export function TextAreaField({
   className = "",
 }: BaseProps & { defaultValue?: string | null; required?: boolean; rows?: number }) {
   return (
-    <label className={`grid gap-1 text-sm ${className}`}>
+    <label className={`grid gap-1 font-mono text-xs uppercase tracking-wider text-fg-muted ${className}`}>
       {label}
       <textarea
         name={name}
@@ -66,7 +66,7 @@ export function SelectField({
   required?: boolean;
 }) {
   return (
-    <label className={`grid gap-1 text-sm ${className}`}>
+    <label className={`grid gap-1 font-mono text-xs uppercase tracking-wider text-fg-muted ${className}`}>
       {label}
       <select name={name} required={required} defaultValue={defaultValue ?? ""} className={inputClass}>
         {options.map((option) => (
@@ -86,8 +86,8 @@ export function CheckField({
   className = "",
 }: BaseProps & { defaultChecked?: boolean }) {
   return (
-    <label className={`flex items-center gap-2 text-sm ${className}`}>
-      <input type="checkbox" name={name} defaultChecked={defaultChecked} className="size-4" />
+    <label className={`flex min-h-10 items-center gap-2 font-mono text-xs uppercase tracking-wider ${className}`}>
+      <input type="checkbox" name={name} defaultChecked={defaultChecked} className="size-4 accent-[#d4ff3a]" />
       {label}
     </label>
   );

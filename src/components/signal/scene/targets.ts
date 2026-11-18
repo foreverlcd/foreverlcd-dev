@@ -97,11 +97,14 @@ export function rasterizeTargets(specs: TargetSpec[], options: RasterOptions): F
       size *= (rect.width * scale) / ctx.measureText(text).width;
       setFont(size, -0.04);
       const m = ctx.measureText(text);
-      ctx.fillText(
-        text,
-        rect.left * scale,
-        (rect.top + scrollY + rect.height / 2) * scale + verticalCenter(m),
-      );
+      // En móvil el nombre se estira en vertical con `transform: scaleY`; el DOM no lo refleja en offsetHeight.
+      const stretch = line.offsetHeight > 0 ? rect.height / line.offsetHeight : 1;
+      const cy = (rect.top + scrollY + rect.height / 2) * scale;
+      ctx.save();
+      ctx.translate(rect.left * scale, cy);
+      ctx.scale(1, stretch);
+      ctx.fillText(text, 0, verticalCenter(m));
+      ctx.restore();
     }
   };
 

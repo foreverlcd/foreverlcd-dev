@@ -1,8 +1,10 @@
+import { Badge } from "@/components/admin/badge";
+import { PageHeader } from "@/components/admin/page-header";
 import { ActionForm } from "@/components/admin/action-form";
 import { CheckField, SelectField, TextField } from "@/components/admin/fields";
 import { InlineForm } from "@/components/admin/inline-form";
 import { MoveButtons } from "@/components/admin/move-buttons";
-import { emptyStateClass, panelClass } from "@/components/admin/styles";
+import { emptyStateClass, formPanelClass, h2Class, panelClass } from "@/components/admin/styles";
 import { deleteSocialLink, reorderSocialLinks, saveSocialLink } from "@/server/actions/social-links";
 import { setItemActive } from "@/server/actions/timeline";
 import { requireAdmin } from "@/server/auth/require-admin";
@@ -30,16 +32,16 @@ export default async function SocialLinksPage() {
 
   return (
     <>
-      <h1 className="font-display text-h1">Redes y enlaces</h1>
+      <PageHeader index="03" label="Redes" title="Redes y enlaces" />
 
       <ActionForm
         action={saveSocialLink}
         submitLabel="Añadir enlace"
         pendingLabel="Añadiendo…"
         resetOnSuccess
-        className="mt-8 grid max-w-3xl gap-4 border border-rule p-5"
+        className={`mt-8 grid max-w-3xl gap-4 ${formPanelClass}`}
       >
-        <h2 className="font-display text-2xl">Añadir enlace</h2>
+        <h2 className={h2Class}>Añadir enlace</h2>
         <SelectField name="platform" label="Plataforma" options={platforms} />
         <TextField name="label" label="Etiqueta" required />
         <TextField name="url" label="URL" type="url" required />
@@ -52,7 +54,7 @@ export default async function SocialLinksPage() {
       <div className="mt-8 grid gap-4">
         {links.map((link, index) => (
           <article key={link.id} className={panelClass}>
-            <p className="mb-3 text-sm text-fg-muted">{link.isActive ? "Activo" : "Inactivo"}</p>
+            <p className="mb-3"><Badge tone={link.isActive ? "signal" : "muted"}>{link.isActive ? "Activo" : "Oculto"}</Badge></p>
             <ActionForm action={saveSocialLink} className="grid gap-3 sm:grid-cols-2">
               <input type="hidden" name="id" value={link.id} />
               <SelectField

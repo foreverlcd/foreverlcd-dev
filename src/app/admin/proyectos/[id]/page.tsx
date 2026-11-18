@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ActionForm } from "@/components/admin/action-form";
+import { Badge } from "@/components/admin/badge";
+import { PageHeader } from "@/components/admin/page-header";
 import { InlineForm } from "@/components/admin/inline-form";
 import { MoveButtons } from "@/components/admin/move-buttons";
 import { ProjectFields } from "@/components/admin/project-fields";
@@ -36,16 +38,14 @@ export default async function EditProject({ params }: { params: Promise<{ id: st
 
   return (
     <>
-      <Link href="/admin/proyectos" className={`text-sm ${linkClass}`}>
+      <Link href="/admin/proyectos" className={`mb-4 inline-block font-mono text-xs uppercase ${linkClass}`}>
         ← Proyectos
       </Link>
-      <h1 className="mt-4 font-display text-h1">Editar proyecto</h1>
+      <PageHeader index="04" label="Proyectos / Editar" title="Editar proyecto" />
 
-      <section className="mt-6 flex flex-wrap items-center gap-3">
-        <p className="text-sm text-fg-muted">
-          {published ? "Publicado" : "Borrador"}
-          {project.isFeatured ? " · Destacado" : ""}
-        </p>
+      <section className="flex flex-wrap items-center gap-3">
+        <Badge tone={published ? "signal" : "muted"}>{published ? "Publicado" : "Borrador"}</Badge>
+        {project.isFeatured && <Badge tone="coral">Destacado</Badge>}
         <InlineForm
           action={setProjectStatus}
           fields={{ id: project.id, status: published ? "DRAFT" : "PUBLISHED" }}
@@ -57,7 +57,7 @@ export default async function EditProject({ params }: { params: Promise<{ id: st
           label={project.isFeatured ? "Quitar destacado" : "Destacar"}
         />
         {published && (
-          <Link href={`/proyectos/${project.slug}`} target="_blank" className={`text-sm ${linkClass}`}>
+          <Link href={`/proyectos/${project.slug}`} target="_blank" className={`font-mono text-xs uppercase ${linkClass}`}>
             Ver en la web
           </Link>
         )}
@@ -70,7 +70,7 @@ export default async function EditProject({ params }: { params: Promise<{ id: st
       </ActionForm>
 
       <section className="mt-12">
-        <h2 className="font-display text-2xl">Imágenes</h2>
+        <h2 className="font-display text-lg font-bold tracking-tight">Imágenes</h2>
         {project.images.length === 0 && (
           <p className={emptyStateClass}>Este proyecto aún no tiene imágenes. Sube la primera abajo.</p>
         )}

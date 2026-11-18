@@ -42,6 +42,10 @@ export async function setProfilePublished(formData: FormData): Promise<ActionSta
   const published = formData.get("published") === "true";
   const profile = await prisma.profile.findUnique({ where: { id: "main" } });
   if (!profile) return failure("Guarda el perfil antes de publicarlo.");
+  // La base exige foto para publicar (Profile_published_requires_photo_check).
+  if (published && (!profile.photoUrl || !profile.photoPublicId)) {
+    return failure("Sube una foto de perfil antes de publicarlo.");
+  }
   await prisma.profile.update({ where: { id: "main" }, data: { isPublished: published } });
   revalidatePortfolio();
   return { ok: true, message: published ? "Perfil publicado." : "Perfil despublicado." };

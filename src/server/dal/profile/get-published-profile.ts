@@ -1,8 +1,10 @@
 import "server-only";
 
+import { cache } from "react";
+
 import { prisma } from "@/lib/prisma";
 
-export async function getPublishedProfile() {
+export const getPublishedProfile = cache(async () => {
   return prisma.profile.findUnique({
     where: {
       id: "main",
@@ -16,6 +18,7 @@ export async function getPublishedProfile() {
       location: true,
       email: true,
       photoUrl: true,
+      updatedAt: true,
 
       socialLinks: {
         where: {
@@ -34,4 +37,4 @@ export async function getPublishedProfile() {
       },
     },
   });
-}
+});

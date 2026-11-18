@@ -4,7 +4,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/server/auth/require-admin";
 import { failure, readForm, validationFailure, type ActionState } from "./action-state";
-import { NIL_UUID, isChecked, parseIdList, revalidatePortfolio } from "./common";
+import { NIL_UUID, isChecked, parseIdList, revalidatePortfolio, PROFILE_REQUIRED, profileExists } from "./common";
 
 const platforms = [
   "GITHUB",
@@ -37,6 +37,7 @@ export async function saveSocialLink(_state: ActionState, formData: FormData): P
     isActive: isChecked(raw.isActive),
   });
   if (!parsed.success) return validationFailure(parsed.error);
+  if (!(await profileExists())) return failure(PROFILE_REQUIRED);
   const { id, ...data } = parsed.data;
   await prisma.socialLink.upsert({
     where: { id: id || NIL_UUID },

@@ -4,7 +4,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/server/auth/require-admin";
 import { failure, readForm, validationFailure, type ActionState } from "./action-state";
-import { isChecked, parseIdList, revalidatePortfolio } from "./common";
+import { isChecked, parseIdList, revalidatePortfolio, PROFILE_REQUIRED, profileExists } from "./common";
 
 const employmentTypes = [
   "INTERNSHIP",
@@ -62,6 +62,7 @@ export async function saveExperience(_state: ActionState, formData: FormData): P
     endDate: raw.endDate || null,
   });
   if (!parsed.success) return validationFailure(parsed.error);
+  if (!(await profileExists())) return failure(PROFILE_REQUIRED);
   const value = parsed.data;
   const data = {
     company: value.company,
@@ -105,6 +106,7 @@ export async function saveEducation(_state: ActionState, formData: FormData): Pr
     endDate: raw.endDate || null,
   });
   if (!parsed.success) return validationFailure(parsed.error);
+  if (!(await profileExists())) return failure(PROFILE_REQUIRED);
   const value = parsed.data;
   const data = {
     institution: value.institution,

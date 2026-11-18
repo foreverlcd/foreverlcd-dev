@@ -2,6 +2,8 @@ import "server-only";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
+import { prisma } from "@/lib/prisma";
+
 export const NIL_UUID = "00000000-0000-0000-0000-000000000000";
 
 export function revalidatePortfolio(slug?: string) {
@@ -33,4 +35,12 @@ export function parseIdList(value: FormDataEntryValue | null): string[] | null {
   }
   const parsed = z.array(z.uuid()).safeParse(raw);
   return parsed.success ? parsed.data : null;
+}
+
+export const PROFILE_REQUIRED = "Primero guarda tu perfil en Perfil: redes, experiencia y formación cuelgan de él.";
+
+/** Redes, experiencia y formación tienen FK al perfil único "main"; sin él, el insert falla. */
+export async function profileExists() {
+  const profile = await prisma.profile.findUnique({ where: { id: "main" }, select: { id: true } });
+  return profile !== null;
 }

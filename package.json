@@ -6,18 +6,23 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "admin:create": "node --env-file=.env --experimental-strip-types --import ./scripts/register-ts-paths.mjs scripts/create-admin.ts",
+    "seed:fixture": "node --env-file=.env --experimental-strip-types --import ./scripts/register-ts-paths.mjs scripts/seed-fixture.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.10.1",
     "@prisma/client": "^7.10.1",
+    "animejs": "4.5.0",
     "better-auth": "^1.7.15",
     "dotenv": "^18.0.9",
     "next": "16.4.6",
     "pg": "^8.23.1",
     "react": "19.3.0",
     "react-dom": "19.3.0",
-    "server-only": "^0.0.1"
+    "server-only": "^0.0.1",
+    "three": "0.187.0",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "^4",
@@ -25,8 +30,10 @@
     "@types/pg": "^8.23.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/three": "~0.187.0",
     "eslint": "^10.14.0",
     "eslint-config-next": "16.4.6",
+    "playwright": "^1.65.1",
     "prisma": "^7.10.1",
     "tailwindcss": "^4",
     "typescript": "^5"

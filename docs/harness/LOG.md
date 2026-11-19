@@ -1,0 +1,31 @@
+# Bitácora del arnés
+
+Cada vez que un agente falla o entrega algo incorrecto se anota **qué le faltó** y **qué añadimos**. Lo más reciente arriba.
+
+| Fecha | Motor / rol | Qué pasó | Qué le faltó | Qué agregamos |
+|---|---|---|---|---|
+| 2026-11-18 | ui-shots | 3–6 errores "attributes didn't match" por corrida en el admin; en un navegador limpio había 0. Playwright oculta el cursor (`caret-color`) al capturar y, si React aún hidrata, lo detecta como diferencia. | Distinguir artefactos del instrumento de errores de la app. | `screenshot({ caret: "initial" })` en `ui-shots.mjs`; ante errores raros, reproducir sin capturas. |
+| 2026-11-18 | next dev 16.4.6 | `init.sh` no arrancó: Next 16.4.6 permite un solo `next dev` por carpeta y había uno DEMO en :3100. | Saberlo. | Reutilizar el servidor existente (`BASE_URL=http://localhost:3100`); el admin usa la base real también en modo DEMO. |
+| 2026-11-18 | agy / reviewer | 1) `Argument list too long`: el diff iba como argumento. 2) Con el prompt en archivo, igual intentó ejecutar un comando, se lo negaron y no produjo nada. | Pasar prompts largos por archivo; un revisor headless fiable. | `delegate.sh` escribe `*.prompt.md` y pasa una orden corta (agy, opencode). Revisión cruzada por defecto: `codex reviewer` (read-only). agy queda solo para uso interactivo. |
+| 2026-11-18 | next dev | El servidor de desarrollo murió en plena sesión, ya sirviendo páginas, con el aviso de vulnerabilidad de Next 16.4.3. | Saber que el aviso no solo sale al arrancar. | Si `ui-shots` dice "No responde", relanzar `scripts/init.sh`; otro motivo más para el upgrade de seguridad (pendiente del dueño). |
+| 2026-11-18 | sonnet / implementer (dashboard) | Gate verde, pero el `<button>` del login no tenía `type`, y el plan `admin.json` (`button[type=submit]`) no podía entrar. | Prueba en navegador antes de declarar terminado. | `type="submit"` explícito; el planificador siempre corre `ui-shots` con la base real tras el gate. |
+| 2026-11-18 | planificador | Dos agentes en paralelo compartiendo un solo `next dev`: la refactorización pública rompe la compilación de las páginas admin durante la prueba E2E. | Aislar los servidores. | Cada agente usa su propio puerto (3100) y el E2E del admin se hace cuando no hay refactor en curso, o en un worktree. |
+| 2026-11-18 | codex / implementer (dashboard, 2.ª) | Entrega parcial: R2 resuelto, redes creada, pero código aún comprimido y faltan controles; `gate.sh` falló porque pnpm no puede crear su lock en el sandbox de solo lectura. | Invocar binarios sin pnpm; un formateador mecánico. | `gate.sh` llama `node_modules/.bin/tsc` y `eslint` directo; resto delegado a Sonnet implementer. |
+| 2026-11-18 | codex / implementer (dashboard) | Se bloqueó al empezar: `AGENTS.md` exige `init.sh` y su sandbox no accede a Docker. Correcto según la regla, pero inútil. | Una excepción para sandboxes sin Docker/red. | `AGENTS.md` paso 1: los agentes en sandbox omiten `init.sh` y usan boundaries + tsc + eslint. |
+| 2026-11-18 | agy / implementer (prototipos) | En headless no produjo nada: "a tool required the command permission… auto-denied". | Permiso de shell, que no se le da. | agy solo como revisor (`HARNESS.md`). Prototipos rehechos con `claude -p --model sonnet` limitado a Read/Write/Edit. |
+| 2026-11-18 | planificador (Opus) | `pkill -f "agy -p"` coincidió con su propia línea de comandos y mató el shell antes de relanzar. | Patrón que no se autocoincida. | Usar `pgrep -f '[a]gy -p'`/`ps … grep '[a]gy'` o matar por PID guardado. |
+| 2026-11-18 | next dev / build | Next 16.4.3 detiene `dev` y `build` una vez con un aviso de vulnerabilidad y pide reintentar. | Saber que es esperado. | Principio de oro 13; `gate.sh` reintenta una vez. |
+| 2026-11-18 | codex / implementer | El sandbox `workspace-write` no tiene red: no alcanza Postgres local ni puede instalar. | Verificación con base de datos. | El planificador corre build/humo fuera del sandbox; las dependencias las instala el planificador antes de delegar. |
+| 2026-11-18 | planificador (Opus) | La dirección "Runtime" pasó tipos, lint, build y capturas, y el dueño la rechazó por no ser futurista. | Validar la dirección de arte con el dueño ANTES de implementarla. | Prototipos comparables antes de tocar `src/`; `ART-DIRECTION.md` vinculante solo tras su elección. |
+
+## 2026-11-19 — El gate verde no garantizaba el producto
+- Síntoma: foto, biografía, repos, iconos y credenciales del esquema no salían en la web y el gate pasaba.
+- Causa: no había capa de especificación ni comprobación de cobertura; los datos DEMO ocultaban los huecos.
+- Arreglo: `docs/product/SPEC.md` + `schema-map.json`, `check-schema-coverage.mjs` con trinquete en el gate, aserciones `expect`/`expectStatus` en ui-shots y una fixture que rellena todos los campos. R5 ahora cubre toda página pública.
+
+## 2026-11-19 — Los datos reales vuelven a encontrar lo que la fixture no
+- La foto provisional (avatar de GitHub) daba 500 en `/`: `next/image` solo admite res.cloudinary.com y el dashboard aceptaba cualquier URL. Arreglo: `cloudinaryUrl` en la validación de las actions. ui-shots decía "No responde" ante un 500; ahora muestra el código y apunta a `.harness/dev.log`.
+- codex: las páginas nuevas exponían proyectos sin perfil publicado (la portada no). Arreglo: 404 y `generateStaticParams` vacío sin perfil. Lección: una regla de visibilidad global (pub-waiting) debe estar en SPEC.md, no solo en la portada.
+
+## 2026-11-19 — Especificidad: `.signal a` gana a una clase sola
+- El CTA relleno salía con texto claro sobre `--signal`: `.signal a { color: inherit }` (0,1,1) vence a `.sg-cta-fill` (0,1,0). Lo detectó la revisión visual, no el gate. Regla: en signal.css, las clases que colorean enlaces van prefijadas con `.signal`.

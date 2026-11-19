@@ -1,0 +1,22 @@
+{
+  "$comment": "Revisión visual de /proyectos, la ficha y /stack/[slug] (sin escena WebGL). Con la fixture usa fixture-aurora y typescript; con datos reales cambia los slugs. Sin scroll horizontal en 360.",
+  "name": "schema-pages",
+  "baseUrl": "http://localhost:3000",
+  "runs": [
+    { "name": "phone-360", "viewport": { "w": 360, "h": 740 }, "mobile": true },
+    { "name": "tablet-768", "viewport": { "w": 768, "h": 1024 }, "mobile": true },
+    { "name": "desk-1440", "viewport": { "w": 1440, "h": 900 } }
+  ],
+  "steps": [
+    { "goto": "/proyectos" },
+    { "wait": 1200 },
+    { "expect": { "selector": "html", "attr": { "name": "lang", "includes": "es" } } },
+    { "shot": "index", "fullPage": true },
+    { "goto": "/proyectos/fixture-aurora" },
+    { "wait": 1200 },
+    { "shot": "detalle", "fullPage": true },
+    { "goto": "/stack/typescript" },
+    { "wait": 1200 },
+    { "shot": "stack", "fullPage": true }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "name": "admin",
+  "baseUrl": "http://localhost:3000",
+  "runs": [
+    { "name": "desktop", "viewport": { "w": 1440, "h": 900 } },
+    { "name": "mobile", "viewport": { "w": 390, "h": 844 }, "mobile": true }
+  ],
+  "steps": [
+    { "goto": "/admin" },
+    { "wait": 1200 },
+    { "shot": "unauth-redirect" },
+    { "goto": "/admin/login" },
+    { "fill": { "selector": "input[type=email]", "env": "ADMIN_EMAIL" } },
+    { "fill": { "selector": "input[type=password]", "env": "ADMIN_PASSWORD" } },
+    { "click": "button[type=submit]" },
+    { "wait": 2500 },
+    { "goto": "/admin" },
+    { "shot": "dashboard" },
+    { "goto": "/admin/perfil" },
+    { "shot": "perfil" },
+    { "goto": "/admin/redes" },
+    { "shot": "redes" },
+    { "goto": "/admin/skills" },
+    { "shot": "skills" },
+    { "goto": "/admin/proyectos" },
+    { "shot": "proyectos" },
+    { "goto": "/admin/proyectos/nuevo" },
+    { "shot": "proyecto-nuevo" },
+    { "goto": "/admin/experiencia" },
+    { "shot": "experiencia" },
+    { "goto": "/admin/formacion" },
+    { "shot": "formacion" }
+  ]
+}

@@ -34,6 +34,7 @@ export async function getPublishedProjectBySlug(slug: string) {
       },
 
       skills: {
+        where: { skill: { isActive: true, category: { isActive: true } } },
         orderBy: {
           displayOrder: "asc",
         },

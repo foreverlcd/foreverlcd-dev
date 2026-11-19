@@ -1,0 +1,819 @@
+<!doctype html>
+<html lang="es" class="intro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nombre Apellido — Ingeniería de software</title>
+<meta name="description" content="Nombre Apellido — Ingeniería de software: full stack, backend e IA aplicada.">
+<meta name="theme-color" content="#050605">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..900&family=Geist+Mono:wght@400..600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050605; --acid:#D4FF3A; --ice:#E8F0F2; --ash:#5C6466;
+  --pad:clamp(18px,4vw,64px);
+  --f:"Geist","Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --m:"Geist Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg);color:var(--ice);scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:var(--f);-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;line-height:1.4}
+::selection{background:var(--acid);color:#050605}
+a{color:inherit;text-decoration:none}
+ul,ol{list-style:none}
+.mono{font-family:var(--m);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase}
+:focus-visible{outline:2px solid var(--acid);outline-offset:4px}
+
+#gl{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}
+.vig{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:
+    radial-gradient(120% 90% at 50% 45%,transparent 55%,rgba(5,6,5,.75) 100%),
+    linear-gradient(to top,rgba(5,6,5,.9),transparent 16%),
+    linear-gradient(to bottom,rgba(5,6,5,.7),transparent 14%)}
+
+/* fallback sin WebGL2 */
+html.nogl body{background:
+  radial-gradient(55% 45% at 78% 48%,rgba(212,255,58,.09),transparent 70%),
+  repeating-linear-gradient(90deg,rgba(92,100,102,.2) 0 1px,transparent 1px 80px),
+  repeating-linear-gradient(0deg,rgba(92,100,102,.2) 0 1px,transparent 1px 80px),var(--bg);background-attachment:fixed}
+html.nogl #gl,html.nogl .ret{display:none}
+
+/* ---------- HUD ---------- */
+.hud{position:fixed;z-index:6;pointer-events:none;color:var(--ash)}
+.hud b{font-weight:500;color:var(--ice)}
+.hud .ac{color:var(--acid)}
+.nav{position:fixed;z-index:10;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:flex-start;padding:18px var(--pad) 0}
+.brand{font-family:var(--m);font-size:12px;letter-spacing:.1em;text-transform:uppercase;display:flex;flex-direction:column;gap:4px}
+.brand .id{color:var(--ash);font-size:10.5px}
+.brand i{display:inline-block;width:7px;height:7px;background:var(--acid);margin-right:8px;transform:translateY(-1px)}
+.nav ul{display:flex;gap:clamp(14px,2.6vw,38px)}
+.nav li a{font-family:var(--m);font-size:12px;letter-spacing:.1em;text-transform:uppercase;display:inline-flex;gap:8px;padding:4px 0;color:var(--ice);transition:color .25s}
+.nav li a .n{color:var(--ash);transition:color .25s}
+.nav li a:hover,.nav li a.on{color:var(--acid)}
+.nav li a.on .n{color:var(--acid)}
+.rx{position:fixed;left:var(--pad);right:var(--pad);top:64px;height:9px;z-index:4;pointer-events:none;
+  background-image:repeating-linear-gradient(90deg,var(--ash) 0 1px,transparent 1px 100px),repeating-linear-gradient(90deg,rgba(92,100,102,.75) 0 1px,transparent 1px 10px);
+  background-size:100% 100%,100% 4px;background-repeat:no-repeat}
+.rx i{position:absolute;left:0;top:-2px;width:1px;height:15px;background:var(--acid);will-change:transform}
+.ry{position:fixed;left:14px;top:110px;bottom:96px;width:9px;z-index:4;pointer-events:none;
+  background-image:repeating-linear-gradient(0deg,var(--ash) 0 1px,transparent 1px 100px),repeating-linear-gradient(0deg,rgba(92,100,102,.75) 0 1px,transparent 1px 10px);
+  background-size:100% 100%,4px 100%;background-repeat:no-repeat}
+.ry i{position:absolute;left:-2px;top:0;width:15px;height:1px;background:var(--acid);will-change:transform}
+.hud-b{left:var(--pad);right:var(--pad);bottom:16px;display:grid;grid-template-columns:1fr auto 1fr;gap:16px;font-family:var(--m);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;align-items:end}
+.hud-b .c2{text-align:center}.hud-b .c3{text-align:right}
+.hud-b div span{display:block;line-height:1.7}
+.ret{position:fixed;left:0;top:0;width:100px;height:100px;border:1px solid rgba(232,240,242,.4);border-radius:50%;z-index:7;pointer-events:none;opacity:0;will-change:transform}
+.ret::before,.ret::after{content:"";position:absolute;background:var(--acid);left:50%;top:50%}
+.ret::before{width:1px;height:11px;transform:translate(-50%,-50%)}
+.ret::after{width:11px;height:1px;transform:translate(-50%,-50%)}
+
+/* ---------- Contenido ---------- */
+main{position:relative;z-index:2}
+main p,main h2,main h3,main li,main a.mail,.lede{text-shadow:0 0 16px rgba(5,6,5,.95),0 0 3px rgba(5,6,5,.9)}
+section{position:relative;padding-left:var(--pad);padding-right:var(--pad)}
+.hero{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;padding-top:16vh;padding-top:16svh;padding-bottom:11svh}
+h1{font-weight:800;text-transform:uppercase;letter-spacing:-.045em;line-height:.84;font-size:min(14.2vw,25svh);color:var(--ice)}
+h1 .ln{display:block;width:max-content;max-width:100%}
+html.gl h1{color:transparent;text-shadow:none}
+html.gl h1::selection,html.gl h1 .ln::selection{color:transparent;background:rgba(212,255,58,.55)}
+.hero-foot{margin-top:auto;display:flex;justify-content:space-between;align-items:flex-end;gap:32px;flex-wrap:wrap}
+.lede{font-size:clamp(19px,2.15vw,34px);font-weight:400;letter-spacing:-.02em;line-height:1.16;max-width:26ch;color:var(--ice)}
+.lede .w,.lede .c,.split .w,.split .c,.pt .w,.pt .c{display:inline-block}
+.hero-meta{display:flex;flex-direction:column;align-items:flex-end;gap:16px}
+.cta{font-family:var(--m);font-size:12px;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--ash);padding:12px 18px;display:inline-flex;gap:12px;transition:background .25s,color .25s,border-color .25s}
+.cta:hover{background:var(--acid);color:#050605;border-color:var(--acid);text-shadow:none}
+.stack{display:flex;gap:8px 18px;flex-wrap:wrap;justify-content:flex-end;font-family:var(--m);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ash)}
+.intro .hi,.intro .lede{opacity:0}
+
+.sec{min-height:100vh;min-height:100svh;padding-top:17svh;padding-bottom:14svh}
+.col{width:min(100%,62%)}
+.kick{color:var(--acid);margin-bottom:18px;display:block}
+h2{font-weight:700;letter-spacing:-.045em;line-height:.95;font-size:clamp(34px,5.4vw,88px);margin-bottom:clamp(28px,6svh,64px)}
+.list .proj{display:grid;grid-template-columns:3.4rem 1fr auto;grid-template-areas:"n t y" ". d d" ". g a";column-gap:10px;row-gap:8px;padding:22px 0 24px;border-top:1px solid rgba(92,100,102,.55);cursor:pointer;position:relative}
+.list .proj:last-child{border-bottom:1px solid rgba(92,100,102,.55)}
+.proj>*{transition:opacity .35s,color .3s}
+.list:hover .proj:not(:hover)>*,.list:focus-within .proj:not(:focus-visible):not(:hover)>*{opacity:.5}
+.proj::before{content:"";position:absolute;left:-14px;top:22px;bottom:24px;width:2px;background:var(--acid);transform:scaleY(0);transform-origin:top;transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.proj:hover::before,.proj:focus-visible::before{transform:scaleY(1)}
+.pn{grid-area:n;color:var(--ash);padding-top:.9em}
+.pt{grid-area:t;font-weight:700;font-size:clamp(32px,5vw,78px);letter-spacing:-.045em;line-height:.95}
+.py{grid-area:y;color:var(--ash);padding-top:.9em}
+.pd{grid-area:d;font-size:clamp(15px,1.25vw,19px);color:var(--ice);max-width:52ch;opacity:.86}
+.tags{grid-area:g;display:flex;gap:6px 16px;flex-wrap:wrap;color:var(--ash);font-family:var(--m);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.arr{grid-area:a;font-family:var(--m);color:var(--ash);justify-self:end;transition:transform .35s,color .3s}
+.proj:hover .pn,.proj:hover .py,.proj:hover .arr,.proj:focus-visible .pn,.proj:focus-visible .py,.proj:focus-visible .arr{color:var(--acid)}
+.proj:hover .arr{transform:translate(4px,-4px)}
+.tl li{display:grid;grid-template-columns:9.5rem 1fr;gap:6px 24px;padding:22px 0;border-top:1px solid rgba(92,100,102,.55)}
+.tl li:last-child{border-bottom:1px solid rgba(92,100,102,.55)}
+.tl .yr{color:var(--ash);padding-top:.5em}
+.tl h3{font-size:clamp(22px,2.3vw,34px);font-weight:600;letter-spacing:-.03em;line-height:1.1}
+.tl p{grid-column:2;color:var(--ice);opacity:.85;font-size:clamp(15px,1.2vw,18px);max-width:50ch}
+.lead{font-size:clamp(17px,1.5vw,23px);max-width:34ch;margin-bottom:clamp(20px,4svh,40px);opacity:.9}
+a.mail{display:inline-block;font-weight:700;font-size:clamp(28px,5.2vw,86px);letter-spacing:-.05em;line-height:1;border-bottom:2px solid var(--acid);padding-bottom:.08em;transition:color .25s}
+a.mail:hover,a.mail:focus-visible{color:var(--acid)}
+.foot{margin-top:clamp(60px,14svh,150px);color:var(--ash);font-family:var(--m);font-size:11px;letter-spacing:.08em;text-transform:uppercase;display:flex;gap:12px 28px;flex-wrap:wrap}
+
+@media (max-width:900px){.ry{display:none}.col{width:100%}.hud-b .c2{display:none}.hud-b{grid-template-columns:1fr 1fr}}
+@media (max-width:760px){
+  :root{--pad:20px}
+  .nav{padding-top:14px}
+  .brand .id{display:none}
+  .nav ul{gap:14px}
+  .nav li a{font-size:10.5px;letter-spacing:.06em}.nav li a .n{display:none}
+  .rx{top:50px}
+  .hero{padding-top:20svh;padding-bottom:13svh}
+  h1{font-size:min(16.6vw,13svh);line-height:.86}
+  .hero-foot{flex-direction:column;align-items:flex-start;gap:22px}
+  .hero-meta{align-items:flex-start}.stack{justify-content:flex-start}
+  .lede{font-size:clamp(19px,5.6vw,26px);max-width:22ch}
+  .sec{padding-top:37svh;padding-bottom:10svh}
+  h2{font-size:clamp(34px,10.5vw,50px)}
+  .list .proj{grid-template-columns:1fr auto;grid-template-areas:"n y" "t t" "d d" "g g";padding:18px 12px 20px;margin:0 -12px;background:rgba(5,6,5,.82);row-gap:6px}
+  .pn,.py{padding-top:0}.arr{display:none}
+  .proj::before{left:0;top:18px;bottom:20px}
+  .pt{font-size:clamp(34px,10.5vw,48px)}
+  .tl li{grid-template-columns:1fr;background:rgba(5,6,5,.82);padding:18px 12px;margin:0 -12px}.tl p{grid-column:1}
+  a.mail{font-size:clamp(26px,8.4vw,44px)}
+  .hud-b{grid-template-columns:1fr;font-size:9.5px;bottom:10px}
+  .hud-b .c3{display:none}
+  .hud-b .x2{display:none}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.ret{display:none}}
+</style>
+<script>setTimeout(function(){document.documentElement.classList.remove('intro')},7000)</script>
+<script type="importmap">{"imports":{
+  "three":"https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.module.js",
+  "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.187.0/examples/jsm/",
+  "animejs":"https://cdn.jsdelivr.net/npm/animejs@4.5.0/dist/bundles/anime.esm.min.js"}}</script>
+</head>
+<body>
+<canvas id="gl" aria-hidden="true"></canvas>
+<div class="vig" aria-hidden="true"></div>
+
+<header class="nav hi-wrap">
+  <a class="brand hi" href="#inicio" aria-label="Inicio — Nombre Apellido">
+    <span><i></i><span data-scr>N.A / SIGNAL</span></span>
+    <span class="id" data-scr>NOMBRE APELLIDO · ING. SOFTWARE</span>
+  </a>
+  <nav aria-label="Principal" class="hi">
+    <ul>
+      <li><a href="#proyectos" data-s="1"><span class="n">01</span><span data-scr>Proyectos</span></a></li>
+      <li><a href="#trayectoria" data-s="2"><span class="n">02</span><span data-scr>Trayectoria</span></a></li>
+      <li><a href="#contacto" data-s="3"><span class="n">03</span><span data-scr>Contacto</span></a></li>
+    </ul>
+  </nav>
+</header>
+
+<div class="hud rx hi" aria-hidden="true"><i id="mkx"></i></div>
+<div class="hud ry hi" aria-hidden="true"><i id="mky"></i></div>
+<div class="hud hud-b hi" aria-hidden="true">
+  <div class="c1">
+    <span>X <b id="hx">+0.000</b> &nbsp;Y <b id="hy">+0.000</b></span>
+    <span class="x2">PX <b id="hpx">0000</b>,<b id="hpy">0000</b> &nbsp;FPS <b id="hf">--</b></span>
+  </div>
+  <div class="c2">
+    <span>ESTADO <b class="ac" id="hs">INICIANDO</b></span>
+    <span>FLUJO <b id="hfl">0.00</b></span>
+  </div>
+  <div class="c3">
+    <span>PARTÍCULAS <b id="hp">—</b></span>
+    <span>SIM <b id="hsim">—</b> · SEC <b id="hsec">00</b>/03</span>
+  </div>
+</div>
+<div class="ret" id="ret" aria-hidden="true"></div>
+
+<main>
+  <section id="inicio" class="hero" data-i="0">
+    <h1 id="name"><span class="ln">Nombre</span><span class="ln">Apellido</span></h1>
+    <div class="hero-foot">
+      <p class="lede">Ingeniería de software — full stack, backend e IA aplicada</p>
+      <div class="hero-meta hi">
+        <a class="cta" href="#proyectos">Ver proyectos <span aria-hidden="true">↓</span></a>
+        <ul class="stack"><li>TypeScript</li><li>Node.js</li><li>Python</li><li>PyTorch</li><li>PostgreSQL</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="proyectos" class="sec" data-i="1">
+    <div class="col">
+      <span class="kick mono rv" data-scr>01 — Proyectos</span>
+      <h2 class="split">Proyectos seleccionados</h2>
+      <div class="list">
+        <a class="proj rv" href="#proyectos" data-p="0">
+          <span class="pn mono">P1</span><h3 class="pt">Proyecto Uno</h3><span class="py mono">2025</span>
+          <p class="pd">Plataforma full stack con API tipada de extremo a extremo.</p>
+          <ul class="tags"><li>TypeScript</li><li>Next.js</li><li>PostgreSQL</li></ul>
+          <span class="arr" aria-hidden="true">↗</span>
+        </a>
+        <a class="proj rv" href="#proyectos" data-p="1">
+          <span class="pn mono">P2</span><h3 class="pt">Proyecto Dos</h3><span class="py mono">2024</span>
+          <p class="pd">Servicio de colas y caché distribuida para alta concurrencia.</p>
+          <ul class="tags"><li>Node.js</li><li>Redis</li><li>Docker</li></ul>
+          <span class="arr" aria-hidden="true">↗</span>
+        </a>
+        <a class="proj rv" href="#proyectos" data-p="2">
+          <span class="pn mono">P3</span><h3 class="pt">Proyecto Tres</h3><span class="py mono">2023</span>
+          <p class="pd">Pipeline de inferencia con modelos propios y API de baja latencia.</p>
+          <ul class="tags"><li>Python</li><li>PyTorch</li><li>FastAPI</li></ul>
+          <span class="arr" aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="trayectoria" class="sec" data-i="2">
+    <div class="col">
+      <span class="kick mono rv" data-scr>02 — Trayectoria</span>
+      <h2 class="split">Trayectoria</h2>
+      <ol class="tl">
+        <li class="rv"><span class="yr mono">2024 — Hoy</span><h3>Ingeniero de software sénior</h3><p>Empresa Alfa · Backend, plataforma e IA aplicada en producción.</p></li>
+        <li class="rv"><span class="yr mono">2021 — 2024</span><h3>Ingeniero full stack</h3><p>Empresa Beta · Productos web de alto tráfico y APIs.</p></li>
+        <li class="rv"><span class="yr mono">2018 — 2021</span><h3>Desarrollador de software</h3><p>Empresa Gamma · Servicios, datos y automatización.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="contacto" class="sec" data-i="3">
+    <div class="col">
+      <span class="kick mono rv" data-scr>03 — Contacto</span>
+      <h2 class="split">Hablemos</h2>
+      <p class="lead rv">Disponible para nuevos proyectos y colaboraciones.</p>
+      <a class="mail rv" id="mail" href="mailto:hola@ejemplo.com">hola@ejemplo.com</a>
+      <div class="foot mono rv"><span>© 2026 Nombre Apellido</span><span>WebGL2 · GPGPU · Anime.js</span></div>
+    </div>
+  </section>
+</main>
+
+<script type="module">
+import * as THREE from 'three';
+import { GPUComputationRenderer } from 'three/addons/misc/GPUComputationRenderer.js';
+import * as A from 'animejs';
+
+const { animate, createTimeline, stagger, splitText, utils } = A;
+const scrambleText = A.scrambleText;
+const html = document.documentElement;
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const isMobile = matchMedia('(max-width: 760px)').matches || matchMedia('(pointer: coarse)').matches;
+const FOV = 38;
+const SEC = [
+  { z: 14, angle: 0,      curl: 1.2, gain: 1.0,  acid: 0.00, roll: 0,     speed: 3.2 },
+  { z: 11, angle: -0.62,  curl: 1.0, gain: 1.1,  acid: 0.12, roll: -0.05, speed: 3.8 },
+  { z: 16, angle: 1.5708, curl: 0.8, gain: 0.9,  acid: 0.00, roll: 0.06,  speed: 3.0 },
+  { z: 9,  angle: 3.1416, curl: 1.7, gain: 1.15, acid: 0.30, roll: 0,     speed: 4.2 }
+];
+const SEC_TGT = [0, 1, 2, 3];
+
+function fallback() {
+  html.classList.add('nogl');
+  html.classList.remove('intro');
+  const set = (id, t) => { const e = document.getElementById(id); if (e) e.textContent = t; };
+  set('hs', 'SIN WEBGL2'); set('hf', '—'); set('hp', '0'); set('hsim', '—');
+}
+
+/* ---------- Renderer ---------- */
+let renderer = null;
+try {
+  renderer = new THREE.WebGLRenderer({ canvas: $('#gl'), antialias: false, alpha: false, powerPreference: 'high-performance' });
+  if (!renderer.capabilities.isWebGL2 || !renderer.extensions.has('EXT_color_buffer_float')) throw new Error('no float');
+} catch (e) { renderer = null; }
+
+if (!renderer) { fallback(); } else {
+  boot().catch(err => { console.warn('SIGNAL fallback:', err && err.message); try { renderer.dispose(); } catch (e) {} fallback(); html.classList.remove('gl'); });
+}
+
+async function boot() {
+  html.classList.add('gl');
+  let dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 1.75);
+  renderer.setPixelRatio(dpr);
+  renderer.setSize(innerWidth, innerHeight, false);
+  renderer.setClearColor(0x050605, 1);
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(FOV, innerWidth / innerHeight, 0.1, 80);
+  camera.position.set(0, 0, 14);
+
+  /* fuentes (canvas necesita Geist cargada) */
+  try {
+    await Promise.race([
+      Promise.all([document.fonts.load('800 100px "Geist"'), document.fonts.load('400 20px "Geist"'), document.fonts.load('500 12px "Geist Mono"')]),
+      new Promise(r => setTimeout(r, 2500))
+    ]);
+    await document.fonts.ready;
+  } catch (e) {}
+
+  /* ---------- uniforms compartidos ---------- */
+  const U = {
+    uTime: { value: 0 }, uDt: { value: 1 / 60 },
+    uAssemble: { value: 0 }, uMorph: { value: 0 }, uFlow: { value: 0 }, uScrollV: { value: 0 },
+    uPress: { value: 0 }, uMouseOn: { value: 0 }, uMouse: { value: new THREE.Vector3(999, 999, 0) },
+    uMouseVel: { value: new THREE.Vector2() }, uMouseR: { value: 1.6 },
+    uFlowAngle: { value: 0 }, uCurl: { value: 4 }, uSpeed: { value: 3.2 },
+    uBound: { value: new THREE.Vector3(10, 6, 4) },
+    uHot: { value: 0 }, uGain: { value: 0 },
+    tA: { value: null }, tB: { value: null }
+  };
+  const D = { tPos: { value: null }, tVel: { value: null }, uPx: { value: dpr }, uAcid: { value: 0 }, uDepth: { value: 14 }, uGain: U.uGain, uHot: U.uHot };
+  const cam = { z: 14, roll: 0, intro: 1.8 };
+
+  /* ---------- GLSL ---------- */
+  const NOISE = `
+float hash12(vec2 p){vec3 p3=fract(vec3(p.xyx)*.1031);p3+=dot(p3,p3.yzx+33.33);return fract((p3.x+p3.y)*p3.z);}
+float h13(vec3 p){return fract(sin(dot(p,vec3(127.1,311.7,74.7)))*43758.5453);}
+vec4 noised(vec3 x){
+  vec3 i=floor(x),f=fract(x);
+  vec3 u=f*f*f*(f*(f*6.-15.)+10.);
+  vec3 du=30.*f*f*(f*(f-2.)+1.);
+  float a=h13(i),b=h13(i+vec3(1,0,0)),c=h13(i+vec3(0,1,0)),d=h13(i+vec3(1,1,0));
+  float e=h13(i+vec3(0,0,1)),g=h13(i+vec3(1,0,1)),h=h13(i+vec3(0,1,1)),k=h13(i+vec3(1,1,1));
+  float k0=a,k1=b-a,k2=c-a,k3=e-a,k4=a-b-c+d,k5=a-c-e+h,k6=a-b-e+g,k7=-a+b+c-d+e-g-h+k;
+  return vec4(k0+k1*u.x+k2*u.y+k3*u.z+k4*u.x*u.y+k5*u.y*u.z+k6*u.z*u.x+k7*u.x*u.y*u.z,
+    du*vec3(k1+k4*u.y+k6*u.z+k7*u.y*u.z,k2+k5*u.z+k4*u.x+k7*u.z*u.x,k3+k6*u.x+k5*u.y+k7*u.x*u.y));
+}
+vec3 curl(vec3 p){
+  vec3 gx=noised(p).yzw;
+  vec3 gy=noised(p+vec3(31.4,17.2,9.1)).yzw;
+  vec3 gz=noised(p+vec3(-12.3,41.7,23.9)).yzw;
+  return vec3(gz.y-gy.z,gx.z-gz.x,gy.x-gx.y);
+}`;
+
+  const VEL = `
+uniform float uTime,uDt,uAssemble,uMorph,uFlow,uScrollV,uPress,uMouseOn,uMouseR,uFlowAngle,uCurl,uSpeed,uHot;
+uniform vec3 uMouse; uniform vec2 uMouseVel; uniform sampler2D tA,tB;
+${NOISE}
+void main(){
+  vec2 uv=gl_FragCoord.xy/resolution.xy;
+  vec3 p=texture2D(texturePosition,uv).xyz;
+  vec3 v=texture2D(textureVelocity,uv).xyz;
+  float r=hash12(uv*437.1+3.7);
+  float m=clamp(uMorph*1.8-r*.8,0.,1.); m=m*m*(3.-2.*m);
+  vec3 tgt=mix(texture2D(tA,uv).xyz,texture2D(tB,uv).xyz,m);
+  float A0=uAssemble*(1.-clamp(uFlow,0.,1.)*.9);
+  float asmb=clamp(A0*1.7-r*.7,0.,1.); asmb=asmb*asmb*(3.-2.*asmb);
+
+  /* campo laminar + curl noise */
+  vec2 dir=vec2(cos(uFlowAngle),sin(uFlowAngle)); vec2 nrm=vec2(-dir.y,dir.x);
+  float s=dot(p.xy,nrm), l=dot(p.xy,dir);
+  float lane=.65+.55*sin(s*1.7+sin(l*.35+uTime*.3)*1.2);
+  vec3 F=vec3(dir*lane*uSpeed+nrm*sin(l*.5+uTime*.5+s*.3)*.8,0.);
+  F+=curl(p*.3+vec3(0.,0.,uTime*.08))*uCurl*1.4;
+  F.y+=uScrollV*9.;
+  F.z-=p.z*.4;
+  vec3 acc=(F-v)*2.2*(1.-asmb);
+
+  /* muelle hacia la forma objetivo */
+  acc+=(tgt-p)*30.*asmb;
+  acc+=curl(p*1.3+vec3(0.,0.,uTime*.15))*(1.6+90.*uHot)*asmb;
+
+  /* cursor: repulsor + vórtice + estela */
+  vec3 d=p-uMouse; d.z*=.3;
+  float R=uMouseR*(1.+uPress*.8);
+  float dist=length(d);
+  float fall=exp(-(dist*dist)/(R*R)*1.5)*uMouseOn;
+  vec3 dn=d/(dist+1e-3);
+  acc+=dn*fall*230.*(1.-uPress*.85);
+  acc+=vec3(-dn.y,dn.x,0.)*fall*(uPress*170.+length(uMouseVel)*5.);
+  acc-=dn*fall*uPress*70.;
+  acc+=vec3(uMouseVel,0.)*fall*4.5;
+
+  v+=acc*uDt;
+  v*=1.-min(mix(.5,5.4,asmb)*uDt,.9);
+  float sp=length(v); if(sp>24.) v*=24./sp;
+  gl_FragColor=vec4(v,1.);
+}`;
+  const POS = `
+uniform float uDt; uniform vec3 uBound;
+void main(){
+  vec2 uv=gl_FragCoord.xy/resolution.xy;
+  vec3 q=texture2D(texturePosition,uv).xyz;
+  vec3 v=texture2D(textureVelocity,uv).xyz;
+  vec3 p=q+v*uDt;
+  p=mod(p+uBound,2.*uBound)-uBound;
+  gl_FragColor=vec4(p,1.);
+}`;
+  const PVERT = `
+uniform sampler2D tPos,tVel; uniform float uPx,uGain,uHot,uAcid,uDepth;
+attribute vec2 aRef; varying vec3 vC; varying float vA;
+void main(){
+  vec3 p=texture2D(tPos,aRef).xyz; vec3 v=texture2D(tVel,aRef).xyz;
+  vec4 mv=modelViewMatrix*vec4(p,1.);
+  gl_Position=projectionMatrix*mv;
+  float sp=length(v);
+  float t=smoothstep(.6,9.,sp);
+  float h=fract(sin(dot(aRef,vec2(12.9898,78.233)))*43758.5453);
+  t=clamp(t+uHot*step(h,.45)+uAcid*step(h,.16),0.,1.);
+  vC=mix(vec3(.91,.941,.949),vec3(.831,1.,.227),t);
+  gl_PointSize=clamp(uPx*(1.55+1.7*t)*(uDepth/max(-mv.z,.1)),1.,16.);
+  vA=uGain*(.85+.5*t)*clamp(1.2-abs(p.z)*.1,.3,1.);
+}`;
+  const PFRAG = `
+varying vec3 vC; varying float vA;
+void main(){
+  float d=length(gl_PointCoord-.5);
+  if(d>.5) discard;
+  float a=smoothstep(.5,.05,d);
+  gl_FragColor=vec4(vC*a*vA,1.);
+}`;
+
+  /* ---------- objetivos de forma (texto muestreado) ---------- */
+  function buildTargets(size) {
+    const N = size * size;
+    const vw = innerWidth, vh = innerHeight, asp = vw / vh;
+    const S = Math.min(1, 900 / vw);
+    const cw = Math.max(2, Math.round(vw * S)), ch = Math.max(2, Math.round(vh * S));
+    const cv = document.createElement('canvas'); cv.width = cw; cv.height = ch;
+    const ctx = cv.getContext('2d', { willReadFrequently: true });
+    const FF = 'Geist, Inter, system-ui, sans-serif';
+    const hasLS = 'letterSpacing' in ctx;
+    const mob = vw <= 760;
+    const Z = mob ? { cx: .72, cy: .2, mw: .5, mh: .17 } : { cx: .79, cy: .53, mw: .34, mh: .46 };
+
+    const raster = (camZ, draw) => {
+      ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cw, ch);
+      ctx.fillStyle = '#fff'; ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'left';
+      if (hasLS) ctx.letterSpacing = '0px';
+      draw();
+      const data = ctx.getImageData(0, 0, cw, ch).data;
+      const idx = new Uint32Array(cw * ch); let M = 0;
+      for (let i = 3, p = 0; i < data.length; i += 4, p++) if (data[i] > 110) idx[M++] = p;
+      const viewH = 2 * Math.tan(FOV * Math.PI / 360) * camZ, viewW = viewH * asp;
+      const arr = new Float32Array(N * 4);
+      for (let i = 0; i < N; i++) {
+        let x = .5, y = .5;
+        if (M > 0) { const q = idx[(Math.random() * M) | 0]; x = ((q % cw) + Math.random()) / cw; y = (Math.floor(q / cw) + Math.random()) / ch; }
+        arr[i * 4] = (x - .5) * viewW; arr[i * 4 + 1] = (.5 - y) * viewH; arr[i * 4 + 2] = (Math.random() - .5) * .3; arr[i * 4 + 3] = 1;
+      }
+      const t = new THREE.DataTexture(arr, size, size, THREE.RGBAFormat, THREE.FloatType);
+      t.minFilter = t.magFilter = THREE.NearestFilter; t.needsUpdate = true;
+      return t;
+    };
+    const nameDraw = () => {
+      const sy = window.scrollY;
+      $$('#name .ln').forEach(ln => {
+        const r = ln.getBoundingClientRect();
+        const txt = ln.textContent.toUpperCase();
+        let fs = parseFloat(getComputedStyle(ln).fontSize) * S;
+        ctx.font = `800 ${fs}px ${FF}`;
+        if (hasLS) ctx.letterSpacing = (-0.045 * fs) + 'px';
+        let m = ctx.measureText(txt);
+        fs *= (r.width * S) / m.width;
+        ctx.font = `800 ${fs}px ${FF}`;
+        if (hasLS) ctx.letterSpacing = (-0.045 * fs) + 'px';
+        m = ctx.measureText(txt);
+        ctx.fillText(txt, r.left * S, (r.top + sy + r.height / 2) * S + (m.actualBoundingBoxAscent - m.actualBoundingBoxDescent) / 2);
+      });
+    };
+    const fit = txt => () => {
+      ctx.font = `800 200px ${FF}`;
+      let m = ctx.measureText(txt);
+      const w = m.width, h = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent;
+      const fs = 200 * Math.min(Z.mw * cw / w, Z.mh * ch / h);
+      ctx.font = `800 ${fs}px ${FF}`;
+      if (hasLS) ctx.letterSpacing = (-0.03 * fs) + 'px';
+      m = ctx.measureText(txt);
+      ctx.textAlign = 'center';
+      ctx.fillText(txt, Z.cx * cw, Z.cy * ch + (m.actualBoundingBoxAscent - m.actualBoundingBoxDescent) / 2);
+    };
+    return [
+      raster(SEC[0].z, nameDraw),
+      raster(SEC[1].z, fit('01')), raster(SEC[2].z, fit('02')), raster(SEC[3].z, fit('03')),
+      raster(SEC[1].z, fit('P1')), raster(SEC[1].z, fit('P2')), raster(SEC[1].z, fit('P3')),
+      raster(SEC[3].z, fit('@'))
+    ];
+  }
+
+  /* ---------- simulación GPGPU ---------- */
+  let sim = null, SIZE = 0, targets = [], idxA = 0, idxB = 0, tgtIdx = 0;
+
+  function updateBounds() {
+    const halfH = Math.tan(FOV * Math.PI / 360) * 16;
+    U.uBound.value.set(halfH * (innerWidth / innerHeight) * 1.12, halfH * 1.12, 4);
+  }
+
+  function buildSim(size) {
+    if (sim) {
+      scene.remove(sim.points); sim.points.geometry.dispose(); sim.points.material.dispose();
+      try { sim.gpu.dispose && sim.gpu.dispose(); } catch (e) {}
+      targets.forEach(t => t.dispose());
+    }
+    SIZE = size;
+    updateBounds();
+    const gpu = new GPUComputationRenderer(size, size, renderer);
+    const dtPos = gpu.createTexture(), dtVel = gpu.createTexture();
+    const pa = dtPos.image.data, b = U.uBound.value;
+    for (let i = 0; i < pa.length; i += 4) {
+      pa[i] = (Math.random() * 2 - 1) * b.x; pa[i + 1] = (Math.random() * 2 - 1) * b.y; pa[i + 2] = (Math.random() * 2 - 1) * b.z; pa[i + 3] = 1;
+    }
+    const vel = gpu.addVariable('textureVelocity', VEL, dtVel);
+    const pos = gpu.addVariable('texturePosition', POS, dtPos);
+    gpu.setVariableDependencies(vel, [pos, vel]);
+    gpu.setVariableDependencies(pos, [pos, vel]);
+    ['uTime', 'uDt', 'uAssemble', 'uMorph', 'uFlow', 'uScrollV', 'uPress', 'uMouseOn', 'uMouse', 'uMouseVel', 'uMouseR', 'uFlowAngle', 'uCurl', 'uSpeed', 'uHot', 'tA', 'tB']
+      .forEach(k => { vel.material.uniforms[k] = U[k]; });
+    pos.material.uniforms.uDt = U.uDt; pos.material.uniforms.uBound = U.uBound;
+    const err = gpu.init();
+    if (err !== null) throw new Error(err);
+
+    targets = buildTargets(size);
+    U.tA.value = targets[idxA]; U.tB.value = targets[idxB];
+
+    const n = size * size;
+    const ref = new Float32Array(n * 2);
+    for (let y = 0, i = 0; y < size; y++) for (let x = 0; x < size; x++, i++) { ref[i * 2] = (x + .5) / size; ref[i * 2 + 1] = (y + .5) / size; }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(n * 3), 3));
+    geo.setAttribute('aRef', new THREE.BufferAttribute(ref, 2));
+    const mat = new THREE.ShaderMaterial({
+      uniforms: D, vertexShader: PVERT, fragmentShader: PFRAG,
+      transparent: true, depthTest: false, depthWrite: false, blending: THREE.AdditiveBlending
+    });
+    const points = new THREE.Points(geo, mat); points.frustumCulled = false;
+    scene.add(points);
+    sim = { gpu, pos, vel, points };
+    $('#hp').textContent = n.toLocaleString('es');
+    $('#hsim').textContent = size + '×' + size;
+  }
+
+  buildSim(isMobile ? 128 : 256);
+
+  function syncDisplay() {
+    D.tPos.value = sim.gpu.getCurrentRenderTarget(sim.pos).texture;
+    D.tVel.value = sim.gpu.getCurrentRenderTarget(sim.vel).texture;
+  }
+
+  /* ---------- transiciones de forma (Anime.js) ---------- */
+  let tl = null, introDone = false, activeSec = 0, hoverIdx = null;
+
+  function settle(n, idx) {
+    if (idx !== undefined) { idxA = idxB = tgtIdx = idx; U.tA.value = U.tB.value = targets[idx]; }
+    U.uMorph.value = 0; U.uAssemble.value = 1; U.uFlow.value = 0; U.uGain.value = 1; U.uMouseOn.value = 0; U.uPress.value = 0; U.uHot.value = 0;
+    for (let i = 0; i < n; i++) { U.uDt.value = .04; U.uTime.value += .04; sim.gpu.compute(); }
+    syncDisplay();
+    renderer.render(scene, camera);
+  }
+  function staticCamera() {
+    const S = SEC[activeSec];
+    camera.position.set(0, 0, S.z); camera.rotation.set(0, 0, 0); D.uDepth.value = S.z; camera.updateMatrixWorld();
+  }
+
+  function go(idx, opt = {}) {
+    if (reduce) { if (opt.sec !== undefined) { activeSec = opt.sec; staticCamera(); } settle(70, idx); return; }
+    if (idx === tgtIdx && opt.sec === undefined) return;
+    if (idx === tgtIdx && !tl) return;
+    tgtIdx = idx;
+    if (tl) { tl.pause(); if (U.uMorph.value > .5) idxA = idxB; U.uMorph.value = 0; U.tA.value = targets[idxA]; }
+    idxB = idx; U.tB.value = targets[idx];
+    const soft = !!opt.soft;
+    tl = createTimeline({ onComplete: () => { idxA = idxB; U.tA.value = targets[idxA]; U.uMorph.value = 0; tl = null; } });
+    tl.add(U.uAssemble, { value: soft ? .35 : .06, duration: soft ? 220 : 420, ease: 'outQuad' }, 0)
+      .add(U.uMorph, { value: 1, duration: soft ? 700 : 900, ease: 'inOutQuad' }, soft ? 60 : 200)
+      .add(U.uAssemble, { value: 1, duration: soft ? 700 : 1100, ease: 'inOutCubic' }, soft ? 300 : 620);
+    if (opt.sec !== undefined) {
+      const S = SEC[opt.sec];
+      animate(cam, { z: S.z, roll: S.roll, duration: 1500, ease: 'inOutQuart' });
+      animate(U.uFlowAngle, { value: S.angle, duration: 1600, ease: 'inOutQuad' });
+      animate(U.uCurl, { value: S.curl, duration: 1600, ease: 'inOutQuad' });
+      animate(U.uSpeed, { value: S.speed, duration: 1600, ease: 'inOutQuad' });
+      animate(U.uGain, { value: S.gain, duration: 1200, ease: 'outQuad' });
+      animate(D.uAcid, { value: S.acid, duration: 1400, ease: 'inOutQuad' });
+    }
+  }
+
+  /* ---------- tipografía cinética ---------- */
+  const fixSplit = s => { s.words && s.words.forEach(w => w.style.display = 'inline-block'); s.chars && s.chars.forEach(c => c.style.display = 'inline-block'); return s; };
+  const scramble = (el, delay = 0, dur = 1400) => {
+    if (!scrambleText || reduce) return;
+    const orig = el.textContent;
+    try {
+      animate(el, { innerHTML: scrambleText({ chars: 'A-Z0-9', revealRate: 40, text: orig }), duration: dur, delay, ease: 'linear',
+        onComplete: () => { el.textContent = orig; } });
+    } catch (e) { el.textContent = orig; }
+  };
+
+  const ledeSplit = reduce ? null : fixSplit(splitText('.lede', { words: true, chars: true }));
+  const h2s = $$('.split').map(el => { el.setAttribute('aria-label', el.textContent); const s = reduce ? null : fixSplit(splitText(el, { words: true, chars: true })); return { el, s }; });
+  const rows = $$('.proj').map(el => {
+    const t = $('.pt', el); t.setAttribute('aria-label', t.textContent);
+    return { el, chars: reduce ? [] : fixSplit(splitText(t, { words: true, chars: true })).chars };
+  });
+
+  /* ---------- hover de proyectos / email ---------- */
+  let hoverT = 0;
+  const leaveHover = () => {
+    clearTimeout(hoverT);
+    hoverT = setTimeout(() => { hoverIdx = null; if (introDone) go(SEC_TGT[activeSec], { soft: true }); animate(U.uHot, { value: 0, duration: 500, ease: 'outQuad' }); }, 90);
+  };
+  rows.forEach((r, i) => {
+    const enter = () => {
+      clearTimeout(hoverT); if (!introDone || reduce) return;
+      hoverIdx = 4 + i; go(4 + i, { soft: true });
+      animate(U.uHot, { value: 1, duration: 350, ease: 'outQuad' });
+      animate(r.chars, { translateY: [{ to: -12, duration: 150 }, { to: 0, duration: 340 }], color: '#D4FF3A', delay: stagger(16), ease: 'outQuad' });
+    };
+    const leave = () => {
+      if (reduce) return;
+      animate(r.chars, { color: '#E8F0F2', duration: 320, delay: stagger(8, { from: 'last' }), ease: 'outQuad' });
+      leaveHover();
+    };
+    r.el.addEventListener('pointerenter', enter); r.el.addEventListener('pointerleave', leave);
+    r.el.addEventListener('focus', enter); r.el.addEventListener('blur', leave);
+    r.el.addEventListener('click', e => e.preventDefault());
+  });
+  const mail = $('#mail');
+  mail.addEventListener('pointerenter', () => { clearTimeout(hoverT); if (!introDone || reduce) return; hoverIdx = 7; go(7, { soft: true }); animate(U.uHot, { value: .8, duration: 350 }); });
+  mail.addEventListener('pointerleave', leaveHover);
+  mail.addEventListener('focus', () => mail.dispatchEvent(new Event('pointerenter')));
+  mail.addEventListener('blur', leaveHover);
+
+  /* ---------- secciones ---------- */
+  const navLinks = $$('.nav li a');
+  const hsec = $('#hsec');
+  function onSection() {
+    navLinks.forEach(a => a.classList.toggle('on', +a.dataset.s === activeSec));
+    hsec.textContent = '0' + activeSec;
+    if (introDone) go(SEC_TGT[activeSec], { sec: activeSec });
+  }
+  const secIO = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { const n = +e.target.dataset.i; if (n !== activeSec) { activeSec = n; onSection(); } }
+  }), { rootMargin: '-50% 0px -50% 0px' });
+  $$('main section').forEach(s => secIO.observe(s));
+
+  /* ---------- revelado al scroll ---------- */
+  if (!reduce) {
+    utils.set('.rv', { opacity: 0, translateY: 26 });
+    h2s.forEach(h => utils.set(h.s.chars, { opacity: 0 }));
+    const revIO = new IntersectionObserver(es => {
+      let k = 0;
+      es.forEach(e => {
+        if (!e.isIntersecting) return;
+        revIO.unobserve(e.target);
+        const el = e.target;
+        if (el.classList.contains('split')) {
+          const h = h2s.find(x => x.el === el);
+          animate(h.s.chars, { opacity: [0, 1], translateY: ['0.5em', 0], delay: stagger(24), duration: 900, ease: 'outExpo' });
+        } else {
+          animate(el, { opacity: [0, 1], translateY: [26, 0], duration: 900, delay: (k++) * 90, ease: 'outExpo' });
+          if (el.hasAttribute('data-scr')) scramble(el, 100, 900);
+        }
+      });
+    }, { threshold: .12 });
+    $$('.rv, .split').forEach(el => revIO.observe(el));
+  }
+
+  /* ---------- cursor ---------- */
+  const ret = $('#ret');
+  let px = -999, py = -999, mouseOn = 0, mouseOnS = 0, havePointer = false;
+  const wp = new THREE.Vector3(), prevWp = new THREE.Vector3(), mvS = new THREE.Vector2(), ndc = new THREE.Vector3();
+  addEventListener('pointermove', e => { px = e.clientX; py = e.clientY; mouseOn = 1; havePointer = true; }, { passive: true });
+  addEventListener('pointerdown', e => {
+    px = e.clientX; py = e.clientY; mouseOn = 1; havePointer = true;
+    if (!reduce) animate(U.uPress, { value: 1, duration: 260, ease: 'outQuad' });
+  });
+  const release = e => { if (reduce) return; animate(U.uPress, { value: 0, duration: 800, ease: 'outCubic' }); if (e && e.pointerType === 'touch') mouseOn = 0; };
+  addEventListener('pointerup', release); addEventListener('pointercancel', release);
+  document.documentElement.addEventListener('pointerleave', () => { mouseOn = 0; });
+  document.addEventListener('mouseleave', () => { mouseOn = 0; });
+
+  /* ---------- HUD ---------- */
+  const el = id => document.getElementById(id);
+  const hx = el('hx'), hy = el('hy'), hpx = el('hpx'), hpy = el('hpy'), hf = el('hf'), hs = el('hs'), hfl = el('hfl'), mkx = el('mkx'), mky = el('mky');
+  const rxEl = $('.rx'), ryEl = $('.ry');
+  const sgn = v => (v >= 0 ? '+' : '−') + Math.abs(v).toFixed(3);
+  const pad4 = v => String(Math.max(0, Math.round(v))).padStart(4, '0');
+  let hsLast = '';
+
+  /* ---------- bucle ---------- */
+  let last = performance.now(), tAcc = 0, fpsT = 0, fpsN = 0, fc = 0, dtSum = 0, rafId = 0, prevSy = window.scrollY, svS = 0, flowK = 0, downgraded = false;
+
+  function step(dt) {
+    tAcc += dt;
+    const sy = window.scrollY;
+    svS += ((sy - prevSy) / dt - svS) * (1 - Math.exp(-dt * 7)); prevSy = sy;
+    const sv = Math.max(-1, Math.min(1, svS / 2200));
+    U.uScrollV.value = sv;
+    const f = Math.min(1, Math.max(0, (Math.abs(sv) - .04) / .45));
+    flowK += (f - flowK) * (1 - Math.exp(-dt * (f > flowK ? 10 : 2.2)));
+    U.uFlow.value = flowK;
+    const eff = U.uAssemble.value * (1 - flowK * .9);
+    const dis = Math.min(1, Math.max(0, 1 - eff));
+
+    /* cámara */
+    const zc = cam.z * cam.intro * (1 - flowK * .06);
+    camera.position.set(Math.sin(tAcc * .23) * 1.4 * dis, Math.cos(tAcc * .19) * .8 * dis, zc);
+    camera.rotation.set(0, -Math.sin(tAcc * .23) * .05 * dis, cam.roll * dis + Math.sin(tAcc * .11) * .03 * dis);
+    camera.updateMatrixWorld();
+    D.uDepth.value = Math.max(cam.z, 6);
+
+    /* cursor → mundo */
+    mouseOnS += (mouseOn - mouseOnS) * (1 - Math.exp(-dt * 8));
+    U.uMouseOn.value = mouseOnS;
+    if (havePointer) {
+      ndc.set(px / innerWidth * 2 - 1, -(py / innerHeight) * 2 + 1, .5).unproject(camera).sub(camera.position).normalize();
+      const t = -camera.position.z / ndc.z;
+      wp.copy(camera.position).addScaledVector(ndc, t);
+      const mvx = (wp.x - prevWp.x) / dt, mvy = (wp.y - prevWp.y) / dt;
+      prevWp.copy(wp);
+      const k = 1 - Math.exp(-dt * 12);
+      mvS.x += (mvx - mvS.x) * k; mvS.y += (mvy - mvS.y) * k;
+      const ml = mvS.length(); if (ml > 45) mvS.multiplyScalar(45 / ml);
+      U.uMouse.value.copy(wp);
+      U.uMouseVel.value.copy(mvS);
+    }
+    const viewH = 2 * Math.tan(FOV * Math.PI / 360) * zc;
+    U.uMouseR.value = (isMobile ? .2 : .15) * viewH;
+    const ringPx = 2 * U.uMouseR.value * (1 + U.uPress.value * .8) / viewH * innerHeight;
+    ret.style.opacity = (mouseOnS * .9).toFixed(2);
+    ret.style.transform = `translate(${px - 50}px,${py - 50}px) scale(${(ringPx / 100).toFixed(3)})`;
+
+    /* simulación + render */
+    const sdt = Math.min(dt, 1 / 30);
+    U.uDt.value = sdt; U.uTime.value = tAcc;
+    sim.gpu.compute();
+    syncDisplay();
+    renderer.render(scene, camera);
+
+    /* HUD en vivo */
+    hx.textContent = sgn(wp.x); hy.textContent = sgn(wp.y);
+    hpx.textContent = pad4(px); hpy.textContent = pad4(py);
+    mkx.style.transform = `translateX(${Math.max(0, Math.min(rxEl.clientWidth, px - rxEl.getBoundingClientRect().left))}px)`;
+    const maxS = Math.max(1, document.documentElement.scrollHeight - innerHeight);
+    if (ryEl.offsetParent !== null) mky.style.transform = `translateY(${(sy / maxS) * ryEl.clientHeight}px)`;
+    hfl.textContent = flowK.toFixed(2);
+    const st = !introDone && eff < .98 ? 'ENSAMBLANDO' : eff > .96 ? 'BLOQUEADO' : eff > .4 ? 'ENSAMBLANDO' : 'FLUJO LAMINAR';
+    if (st !== hsLast) { hs.textContent = st; hsLast = st; }
+
+    fpsT += dt; fpsN++;
+    if (fpsT >= .5) { hf.textContent = Math.round(fpsN / fpsT); fpsT = 0; fpsN = 0; }
+
+    /* detección de rendimiento (primeros segundos) */
+    fc++;
+    if (!downgraded && fc > 30 && fc <= 130) dtSum += dt;
+    if (!downgraded && fc === 131) {
+      downgraded = true;
+      const avg = dtSum / 100;
+      if (avg > .034 && dpr > 1) { dpr = 1; renderer.setPixelRatio(dpr); renderer.setSize(innerWidth, innerHeight, false); D.uPx.value = dpr; }
+      if (avg > .026 && SIZE > 128) { buildSim(128); }
+    }
+  }
+  function frame(now) {
+    rafId = requestAnimationFrame(frame);
+    let dt = (now - last) / 1000; last = now;
+    if (dt > .1) dt = .1; if (dt <= 0) dt = .001;
+    step(dt);
+  }
+  document.addEventListener('visibilitychange', () => {
+    if (reduce) return;
+    if (document.hidden) cancelAnimationFrame(rafId);
+    else { last = performance.now(); prevSy = window.scrollY; rafId = requestAnimationFrame(frame); }
+  });
+
+  /* ---------- resize ---------- */
+  let rsT = 0, lastW = innerWidth, lastH = innerHeight;
+  addEventListener('resize', () => {
+    renderer.setSize(innerWidth, innerHeight, false);
+    camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+    clearTimeout(rsT);
+    rsT = setTimeout(() => {
+      if (innerWidth === lastW && Math.abs(innerHeight - lastH) < 120) return;
+      lastW = innerWidth; lastH = innerHeight;
+      updateBounds();
+      const old = targets; targets = buildTargets(SIZE);
+      U.tA.value = targets[idxA]; U.tB.value = targets[idxB];
+      old.forEach(t => t.dispose());
+      if (reduce) { staticCamera(); settle(70); }
+    }, 250);
+  });
+
+  /* ---------- arranque ---------- */
+  if (reduce) {
+    html.classList.remove('intro');
+    activeSec = 0; staticCamera(); cam.intro = 1;
+    $('#hs').textContent = 'ESTÁTICO'; hf.textContent = '—';
+    settle(100, 0);
+    const io0 = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { const n = +e.target.dataset.i; if (n !== activeSec) { activeSec = n; navLinks.forEach(a => a.classList.toggle('on', +a.dataset.s === n)); hsec.textContent = '0' + n; go(SEC_TGT[n], { sec: n }); } } }), { rootMargin: '-50% 0px -50% 0px' });
+    $$('main section').forEach(s => io0.observe(s));
+    return;
+  }
+
+  utils.set('.hi', { opacity: 0 });
+  utils.set(ledeSplit.chars, { opacity: 0 });
+  html.classList.remove('intro');
+
+  const scrEls = $$('[data-scr]').filter(e => !e.closest('main'));
+  const intro = createTimeline({ defaults: { ease: 'outExpo' }, onComplete: () => { introDone = true; onSection(); } });
+  intro
+    .add(U.uGain, { value: 1, duration: 900, ease: 'outQuad' }, 0)
+    .add(cam, { intro: 1, duration: 3000, ease: 'outQuart' }, 0)
+    .add(U.uCurl, { value: SEC[0].curl, duration: 2600, ease: 'inOutQuad' }, 0)
+    .add(U.uAssemble, { value: 1, duration: 2200, ease: 'inOutQuart' }, 500)
+    .add('.hi', { opacity: [0, 1], translateY: [-8, 0], duration: 700, delay: stagger(80) }, 250)
+    .add(ledeSplit.chars, { opacity: [0, 1], translateY: ['0.6em', 0], duration: 800, delay: stagger(14) }, 1700)
+    .call(() => scrEls.forEach((e, i) => scramble(e, i * 70, 1500)), 200);
+
+  last = performance.now();
+  rafId = requestAnimationFrame(frame);
+}
+</script>
+</body>
+</html>

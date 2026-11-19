@@ -1,0 +1,322 @@
+{
+  "_rules": "Solo se cambia 'passes' a true tras verificarlo de punta a punta (navegador o comando indicado). Nunca se borran ni reescriben entradas; se añaden nuevas.",
+  "features": [
+    {
+      "id": "pub-static",
+      "category": "public",
+      "description": "La portada / es estática y se regenera; no consulta la base en cada visita",
+      "steps": [
+        "pnpm build",
+        "La tabla de rutas marca / como ○ con Revalidate 1d"
+      ],
+      "passes": true
+    },
+    {
+      "id": "pub-waiting",
+      "category": "public",
+      "description": "Sin perfil publicado se ve el estado 'En compilación' sin contenido de borrador",
+      "steps": [
+        "Base sin perfil publicado",
+        "Abrir /",
+        "Se ve el estado de espera y la traza; no aparecen proyectos"
+      ],
+      "passes": true
+    },
+    {
+      "id": "pub-hero",
+      "category": "public",
+      "description": "La portada muestra nombre, titular, bio breve, CTA a proyectos y contacto con la dirección de arte elegida",
+      "steps": [
+        "Perfil publicado",
+        "Abrir / a 1440x900 y 390x844",
+        "Nombre y titular legibles en <2 s",
+        "art-reviewer APROBAR"
+      ],
+      "passes": false
+    },
+    {
+      "id": "pub-projects",
+      "category": "public",
+      "description": "Lista de proyectos publicados con stack, fechas, enlaces y foco en la escena al hacer hover",
+      "steps": [
+        "2+ proyectos publicados",
+        "Scroll a #proyectos",
+        "Hover en un proyecto: la escena reacciona",
+        "Enlaces abren demo/repos"
+      ],
+      "passes": false
+    },
+    {
+      "id": "pub-project-detail",
+      "category": "public",
+      "description": "Página /proyectos/[slug] estática con portada, galería, stack y repositorios",
+      "steps": [
+        "Proyecto publicado con imágenes",
+        "Abrir /proyectos/<slug>",
+        "404 para slug inexistente o borrador"
+      ],
+      "passes": false
+    },
+    {
+      "id": "pub-path",
+      "category": "public",
+      "description": "Trayectoria: experiencia y formación activas en orden",
+      "steps": [
+        "Datos activos",
+        "Scroll a #trayectoria"
+      ],
+      "passes": true
+    },
+    {
+      "id": "pub-stack",
+      "category": "public",
+      "description": "Stack por categorías activas",
+      "steps": [
+        "Categorías con skills activas",
+        "Scroll a #stack"
+      ],
+      "passes": false
+    },
+    {
+      "id": "pub-trace",
+      "category": "public",
+      "description": "Traza real: consultas de la compilación y fases de la visita",
+      "steps": [
+        "Abrir /",
+        "#traza muestra spans del servidor y Navigation Timing"
+      ],
+      "passes": true
+    },
+    {
+      "id": "pub-contact",
+      "category": "public",
+      "description": "Contacto con email y redes activas",
+      "steps": [
+        "Perfil con email/redes",
+        "Scroll a #contacto"
+      ],
+      "passes": true
+    },
+    {
+      "id": "pub-webgl-fallback",
+      "category": "public",
+      "description": "Sin WebGL2 la página es completa con fondo estático",
+      "steps": [
+        "Navegador sin WebGL2",
+        "data-status=fallback y todo el texto visible"
+      ],
+      "passes": false
+    },
+    {
+      "id": "pub-reduced-motion",
+      "category": "public",
+      "description": "Con prefers-reduced-motion no hay animación continua",
+      "steps": [
+        "ui-shots run reduced",
+        "Un frame estático, sin scramble"
+      ],
+      "passes": true
+    },
+    {
+      "id": "pub-reading-mode",
+      "category": "public",
+      "description": "Modo lectura apaga WebGL y movimiento y se recuerda",
+      "steps": [
+        "Pulsar 'Modo lectura'",
+        "Recargar: sigue activo"
+      ],
+      "passes": false
+    },
+    {
+      "id": "pub-seo",
+      "category": "public",
+      "description": "Metadatos, Open Graph, URL canónica del subdominio, sitemap y robots",
+      "steps": [
+        "Inspeccionar <head>",
+        "/sitemap.xml y /robots.txt responden"
+      ],
+      "passes": true
+    },
+    {
+      "id": "pub-budgets",
+      "category": "public",
+      "description": "JS inicial ≤230 kB gzip y Three.js fuera del bundle inicial",
+      "steps": [
+        "pnpm build",
+        "node scripts/check-budgets.mjs pasa"
+      ],
+      "passes": true
+    },
+    {
+      "id": "adm-login",
+      "category": "admin",
+      "description": "Login de administrador con email y contraseña; registro público deshabilitado",
+      "steps": [
+        "pnpm admin:create con ADMIN_*",
+        "Abrir /admin/login y entrar",
+        "Credenciales malas muestran error"
+      ],
+      "passes": false
+    },
+    {
+      "id": "adm-guard",
+      "category": "admin",
+      "description": "/admin/** inaccesible sin sesión admin; cada action rechaza sin admin",
+      "steps": [
+        "Sin sesión abrir /admin → redirige a login",
+        "Llamar una action sin sesión → rechazo"
+      ],
+      "passes": false
+    },
+    {
+      "id": "adm-profile",
+      "category": "admin",
+      "description": "Editar perfil, foto y publicar/despublicar; la portada se actualiza al instante",
+      "steps": [
+        "Editar titular y guardar",
+        "Abrir / en build de producción: cambio visible sin esperar 1 día"
+      ],
+      "passes": false
+    },
+    {
+      "id": "adm-social",
+      "category": "admin",
+      "description": "CRUD, orden y activación de redes",
+      "steps": [
+        "Crear, reordenar, desactivar, borrar"
+      ],
+      "passes": false
+    },
+    {
+      "id": "adm-skills",
+      "category": "admin",
+      "description": "CRUD de categorías y skills con slug único; no se borra categoría con skills",
+      "steps": [
+        "Crear categoría y skills",
+        "Intentar borrar categoría con skills: mensaje claro"
+      ],
+      "passes": false
+    },
+    {
+      "id": "adm-projects",
+      "category": "admin",
+      "description": "CRUD de proyectos: estado, destacado, orden, fechas, skills, repositorios",
+      "steps": [
+        "Crear borrador, añadir skills y repos",
+        "Publicar: aparece en / y /proyectos/<slug>"
+      ],
+      "passes": false
+    },
+    {
+      "id": "adm-images",
+      "category": "admin",
+      "description": "Subida firmada a Cloudinary, alt obligatorio, una portada máx., borrar también en Cloudinary",
+      "steps": [
+        "Con CLOUDINARY_* configurado subir imagen",
+        "Borrar imagen: desaparece en Cloudinary"
+      ],
+      "passes": false
+    },
+    {
+      "id": "adm-path",
+      "category": "admin",
+      "description": "CRUD y orden de experiencia y formación",
+      "steps": [
+        "Crear, editar, reordenar, desactivar"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ops-deploy",
+      "category": "ops",
+      "description": "Despliegue en Vercel Hobby con Postgres gratuito y migraciones aplicadas",
+      "steps": [
+        "Variables en Vercel",
+        "prisma migrate deploy",
+        "/api/health ok en *.vercel.app"
+      ],
+      "passes": false
+    },
+    {
+      "id": "har-schema-coverage",
+      "category": "harness",
+      "description": "El gate falla si un campo del esquema no está mapeado o una pareja campo×ruta nueva queda sin mostrar (trinquete)",
+      "steps": [
+        "node scripts/check-schema-coverage.mjs",
+        "Quitar un campo de schema-map.json → sale 1 con remedio"
+      ],
+      "passes": true
+    },
+    {
+      "id": "pub-about",
+      "category": "public",
+      "description": "Sección #sobre-mi con foto (next/image), biografía completa, ubicación, correo y redes activas",
+      "steps": [
+        "pnpm seed:fixture --yes",
+        "node scripts/ui-shots.mjs scripts/ui-plans/coverage.json",
+        "Revisión visual con datos reales"
+      ],
+      "passes": true
+    },
+    {
+      "id": "pub-featured",
+      "category": "public",
+      "description": "#proyectos muestra los destacados con portada, insignia DESTACADO, fechas, skills enlazadas, repos, demo y enlace a /proyectos (N)",
+      "steps": [
+        "Fixture cargada",
+        "Aserciones de / en coverage.json"
+      ],
+      "passes": true
+    },
+    {
+      "id": "pub-projects-index",
+      "category": "public",
+      "description": "/proyectos lista todos los proyectos publicados con portada, fechas y skills, con filtro por skill; los borradores no salen",
+      "steps": [
+        "Fixture cargada",
+        "Aserciones de /proyectos en coverage.json"
+      ],
+      "passes": true
+    },
+    {
+      "id": "pub-project-full",
+      "category": "public",
+      "description": "/proyectos/[slug] completa: portada, galería con dimensiones reales, fechas mes-año, skills, repos por tipo, demo y anterior/siguiente; borrador → 404",
+      "steps": [
+        "Fixture cargada",
+        "Aserciones de /proyectos/<slug> y expectStatus 404"
+      ],
+      "passes": true
+    },
+    {
+      "id": "pub-stack-skill",
+      "category": "public",
+      "description": "/stack/[slug]: nombre, icono, descripción, categoría y proyectos publicados que usan la skill",
+      "steps": [
+        "Fixture cargada",
+        "Aserciones de /stack/<slug>"
+      ],
+      "passes": true
+    },
+    {
+      "id": "pub-path-complete",
+      "category": "public",
+      "description": "#trayectoria muestra description, location y credentialUrl de formación, fieldOfStudy solo si difiere y ninguna etiqueta huérfana",
+      "steps": [
+        "Fixture cargada",
+        "Aserciones de #trayectoria"
+      ],
+      "passes": true
+    },
+    {
+      "id": "pub-skill-icons",
+      "category": "public",
+      "description": "Skill.icon: URL de Cloudinary como imagen decorativa de 20 px, texto ≤4 caracteres como glifo, otro valor ignorado",
+      "steps": [
+        "Fixture con ambos tipos de icono",
+        "Aserciones de #stack"
+      ],
+      "passes": true
+    }
+  ]
+}

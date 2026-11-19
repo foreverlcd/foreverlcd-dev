@@ -1,0 +1,20 @@
+{
+  "name": "smoke",
+  "baseUrl": "http://localhost:3000",
+  "runs": [
+    { "name": "desktop", "viewport": { "w": 1440, "h": 900 } },
+    { "name": "mobile", "viewport": { "w": 390, "h": 844 }, "mobile": true },
+    { "name": "reduced", "viewport": { "w": 1440, "h": 900 }, "reducedMotion": true }
+  ],
+  "steps": [
+    { "goto": "/" },
+    { "wait": 1500 },
+    { "shot": "hero" },
+    { "scrollTo": "#proyectos" },
+    { "wait": 500 },
+    { "shot": "proyectos" },
+    { "scrollTo": "#traza" },
+    { "wait": 500 },
+    { "shot": "traza" }
+  ]
+}

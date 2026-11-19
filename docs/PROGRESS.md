@@ -1,0 +1,80 @@
+# Progreso
+
+## Estado (2026-11-18)
+- **Ramas:**
+  - `main` tiene Next 16.4.6, el parche de seguridad.
+  - `feat/adding-admin-user` contiene el backend y el dashboard.
+  - `feat/signal-experience` contiene el arnés, la dirección SIGNAL y la portada nueva, e incorpora `main`.
+  - Todas están subidas a GitHub.
+- **Web pública:**
+  - Portada SIGNAL / ESTRUCTURA implementada (`src/components/signal/`), estática con revalidación diaria.
+  - JS inicial: 196,6 kB gzip; Three.js va diferido.
+  - Verificada con GPU real (RTX 3050 Ti) en 7 viewports, de 360 a 2560 px, más el modo reducido: 60 fps y 0 errores en contenido DEMO.
+  - Niveles T2/T1/T0 con degradación adaptativa.
+- **Dashboard:**
+  - CRUD completo de perfil, redes, skills, proyectos (repos, skills, imágenes), experiencia y formación.
+  - E2E con la base real: login y creación de red; sin perfil devuelve un mensaje claro (antes daba 500 por la FK).
+  - Revisión cruzada de codex aplicada.
+- **Arnés:**
+  - `gate.sh` (GATE_STRICT con base de datos).
+  - `ui-shots.mjs` con `GPU=1`.
+  - `delegate.sh` con `REVIEW_PATHS` y el prompt en archivo para agy y opencode.
+  - Lecciones en `docs/harness/LOG.md`.
+
+## Actualización (2026-11-18, tarde)
+- Datos reales del CV del dueño cargados en la base LOCAL con `.harness/seed-cv.ts` (ignorado por git). La foto provisional es el avatar de GitHub, solo en local.
+- Los datos reales revelaron fallos que el DEMO ocultaba, y ya están corregidos:
+  - nombre de 4 palabras en móvil y tableta;
+  - iniciales (J.Q);
+  - correo largo partido a mitad de palabra;
+  - tipo de empleo "Otro" visible;
+  - publicar sin foto daba 500.
+- SEO: metadatos, OG, canónica, `sitemap.xml`, `robots.txt` y `/opengraph-image`, todo estático.
+- Dashboard con lenguaje SIGNAL (regla HUD y línea de estado).
+- Guía de despliegue: `docs/DEPLOY.md`.
+
+## Actualización (2026-11-19): el esquema manda
+- Directriz del dueño: `prisma/schema.prisma` es el contrato de producto; el frontend se adapta. Contrato en `docs/product/SPEC.md` + `schema-map.json`.
+- Arnés:
+  - `check-schema-coverage.mjs` en el gate, con trinquete; hoy cubre 85/85 parejas campo × ruta.
+  - Aserciones `expect`/`expectStatus` en ui-shots, error por scroll horizontal y diagnóstico de 500.
+  - Fixture completa `pnpm seed:fixture --yes`, solo contra una base local.
+  - R5 cubre toda página pública.
+- Páginas nuevas:
+  - `/proyectos` (filtro por skill);
+  - ficha completa (placa o portada, tira de metadatos, galería, anterior/siguiente);
+  - `/stack/[slug]` (proyectos y skills hermanas).
+- Portada: `#sobre-mi`, destacados con portada o placa, "Ver todos (N)", trayectoria completa, stack enlazado con iconos y CTA de correo con copiar.
+- Seguridad:
+  - Sin perfil publicado, las rutas nuevas devuelven 404.
+  - Las imágenes solo se aceptan de res.cloudinary.com (validación de actions).
+- Verificado:
+  - Fixture: 50/50 aserciones.
+  - Datos reales: 7 viewports + 3 de páginas, con GPU real, 0 errores y 60 fps.
+  - JS inicial de `/`: 202 kB.
+  - Revisiones: codex (aplicada) y art-reviewer (pase aplicado).
+
+## Siguiente paso (actualizado 2026-11-19)
+1. Nueva revisión de arte del pase aplicado. Pendientes BAJA: línea temporal en trayectoria y retrato en partículas desde `photoUrl`.
+2. Contenido real desde el dashboard:
+   - foto en Cloudinary;
+   - `shortBio` propio (el actual repite el titular: lo escribió el planificador en el seed local);
+   - skills, repos y portadas por proyecto.
+3. Despliegue según `docs/DEPLOY.md` (requiere las cuentas del dueño).
+4. Actualizar el PR #3 o abrir uno nuevo desde `feat/schema-driven-site`.
+
+## Siguiente paso (anterior)
+1. Despliegue (requiere cuentas del dueño): Vercel + Neon + Cloudinary según `docs/DEPLOY.md` (ops-deploy).
+2. Contenido real desde el dashboard: foto en Cloudinary, stack y enlaces por proyecto (el CV no los trae; no inventar).
+3. Verificar en el navegador y marcar: pub-hero (nueva revisión de arte), pub-projects, pub-stack, pub-webgl-fallback, pub-reading-mode y adm-* (credenciales malas, action sin sesión, imágenes).
+4. Fusionar `feat/signal-experience` en `main` con un PR.
+
+## Datos de prueba locales
+En la base local quedan datos de prueba E2E: el admin `e2e-admin@example.test`, el perfil "E2E Perfil" sin publicar y la red "E2E enlace". No usan datos reales; se sobrescriben desde el dashboard.
+
+## Decisiones recientes
+- 2026-11-18: dirección de arte SIGNAL (base) + MEGASTRUCTURE (acentos), elegida por el dueño; debe verse en todos los dispositivos (`ART-DIRECTION.md`).
+- 2026-11-18: Next 16.4.3 → 16.4.6 por aviso de seguridad, parche manual (no `--agent=security`), fusionado a `main` con autorización del dueño.
+- 2026-11-18: el planificador (Opus) diseña y revisa; la ejecución va a motores baratos (`docs/HARNESS.md`).
+- 2026-11-18: portada estática con `revalidate = 86400` por el plan gratuito (Vercel Hobby + Postgres con suspensión).
+- 2026-11-18: Three.js r187 sin React Three Fiber; WebGLRenderer + GLSL propio.

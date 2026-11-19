@@ -14,12 +14,16 @@ export async function getPublishedProjects() {
       {
         displayOrder: "asc",
       },
+      {
+        slug: "asc",
+      },
     ],
     select: {
       id: true,
       title: true,
       slug: true,
       shortDescription: true,
+      demoUrl: true,
       isFeatured: true,
       displayOrder: true,
       startDate: true,
@@ -38,6 +42,7 @@ export async function getPublishedProjects() {
       },
 
       skills: {
+        where: { skill: { isActive: true, category: { isActive: true } } },
         orderBy: {
           displayOrder: "asc",
         },
@@ -67,7 +72,7 @@ export async function getPublishedProjects() {
 
   return projects.map(({ images, skills, ...project }) => ({
     ...project,
-    cover: images[0] ?? null,
+    cover: images.at(0) ?? null,
     skills: skills.map(({ skill }) => skill),
   }));
 }

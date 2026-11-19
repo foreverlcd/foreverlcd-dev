@@ -340,7 +340,9 @@ body:has(.signal) {
   text-shadow: 0 0 16px rgb(5 5 7 / 0.95), 0 0 3px rgb(5 5 7 / 0.9);
 }
 
-.signal section {
+/* Solo las secciones de la portada: las páginas con utilidades Tailwind no heredan esto. */
+.signal .sg-sec,
+.signal .sg-hero {
   position: relative;
   padding-left: var(--pad);
   padding-right: var(--pad);
@@ -529,7 +531,7 @@ body:has(.signal) {
   color: var(--signal);
 }
 
-.signal h2 {
+.signal .sg-sec h2 {
   margin: 0 0 clamp(28px, 6svh, 64px);
   font-family: var(--f-display);
   font-weight: 700;
@@ -1196,7 +1198,7 @@ body:has(.signal) {
     overflow-wrap: anywhere;
   }
 
-  .signal h2 {
+  .signal .sg-sec h2 {
     font-size: clamp(30px, 9.5vw, 46px);
   }
 

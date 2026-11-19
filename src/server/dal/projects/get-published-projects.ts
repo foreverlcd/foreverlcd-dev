@@ -14,6 +14,9 @@ export async function getPublishedProjects() {
       {
         displayOrder: "asc",
       },
+      {
+        slug: "asc",
+      },
     ],
     select: {
       id: true,
@@ -39,6 +42,7 @@ export async function getPublishedProjects() {
       },
 
       skills: {
+        where: { skill: { isActive: true, category: { isActive: true } } },
         orderBy: {
           displayOrder: "asc",
         },

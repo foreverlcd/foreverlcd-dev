@@ -131,7 +131,13 @@ try {
           const file = path.join(outDir, `${safe(run.name)}-${String(n).padStart(2, "0")}-${safe(step.shot)}.png`);
           // caret "initial": ocultar el cursor inyecta style en los inputs y, si la hidratación no terminó,
           // React lo reporta como "attributes didn't match" (falso positivo, ver docs/harness/LOG.md).
-          await page.screenshot({ path: file, caret: "initial" });
+          await page.screenshot({ path: file, caret: "initial", fullPage: Boolean(step.fullPage) });
+          // Ningún viewport admite scroll horizontal (docs/ART-DIRECTION.md: todos los dispositivos).
+          const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+          if (overflow > 1) {
+            errors++;
+            logs.push(`scroll horizontal de ${overflow}px en ${page.url()} (${step.shot}); busca el elemento que desborda`);
+          }
         } else if (step.text) {
           const t = (await page.locator(step.text).first().innerText({ timeout: 5000 })).replace(/\s+/g, " ").trim();
           texts.push(`${step.text}: ${t.slice(0, 200)}`);

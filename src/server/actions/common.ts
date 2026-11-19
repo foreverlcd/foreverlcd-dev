@@ -8,6 +8,9 @@ export const NIL_UUID = "00000000-0000-0000-0000-000000000000";
 
 export function revalidatePortfolio(slug?: string) {
   revalidatePath("/");
+  revalidatePath("/proyectos");
+  revalidatePath("/proyectos/[slug]", "page");
+  revalidatePath("/stack/[slug]", "page");
   if (slug) revalidatePath(`/proyectos/${slug}`);
 }
 

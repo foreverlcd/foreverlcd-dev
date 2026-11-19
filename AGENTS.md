@@ -11,10 +11,12 @@ Responde en español. Código, identificadores y commits en inglés.
 
 ## Mapa (carga bajo demanda, no todo)
 - Índice de documentos: `docs/00-INDEX.md`
+- Qué muestra la web (el esquema es el contrato): `docs/product/SPEC.md` + `schema-map.json`
 - Arquitectura, capas y caché: `docs/ARCHITECTURE.md`
 - Reglas que todo cambio respeta: `docs/GOLDEN-PRINCIPLES.md`
 - Dirección de arte y presupuestos 3D: `docs/ART-DIRECTION.md`
 - Arnés de agentes (motores, roles, ciclo): `docs/HARNESS.md`
+- Despliegue (producción en https://foreverlcd.vercel.app): `docs/DEPLOY.md`
 - Calidad por área: `docs/QUALITY-SCORE.md` · Deuda: `docs/exec-plans/tech-debt-tracker.md`
 
 Los documentos son la fuente de verdad. Si el código y un documento se contradicen: DETENTE y pregunta; no lo cambies en silencio.
@@ -24,6 +26,8 @@ Los documentos son la fuente de verdad. Si el código y un documento se contradi
 - `node scripts/check-boundaries.mjs` — reglas de arquitectura; cada error dice cómo corregir.
 - `node scripts/ui-shots.mjs scripts/ui-plans/<plan>.json` — el agente ve la app (WebGL incluido) → `.shots/`.
 - `PORTFOLIO_DEMO=1 pnpm dev` — contenido DEMO en local con la base vacía.
+- `pnpm seed:fixture --yes` — datos ficticios que rellenan TODO el esquema (solo base local); `node scripts/ui-shots.mjs scripts/ui-plans/coverage.json` los verifica. Lo decide el planificador: el dueño puede estar viendo :3000.
+- `node scripts/check-schema-coverage.mjs` — cada campo `show` del mapa se lee y se renderiza en su ruta (trinquete).
 - `scripts/harness/delegate.sh <motor> <rol> <plan.md>` — delegar (ver `docs/HARNESS.md`).
 
 ## Stack (cerrado)

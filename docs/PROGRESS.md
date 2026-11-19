@@ -1,80 +1,76 @@
 # Progreso
 
-## Estado (2026-11-18)
+## Estado (2026-11-19)
+- **Producción:** https://foreverlcd.vercel.app
+  - Vercel Hobby, conectado a GitHub: cada push a `main` despliega.
+  - Neon Postgres 18 (`aws-us-east-1`), migraciones aplicadas.
+  - Admin creado por el dueño. Las 6 variables están cargadas, Cloudinary incluido.
+  - Comprobado:
+    - `/api/health` → `database: ok`;
+    - login falso → 401;
+    - firma de Cloudinary sin sesión → 401;
+    - `/admin` sin sesión → redirige a `/admin/login`.
+  - El sitio muestra "En compilación" hasta que el dueño publique su perfil. Detalle en `docs/DEPLOY.md`.
 - **Ramas:**
-  - `main` tiene Next 16.4.6, el parche de seguridad.
-  - `feat/adding-admin-user` contiene el backend y el dashboard.
-  - `feat/signal-experience` contiene el arnés, la dirección SIGNAL y la portada nueva, e incorpora `main`.
-  - Todas están subidas a GitHub.
+  - `main` contiene todo, por el PR #4 (que sustituyó al #3).
+  - `chore/production-deploy`: documentación del despliegue y de esta actualización.
+- **Contrato de producto:** `prisma/schema.prisma` manda (directriz del dueño, 2026-11-18). `docs/product/SPEC.md` + `schema-map.json`; la cobertura es 85/85 parejas campo × ruta y el gate la exige.
 - **Web pública:**
-  - Portada SIGNAL / ESTRUCTURA implementada (`src/components/signal/`), estática con revalidación diaria.
-  - JS inicial: 196,6 kB gzip; Three.js va diferido.
-  - Verificada con GPU real (RTX 3050 Ti) en 7 viewports, de 360 a 2560 px, más el modo reducido: 60 fps y 0 errores en contenido DEMO.
-  - Niveles T2/T1/T0 con degradación adaptativa.
+  - `/`:
+    - SIGNAL / ESTRUCTURA con escena WebGL T2/T1/T0;
+    - secciones hero, `#sobre-mi`, destacados, trayectoria, stack, contacto y traza.
+  - `/proyectos`: índice con filtro por skill.
+  - `/proyectos/[slug]`: placa o portada, tira de metadatos, galería y anterior/siguiente.
+  - `/stack/[slug]`: proyectos y skills hermanas.
+  - Todo estático con revalidación diaria más `revalidatePath` desde el dashboard. Sin perfil publicado, `/` muestra la espera y el resto devuelve 404.
+  - JS inicial de `/`: 202 kB gzip (presupuesto 230).
+  - Verificado con GPU real (RTX 3050 Ti) en 7 viewports de portada y 3 de páginas: 60 fps y 0 errores, con datos reales y con la fixture (50/50 aserciones).
 - **Dashboard:**
-  - CRUD completo de perfil, redes, skills, proyectos (repos, skills, imágenes), experiencia y formación.
-  - E2E con la base real: login y creación de red; sin perfil devuelve un mensaje claro (antes daba 500 por la FK).
-  - Revisión cruzada de codex aplicada.
-- **Arnés:**
-  - `gate.sh` (GATE_STRICT con base de datos).
-  - `ui-shots.mjs` con `GPU=1`.
-  - `delegate.sh` con `REVIEW_PATHS` y el prompt en archivo para agy y opencode.
+  - CRUD completo.
+  - Las imágenes solo se aceptan de `res.cloudinary.com`, porque otro host rompía `next/image`.
+  - Publicar exige foto.
+- **Arnés:** `gate.sh` comprueba:
+  - boundaries, incluida la R5 sobre toda página pública;
+  - cobertura del esquema;
+  - tipos, lint, build, presupuestos y secretos.
+
+  Además:
+  - `ui-shots.mjs`: `GPU=1`, aserciones, error por scroll horizontal y diagnóstico de 500.
+  - Fixture `pnpm seed:fixture --yes`, solo contra una base local.
+  - `delegate.sh`.
   - Lecciones en `docs/harness/LOG.md`.
 
-## Actualización (2026-11-18, tarde)
-- Datos reales del CV del dueño cargados en la base LOCAL con `.harness/seed-cv.ts` (ignorado por git). La foto provisional es el avatar de GitHub, solo en local.
-- Los datos reales revelaron fallos que el DEMO ocultaba, y ya están corregidos:
-  - nombre de 4 palabras en móvil y tableta;
-  - iniciales (J.Q);
-  - correo largo partido a mitad de palabra;
-  - tipo de empleo "Otro" visible;
-  - publicar sin foto daba 500.
-- SEO: metadatos, OG, canónica, `sitemap.xml`, `robots.txt` y `/opengraph-image`, todo estático.
-- Dashboard con lenguaje SIGNAL (regla HUD y línea de estado).
-- Guía de despliegue: `docs/DEPLOY.md`.
+## Siguiente paso
+1. **Dueño:** cargar el contenido real en producción desde `/admin`:
+   - foto;
+   - `shortBio` propio (el del seed local repetía el titular);
+   - redes, experiencia y formación;
+   - skills con categorías;
+   - por proyecto: skills, repositorios, portada y destacados.
 
-## Actualización (2026-11-19): el esquema manda
-- Directriz del dueño: `prisma/schema.prisma` es el contrato de producto; el frontend se adapta. Contrato en `docs/product/SPEC.md` + `schema-map.json`.
-- Arnés:
-  - `check-schema-coverage.mjs` en el gate, con trinquete; hoy cubre 85/85 parejas campo × ruta.
-  - Aserciones `expect`/`expectStatus` en ui-shots, error por scroll horizontal y diagnóstico de 500.
-  - Fixture completa `pnpm seed:fixture --yes`, solo contra una base local.
-  - R5 cubre toda página pública.
-- Páginas nuevas:
-  - `/proyectos` (filtro por skill);
-  - ficha completa (placa o portada, tira de metadatos, galería, anterior/siguiente);
-  - `/stack/[slug]` (proyectos y skills hermanas).
-- Portada: `#sobre-mi`, destacados con portada o placa, "Ver todos (N)", trayectoria completa, stack enlazado con iconos y CTA de correo con copiar.
-- Seguridad:
-  - Sin perfil publicado, las rutas nuevas devuelven 404.
-  - Las imágenes solo se aceptan de res.cloudinary.com (validación de actions).
-- Verificado:
-  - Fixture: 50/50 aserciones.
-  - Datos reales: 7 viewports + 3 de páginas, con GPU real, 0 errores y 60 fps.
-  - JS inicial de `/`: 202 kB.
-  - Revisiones: codex (aplicada) y art-reviewer (pase aplicado).
-
-## Siguiente paso (actualizado 2026-11-19)
-1. Nueva revisión de arte del pase aplicado. Pendientes BAJA: línea temporal en trayectoria y retrato en partículas desde `photoUrl`.
-2. Contenido real desde el dashboard:
-   - foto en Cloudinary;
-   - `shortBio` propio (el actual repite el titular: lo escribió el planificador en el seed local);
-   - skills, repos y portadas por proyecto.
-3. Despliegue según `docs/DEPLOY.md` (requiere las cuentas del dueño).
-4. Actualizar el PR #3 o abrir uno nuevo desde `feat/schema-driven-site`.
-
-## Siguiente paso (anterior)
-1. Despliegue (requiere cuentas del dueño): Vercel + Neon + Cloudinary según `docs/DEPLOY.md` (ops-deploy).
-2. Contenido real desde el dashboard: foto en Cloudinary, stack y enlaces por proyecto (el CV no los trae; no inventar).
-3. Verificar en el navegador y marcar: pub-hero (nueva revisión de arte), pub-projects, pub-stack, pub-webgl-fallback, pub-reading-mode y adm-* (credenciales malas, action sin sesión, imágenes).
-4. Fusionar `feat/signal-experience` en `main` con un PR.
+   Después, publicar el perfil.
+2. Con el contenido en producción: capturas con GPU contra `https://foreverlcd.vercel.app` (`BASE_URL=...`) y nueva revisión de arte.
+3. Pendientes de arte (BAJA): línea temporal en trayectoria y retrato en partículas desde `photoUrl`.
+4. Marcar tras verificarlas en el navegador: `pub-webgl-fallback`, `pub-reading-mode` y `adm-*` (credenciales malas, action sin sesión, imágenes con Cloudinary real).
+5. Fusionar `chore/production-deploy` en `main`.
 
 ## Datos de prueba locales
-En la base local quedan datos de prueba E2E: el admin `e2e-admin@example.test`, el perfil "E2E Perfil" sin publicar y la red "E2E enlace". No usan datos reales; se sobrescriben desde el dashboard.
+- La base LOCAL (Docker, puerto 5434) tiene los datos reales del CV, cargados con `.harness/seed-cv.ts` (ignorado por git).
+- La foto es una imagen demo de Cloudinary.
+- Para la cobertura se carga la fixture ficticia con `pnpm seed:fixture --yes`. Después se restaura el CV con `node --env-file=.env --experimental-strip-types --import ./scripts/register-ts-paths.mjs .harness/seed-cv.ts`.
+- Quedan también el admin E2E `e2e-admin@example.test` (solo local).
 
 ## Decisiones recientes
-- 2026-11-18: dirección de arte SIGNAL (base) + MEGASTRUCTURE (acentos), elegida por el dueño; debe verse en todos los dispositivos (`ART-DIRECTION.md`).
-- 2026-11-18: Next 16.4.3 → 16.4.6 por aviso de seguridad, parche manual (no `--agent=security`), fusionado a `main` con autorización del dueño.
+- 2026-11-19: despliegue en `foreverlcd.vercel.app`.
+  - Neon con proyecto propio, separado de "STEAM Society".
+  - Las cadenas de conexión nunca se guardan: se piden a `neonctl` en el momento.
+  - Despliegues desde GitHub, no desde la carpeta local.
+- 2026-11-19: PR #4 sustituye al #3 y se fusiona en `main` (autorizado por el dueño).
+- 2026-11-19: las relaciones estructurales del mapa (`Profile.education`/`experiences`, `Project.images`, `ProjectSkill.skill`) son `use`; la cobertura se comprueba en sus campos hijos.
+- 2026-11-19: fechas de la ficha en formato corto ("feb — set 2023"), tras la revisión de arte.
+- 2026-11-18: el esquema es el contrato de producto; el frontend se adapta, nunca al revés.
+- 2026-11-18: dirección de arte SIGNAL (base) + MEGASTRUCTURE (acentos), en todos los dispositivos (`ART-DIRECTION.md`).
+- 2026-11-18: Next 16.4.3 → 16.4.6 por aviso de seguridad.
 - 2026-11-18: el planificador (Opus) diseña y revisa; la ejecución va a motores baratos (`docs/HARNESS.md`).
-- 2026-11-18: portada estática con `revalidate = 86400` por el plan gratuito (Vercel Hobby + Postgres con suspensión).
+- 2026-11-18: web pública estática con `revalidate = 86400` por el plan gratuito.
 - 2026-11-18: Three.js r187 sin React Three Fiber; WebGLRenderer + GLSL propio.

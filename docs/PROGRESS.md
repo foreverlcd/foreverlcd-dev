@@ -33,7 +33,37 @@
 - Dashboard con lenguaje SIGNAL (regla HUD y línea de estado).
 - Guía de despliegue: `docs/DEPLOY.md`.
 
-## Siguiente paso
+## Actualización (2026-11-19): el esquema manda
+- Directriz del dueño: `prisma/schema.prisma` es el contrato de producto; el frontend se adapta. Contrato en `docs/product/SPEC.md` + `schema-map.json`.
+- Arnés:
+  - `check-schema-coverage.mjs` en el gate, con trinquete; hoy cubre 85/85 parejas campo × ruta.
+  - Aserciones `expect`/`expectStatus` en ui-shots, error por scroll horizontal y diagnóstico de 500.
+  - Fixture completa `pnpm seed:fixture --yes`, solo contra una base local.
+  - R5 cubre toda página pública.
+- Páginas nuevas:
+  - `/proyectos` (filtro por skill);
+  - ficha completa (placa o portada, tira de metadatos, galería, anterior/siguiente);
+  - `/stack/[slug]` (proyectos y skills hermanas).
+- Portada: `#sobre-mi`, destacados con portada o placa, "Ver todos (N)", trayectoria completa, stack enlazado con iconos y CTA de correo con copiar.
+- Seguridad:
+  - Sin perfil publicado, las rutas nuevas devuelven 404.
+  - Las imágenes solo se aceptan de res.cloudinary.com (validación de actions).
+- Verificado:
+  - Fixture: 50/50 aserciones.
+  - Datos reales: 7 viewports + 3 de páginas, con GPU real, 0 errores y 60 fps.
+  - JS inicial de `/`: 202 kB.
+  - Revisiones: codex (aplicada) y art-reviewer (pase aplicado).
+
+## Siguiente paso (actualizado 2026-11-19)
+1. Nueva revisión de arte del pase aplicado. Pendientes BAJA: línea temporal en trayectoria y retrato en partículas desde `photoUrl`.
+2. Contenido real desde el dashboard:
+   - foto en Cloudinary;
+   - `shortBio` propio (el actual repite el titular: lo escribió el planificador en el seed local);
+   - skills, repos y portadas por proyecto.
+3. Despliegue según `docs/DEPLOY.md` (requiere las cuentas del dueño).
+4. Actualizar el PR #3 o abrir uno nuevo desde `feat/schema-driven-site`.
+
+## Siguiente paso (anterior)
 1. Despliegue (requiere cuentas del dueño): Vercel + Neon + Cloudinary según `docs/DEPLOY.md` (ops-deploy).
 2. Contenido real desde el dashboard: foto en Cloudinary, stack y enlaces por proyecto (el CV no los trae; no inventar).
 3. Verificar en el navegador y marcar: pub-hero (nueva revisión de arte), pub-projects, pub-stack, pub-webgl-fallback, pub-reading-mode y adm-* (credenciales malas, action sin sesión, imágenes).

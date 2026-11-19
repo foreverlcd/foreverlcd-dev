@@ -245,7 +245,7 @@
         "node scripts/check-schema-coverage.mjs",
         "Quitar un campo de schema-map.json → sale 1 con remedio"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "pub-about",
@@ -256,7 +256,7 @@
         "node scripts/ui-shots.mjs scripts/ui-plans/coverage.json",
         "Revisión visual con datos reales"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "pub-featured",
@@ -266,7 +266,7 @@
         "Fixture cargada",
         "Aserciones de / en coverage.json"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "pub-projects-index",
@@ -276,7 +276,7 @@
         "Fixture cargada",
         "Aserciones de /proyectos en coverage.json"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "pub-project-full",
@@ -286,7 +286,7 @@
         "Fixture cargada",
         "Aserciones de /proyectos/<slug> y expectStatus 404"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "pub-stack-skill",
@@ -296,7 +296,7 @@
         "Fixture cargada",
         "Aserciones de /stack/<slug>"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "pub-path-complete",
@@ -306,7 +306,7 @@
         "Fixture cargada",
         "Aserciones de #trayectoria"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "pub-skill-icons",
@@ -316,7 +316,7 @@
         "Fixture con ambos tipos de icono",
         "Aserciones de #stack"
       ],
-      "passes": false
+      "passes": true
     }
   ]
 }

@@ -1,31 +1,20 @@
 import type { CSSProperties } from "react";
-import Link from "next/link";
 
 import type { Portfolio } from "@/server/portfolio/load-portfolio";
 
-import {
-  EDUCATION_LABEL,
-  EMPLOYMENT_LABEL,
-  REPOSITORY_LABEL,
-  formatRange,
-  formatStamp,
-  pad,
-} from "./format";
+import { formatStamp, pad } from "./format";
 import { Hud } from "./hud";
 import { ReadingToggle } from "./reading-toggle";
+import { AboutSection } from "./sections/about-section";
+import { PathSection } from "./sections/path-section";
+import { ProjectsSection } from "./sections/projects-section";
+import { StackSection } from "./sections/stack-section";
 import { SignalDirector } from "./signal-director";
 import { SignalStage } from "./signal-stage";
 import { TraceLog } from "./trace-log";
 import { VisitWaterfall } from "./visit-waterfall";
 
 import "./signal.css";
-
-/** Color de señal por proyecto: signal → uv → coral. */
-const SIGNAL_CYCLE = [
-  { sig: "var(--signal)", text: "var(--signal)" },
-  { sig: "var(--uv)", text: "var(--uv-text)" },
-  { sig: "var(--coral)", text: "var(--coral)" },
-];
 
 /**
  * Reparte el nombre en líneas equilibradas: una palabra por línea con 1-2 palabras,
@@ -77,8 +66,15 @@ export function SignalPage({ portfolio }: { portfolio: Portfolio }) {
   const hasPath = experiences.length > 0 || education.length > 0;
   const hasContact = Boolean(profile) && (Boolean(email) || socials.length > 0);
 
+  // #sobre-mi necesita el perfil publicado; la foto y la biografía son parte de su contrato.
+  const hasAbout = Boolean(profile?.biography.trim());
+  // Destacados; sin ninguno, los 3 primeros por displayOrder (la lista ya viene ordenada).
+  const featured = projects.filter((p) => p.isFeatured);
+  const shown = featured.length ? featured : projects.slice(0, 3);
+
   const sections: Section[] = [
     { id: "inicio", label: "Inicio" },
+    hasAbout ? { id: "sobre-mi", label: "Sobre mí" } : null,
     projects.length ? { id: "proyectos", label: "Proyectos" } : null,
     hasPath ? { id: "trayectoria", label: "Trayectoria" } : null,
     skillCategories.length ? { id: "stack", label: "Stack" } : null,
@@ -87,11 +83,11 @@ export function SignalPage({ portfolio }: { portfolio: Portfolio }) {
   ].filter((s): s is Section => s !== null);
   const numberOf = (id: string) => pad(sections.findIndex((s) => s.id === id));
 
-  // Barra inferior móvil: tres enlaces como máximo.
+  // Barra inferior móvil: cuatro enlaces como máximo.
   const primary = new Set(
-    ["proyectos", "trayectoria", "contacto", "stack", "traza"]
+    ["sobre-mi", "proyectos", "trayectoria", "contacto", "stack", "traza"]
       .filter((id) => sections.some((s) => s.id === id))
-      .slice(0, 3),
+      .slice(0, 4),
   );
   const navItems = sections.filter((s) => s.id !== "inicio");
 
@@ -120,7 +116,7 @@ export function SignalPage({ portfolio }: { portfolio: Portfolio }) {
 
   return (
     <div className="signal">
-      <SignalStage sections={sections.map((s) => s.id)} projectCount={projects.length} />
+      <SignalStage sections={sections.map((s) => s.id)} projectCount={shown.length} />
       <div className="sg-vig" aria-hidden="true" />
       <Hud sectionTotal={sections.length - 1} />
 
@@ -219,163 +215,34 @@ export function SignalPage({ portfolio }: { portfolio: Portfolio }) {
           </div>
         </section>
 
+        {/* Sobre mí -------------------------------------------------- */}
+        {profile && hasAbout ? (
+          <AboutSection profile={profile} email={email} kicker={kicker("sobre-mi", "Sobre mí")} />
+        ) : null}
+
         {/* Proyectos ------------------------------------------------- */}
         {projects.length ? (
-          <section
-            id="proyectos"
-            className="sg-sec"
-            data-section="proyectos"
-            aria-labelledby="proyectos-title"
-          >
-            <div className="sg-col">
-              {kicker("proyectos", "Proyectos")}
-              <h2 id="proyectos-title" data-split>
-                Proyectos seleccionados
-              </h2>
-              <ol className="sg-list">
-                {projects.map((project, i) => {
-                  const color = SIGNAL_CYCLE[i % SIGNAL_CYCLE.length];
-                  const range = formatRange(
-                    project.startDate,
-                    project.endDate,
-                    !project.endDate && Boolean(project.startDate),
-                  );
-                  return (
-                    <li
-                      key={project.id}
-                      className="sg-proj"
-                      data-project={i}
-                      data-rv
-                      style={{ "--sig": color.sig, "--sig-text": color.text } as CSSProperties}
-                    >
-                      <span className="sg-pn sg-mono">P{i + 1}</span>
-                      <h3 className="sg-pt">
-                        <Link href={`/proyectos/${project.slug}`} data-title>
-                          {project.title}
-                        </Link>
-                      </h3>
-                      <span className="sg-py sg-mono">{range}</span>
-                      <p className="sg-pd">{project.shortDescription}</p>
-                      {project.skills.length ? (
-                        <ul className="sg-tags" aria-label="Tecnologías">
-                          {project.skills.map((s) => (
-                            <li key={s.slug}>{s.name}</li>
-                          ))}
-                        </ul>
-                      ) : null}
-                      <ul className="sg-plinks sg-mono">
-                        {project.demoUrl ? (
-                          <li>
-                            <a href={project.demoUrl} target="_blank" rel="noreferrer">
-                              Demo<span className="sr-only"> de {project.title}</span> ↗
-                            </a>
-                          </li>
-                        ) : null}
-                        {project.repositories.map((repo) => (
-                          <li key={repo.url}>
-                            <a href={repo.url} target="_blank" rel="noreferrer">
-                              {REPOSITORY_LABEL[repo.type] ?? "Repositorio"}
-                              <span className="sr-only"> de {project.title}</span> ↗
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
-                      <span className="sg-arr" aria-hidden="true">↗</span>
-                    </li>
-                  );
-                })}
-              </ol>
-            </div>
-          </section>
+          <ProjectsSection
+            projects={shown}
+            total={projects.length}
+            kicker={kicker("proyectos", "Proyectos")}
+          />
         ) : null}
 
         {/* Trayectoria ----------------------------------------------- */}
         {hasPath ? (
-          <section
-            id="trayectoria"
-            className="sg-sec"
-            data-section="trayectoria"
-            aria-labelledby="trayectoria-title"
-          >
-            <div className="sg-col">
-              {kicker("trayectoria", "Trayectoria")}
-              <h2 id="trayectoria-title" data-split>
-                Trayectoria
-              </h2>
-              {experiences.length ? (
-                <>
-                  <h3 className="sg-sub sg-mono">Experiencia</h3>
-                  <ol className="sg-tl">
-                    {experiences.map((item) => (
-                      <li key={item.id} data-rv>
-                        <span className="sg-yr sg-mono">
-                          {formatRange(item.startDate, item.endDate, item.isCurrent)}
-                        </span>
-                        <h4>{item.jobTitle}</h4>
-                        <p className="sg-org">
-                          {item.company}
-                          {item.employmentType !== "OTHER"
-                            ? ` · ${EMPLOYMENT_LABEL[item.employmentType] ?? item.employmentType}`
-                            : ""}
-                          {item.location ? ` · ${item.location}` : ""}
-                        </p>
-                        <p>{item.description}</p>
-                      </li>
-                    ))}
-                  </ol>
-                </>
-              ) : null}
-              {education.length ? (
-                <>
-                  <h3 className="sg-sub sg-mono">Formación</h3>
-                  <ol className="sg-tl">
-                    {education.map((item) => (
-                      <li key={item.id} data-rv>
-                        <span className="sg-yr sg-mono">
-                          {formatRange(item.startDate, item.endDate, item.isCurrent)}
-                        </span>
-                        <h4>{item.degree}</h4>
-                        <p className="sg-org">
-                          {item.institution} · {EDUCATION_LABEL[item.type] ?? item.type}
-                        </p>
-                        <p>{item.fieldOfStudy}</p>
-                        {item.credentialUrl ? (
-                          <a className="sg-inline" href={item.credentialUrl} target="_blank" rel="noreferrer">
-                            Ver credencial ↗
-                          </a>
-                        ) : null}
-                      </li>
-                    ))}
-                  </ol>
-                </>
-              ) : null}
-            </div>
-          </section>
+          <PathSection
+            experiences={experiences}
+            education={education}
+            kicker={kicker("trayectoria", "Trayectoria")}
+          />
         ) : null}
 
         {/* Stack ----------------------------------------------------- */}
         {skillCategories.length ? (
-          <section id="stack" className="sg-sec" data-section="stack" aria-labelledby="stack-title">
-            <div className="sg-col">
-              {kicker("stack", "Stack")}
-              <h2 id="stack-title" data-split>
-                Stack
-              </h2>
-              <div className="sg-stack">
-                {skillCategories.map((category) => (
-                  <div key={category.id} className="sg-stack-group" data-rv>
-                    <h3 className="sg-sub sg-mono">{category.name}</h3>
-                    <ul>
-                      {category.skills.map((s) => (
-                        <li key={s.id}>{s.name}</li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
+          <StackSection categories={skillCategories} kicker={kicker("stack", "Stack")} />
         ) : null}
+
 
         {/* Contacto -------------------------------------------------- */}
         {hasContact ? (

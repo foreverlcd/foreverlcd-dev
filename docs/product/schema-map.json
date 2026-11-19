@@ -1,8 +1,15 @@
 {
   "$comment": "Cada campo de los modelos públicos del esquema: 'show' = rutas o secciones donde se ve (lo comprueba scripts/check-schema-coverage.mjs); 'use' = no se muestra, pero filtra, ordena o alimenta algo; 'internal' = nunca sale al público. Ver docs/product/SPEC.md.",
   "$routes": {
-    "/": ["src/components/signal", "src/app/page.tsx"],
-    "/proyectos": ["src/app/proyectos/page.tsx", "src/components/public"],
+    "/": [
+      "src/components/signal",
+      "src/app/page.tsx",
+      "src/components/public"
+    ],
+    "/proyectos": [
+      "src/app/proyectos/page.tsx",
+      "src/components/public"
+    ],
     "/proyectos/[slug]": [
       "src/app/proyectos/[slug]",
       "src/components/public"
@@ -20,82 +27,156 @@
   },
   "models": {
     "Profile": {
-      "id": { "internal": "singleton 'main'" },
+      "id": {
+        "internal": "singleton 'main'"
+      },
       "fullName": {
-        "show": ["/#hero", "/#sobre-mi", "meta"]
+        "show": [
+          "/#hero",
+          "/#sobre-mi",
+          "meta"
+        ]
       },
       "headline": {
-        "show": ["/#hero", "meta"]
+        "show": [
+          "/#hero",
+          "meta"
+        ]
       },
       "shortBio": {
-        "show": ["/#hero", "meta"]
+        "show": [
+          "/#hero",
+          "meta"
+        ]
       },
       "biography": {
-        "show": ["/#sobre-mi"]
+        "show": [
+          "/#sobre-mi"
+        ]
       },
       "location": {
-        "show": ["/#hero", "/#sobre-mi"]
+        "show": [
+          "/#hero",
+          "/#sobre-mi"
+        ]
       },
       "email": {
-        "show": ["/#sobre-mi", "/#contacto"]
+        "show": [
+          "/#sobre-mi",
+          "/#contacto"
+        ]
       },
       "photoUrl": {
-        "show": ["/#sobre-mi"]
+        "show": [
+          "/#sobre-mi"
+        ]
       },
-      "photoPublicId": { "internal": "Cloudinary" },
-      "isPublished": { "use": "filtra todo lo público" },
-      "createdAt": { "internal": "auditoría" },
-      "updatedAt": { "use": "sitemap lastModified" },
+      "photoPublicId": {
+        "internal": "Cloudinary"
+      },
+      "isPublished": {
+        "use": "filtra todo lo público"
+      },
+      "createdAt": {
+        "internal": "auditoría"
+      },
+      "updatedAt": {
+        "use": "sitemap lastModified"
+      },
       "socialLinks": {
-        "show": ["/#sobre-mi", "/#contacto"]
+        "show": [
+          "/#sobre-mi",
+          "/#contacto"
+        ]
       },
       "experiences": {
-        "show": ["/#trayectoria"]
+        "use": "relación estructural: se comprueban sus campos hijos (ver el modelo destino) — Experience en /#trayectoria"
       },
       "education": {
-        "show": ["/#trayectoria"]
+        "use": "relación estructural: se comprueban sus campos hijos (ver el modelo destino) — Education en /#trayectoria"
       }
     },
     "SocialLink": {
-      "id": { "internal": "clave" },
+      "id": {
+        "internal": "clave"
+      },
       "platform": {
-        "show": ["/#sobre-mi", "/#contacto"]
+        "show": [
+          "/#sobre-mi",
+          "/#contacto"
+        ]
       },
       "label": {
-        "show": ["/#sobre-mi", "/#contacto"]
+        "show": [
+          "/#sobre-mi",
+          "/#contacto"
+        ]
       },
       "url": {
-        "show": ["/#sobre-mi", "/#contacto"]
+        "show": [
+          "/#sobre-mi",
+          "/#contacto"
+        ]
       },
-      "isActive": { "use": "filtra" },
-      "displayOrder": { "use": "ordena" },
-      "profileId": { "internal": "FK" },
-      "profile": { "internal": "relación" },
-      "createdAt": { "internal": "auditoría" },
-      "updatedAt": { "internal": "auditoría" }
+      "isActive": {
+        "use": "filtra"
+      },
+      "displayOrder": {
+        "use": "ordena"
+      },
+      "profileId": {
+        "internal": "FK"
+      },
+      "profile": {
+        "internal": "relación"
+      },
+      "createdAt": {
+        "internal": "auditoría"
+      },
+      "updatedAt": {
+        "internal": "auditoría"
+      }
     },
     "SkillCategory": {
-      "id": { "internal": "clave" },
+      "id": {
+        "internal": "clave"
+      },
       "name": {
         "show": [
           "/#stack",
           "/stack/[slug]"
         ]
       },
-      "slug": { "use": "ancla y agrupación" },
+      "slug": {
+        "use": "ancla y agrupación"
+      },
       "description": {
-        "show": ["/#stack"]
+        "show": [
+          "/#stack"
+        ]
       },
-      "displayOrder": { "use": "ordena" },
-      "isActive": { "use": "filtra" },
+      "displayOrder": {
+        "use": "ordena"
+      },
+      "isActive": {
+        "use": "filtra"
+      },
       "skills": {
-        "show": ["/#stack"]
+        "show": [
+          "/#stack"
+        ]
       },
-      "createdAt": { "internal": "auditoría" },
-      "updatedAt": { "internal": "auditoría" }
+      "createdAt": {
+        "internal": "auditoría"
+      },
+      "updatedAt": {
+        "internal": "auditoría"
+      }
     },
     "Skill": {
-      "id": { "internal": "clave" },
+      "id": {
+        "internal": "clave"
+      },
       "name": {
         "show": [
           "/#stack",
@@ -120,9 +201,15 @@
           "/stack/[slug]"
         ]
       },
-      "displayOrder": { "use": "ordena" },
-      "isActive": { "use": "filtra" },
-      "categoryId": { "internal": "FK" },
+      "displayOrder": {
+        "use": "ordena"
+      },
+      "isActive": {
+        "use": "filtra"
+      },
+      "categoryId": {
+        "internal": "FK"
+      },
       "category": {
         "show": [
           "/stack/[slug]"
@@ -133,11 +220,17 @@
           "/stack/[slug]"
         ]
       },
-      "createdAt": { "internal": "auditoría" },
-      "updatedAt": { "internal": "auditoría" }
+      "createdAt": {
+        "internal": "auditoría"
+      },
+      "updatedAt": {
+        "internal": "auditoría"
+      }
     },
     "Project": {
-      "id": { "internal": "clave" },
+      "id": {
+        "internal": "clave"
+      },
       "title": {
         "show": [
           "/#proyectos",
@@ -172,10 +265,17 @@
         ]
       },
       "isFeatured": {
-        "show": ["/#proyectos", "/proyectos"]
+        "show": [
+          "/#proyectos",
+          "/proyectos"
+        ]
       },
-      "status": { "use": "filtra PUBLISHED" },
-      "displayOrder": { "use": "ordena" },
+      "status": {
+        "use": "filtra PUBLISHED"
+      },
+      "displayOrder": {
+        "use": "ordena"
+      },
       "startDate": {
         "show": [
           "/#proyectos",
@@ -191,11 +291,7 @@
         ]
       },
       "images": {
-        "show": [
-          "/#proyectos",
-          "/proyectos",
-          "/proyectos/[slug]"
-        ]
+        "use": "relación estructural: se comprueban sus campos hijos (ver el modelo destino) — ProjectImage (portada y galería)"
       },
       "skills": {
         "show": [
@@ -210,11 +306,17 @@
           "/proyectos/[slug]"
         ]
       },
-      "createdAt": { "internal": "auditoría" },
-      "updatedAt": { "use": "sitemap lastModified" }
+      "createdAt": {
+        "internal": "auditoría"
+      },
+      "updatedAt": {
+        "use": "sitemap lastModified"
+      }
     },
     "ProjectRepository": {
-      "id": { "internal": "clave" },
+      "id": {
+        "internal": "clave"
+      },
       "type": {
         "show": [
           "/#proyectos",
@@ -227,16 +329,32 @@
           "/proyectos/[slug]"
         ]
       },
-      "displayOrder": { "use": "ordena" },
-      "projectId": { "internal": "FK" },
-      "project": { "internal": "relación" },
-      "createdAt": { "internal": "auditoría" },
-      "updatedAt": { "internal": "auditoría" }
+      "displayOrder": {
+        "use": "ordena"
+      },
+      "projectId": {
+        "internal": "FK"
+      },
+      "project": {
+        "internal": "relación"
+      },
+      "createdAt": {
+        "internal": "auditoría"
+      },
+      "updatedAt": {
+        "internal": "auditoría"
+      }
     },
     "ProjectImage": {
-      "id": { "internal": "clave" },
-      "type": { "use": "COVER vs GALLERY" },
-      "publicId": { "internal": "Cloudinary" },
+      "id": {
+        "internal": "clave"
+      },
+      "type": {
+        "use": "COVER vs GALLERY"
+      },
+      "publicId": {
+        "internal": "Cloudinary"
+      },
       "secureUrl": {
         "show": [
           "/#proyectos",
@@ -261,101 +379,179 @@
           "/proyectos/[slug]"
         ]
       },
-      "format": { "internal": "Cloudinary" },
-      "displayOrder": { "use": "ordena la galería" },
-      "projectId": { "internal": "FK" },
-      "project": { "internal": "relación" },
-      "createdAt": { "internal": "auditoría" },
-      "updatedAt": { "internal": "auditoría" }
+      "format": {
+        "internal": "Cloudinary"
+      },
+      "displayOrder": {
+        "use": "ordena la galería"
+      },
+      "projectId": {
+        "internal": "FK"
+      },
+      "project": {
+        "internal": "relación"
+      },
+      "createdAt": {
+        "internal": "auditoría"
+      },
+      "updatedAt": {
+        "internal": "auditoría"
+      }
     },
     "ProjectSkill": {
-      "projectId": { "internal": "FK" },
-      "skillId": { "internal": "FK" },
-      "displayOrder": { "use": "ordena las skills del proyecto" },
+      "projectId": {
+        "internal": "FK"
+      },
+      "skillId": {
+        "internal": "FK"
+      },
+      "displayOrder": {
+        "use": "ordena las skills del proyecto"
+      },
       "project": {
         "show": [
           "/stack/[slug]"
         ]
       },
       "skill": {
-        "show": [
-          "/#proyectos",
-          "/proyectos",
-          "/proyectos/[slug]"
-        ]
+        "use": "relación estructural: se comprueban sus campos hijos (ver el modelo destino) — Skill.name/slug/icon"
       }
     },
     "Experience": {
-      "id": { "internal": "clave" },
+      "id": {
+        "internal": "clave"
+      },
       "company": {
-        "show": ["/#trayectoria"]
+        "show": [
+          "/#trayectoria"
+        ]
       },
       "jobTitle": {
-        "show": ["/#trayectoria"]
+        "show": [
+          "/#trayectoria"
+        ]
       },
       "description": {
-        "show": ["/#trayectoria"]
+        "show": [
+          "/#trayectoria"
+        ]
       },
       "location": {
-        "show": ["/#trayectoria"]
+        "show": [
+          "/#trayectoria"
+        ]
       },
       "employmentType": {
-        "show": ["/#trayectoria"]
+        "show": [
+          "/#trayectoria"
+        ]
       },
       "startDate": {
-        "show": ["/#trayectoria"]
+        "show": [
+          "/#trayectoria"
+        ]
       },
       "endDate": {
-        "show": ["/#trayectoria"]
+        "show": [
+          "/#trayectoria"
+        ]
       },
       "isCurrent": {
-        "show": ["/#trayectoria"]
+        "show": [
+          "/#trayectoria"
+        ]
       },
-      "isActive": { "use": "filtra" },
-      "displayOrder": { "use": "ordena" },
-      "profileId": { "internal": "FK" },
-      "profile": { "internal": "relación" },
-      "createdAt": { "internal": "auditoría" },
-      "updatedAt": { "internal": "auditoría" }
+      "isActive": {
+        "use": "filtra"
+      },
+      "displayOrder": {
+        "use": "ordena"
+      },
+      "profileId": {
+        "internal": "FK"
+      },
+      "profile": {
+        "internal": "relación"
+      },
+      "createdAt": {
+        "internal": "auditoría"
+      },
+      "updatedAt": {
+        "internal": "auditoría"
+      }
     },
     "Education": {
-      "id": { "internal": "clave" },
+      "id": {
+        "internal": "clave"
+      },
       "institution": {
-        "show": ["/#trayectoria"]
+        "show": [
+          "/#trayectoria"
+        ]
       },
       "degree": {
-        "show": ["/#trayectoria"]
+        "show": [
+          "/#trayectoria"
+        ]
       },
       "fieldOfStudy": {
-        "show": ["/#trayectoria"]
+        "show": [
+          "/#trayectoria"
+        ]
       },
       "description": {
-        "show": ["/#trayectoria"]
+        "show": [
+          "/#trayectoria"
+        ]
       },
       "location": {
-        "show": ["/#trayectoria"]
+        "show": [
+          "/#trayectoria"
+        ]
       },
       "type": {
-        "show": ["/#trayectoria"]
+        "show": [
+          "/#trayectoria"
+        ]
       },
       "credentialUrl": {
-        "show": ["/#trayectoria"]
+        "show": [
+          "/#trayectoria"
+        ]
       },
       "startDate": {
-        "show": ["/#trayectoria"]
+        "show": [
+          "/#trayectoria"
+        ]
       },
       "endDate": {
-        "show": ["/#trayectoria"]
+        "show": [
+          "/#trayectoria"
+        ]
       },
       "isCurrent": {
-        "show": ["/#trayectoria"]
+        "show": [
+          "/#trayectoria"
+        ]
       },
-      "isActive": { "use": "filtra" },
-      "displayOrder": { "use": "ordena" },
-      "profileId": { "internal": "FK" },
-      "profile": { "internal": "relación" },
-      "createdAt": { "internal": "auditoría" },
-      "updatedAt": { "internal": "auditoría" }
+      "isActive": {
+        "use": "filtra"
+      },
+      "displayOrder": {
+        "use": "ordena"
+      },
+      "profileId": {
+        "internal": "FK"
+      },
+      "profile": {
+        "internal": "relación"
+      },
+      "createdAt": {
+        "internal": "auditoría"
+      },
+      "updatedAt": {
+        "internal": "auditoría"
+      }
     }
   }
 }

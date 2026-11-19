@@ -1,16 +1,3 @@
 {
-  "uncovered": [
-    "Profile.biography @ /",
-    "Profile.education @ /",
-    "Profile.experiences @ /",
-    "Profile.photoUrl @ /",
-    "Project.images @ /",
-    "Project.images @ /proyectos",
-    "Project.isFeatured @ /",
-    "ProjectImage.alt @ /",
-    "ProjectImage.secureUrl @ /",
-    "ProjectSkill.skill @ /",
-    "Skill.icon @ /",
-    "SocialLink.platform @ /"
-  ]
+  "uncovered": []
 }

@@ -15,6 +15,11 @@ const BASE: Atmosphere = { ...atmosphere };
 
 const SECTION_ATMOSPHERE: Record<string, Partial<Atmosphere>> = {
   inicio: {},
+  "sobre-mi": {
+    z: 14, angle: -0.2, curl: 0.9, gain: 0.95, acid: 0.02, roll: 0.02, speed: 3.2,
+    dens: 0.38, blk: 0.5, cross: 0.4, beam: 0.24, fog: 0.024, warm: 0.06, lamp: 0.95,
+    yaw: 0.04, pitch: 0.03, tintR: 0.03, tintG: 0.028, tintB: 0.072,
+  },
   proyectos: {
     z: 11, angle: -0.62, curl: 1, gain: 1.1, acid: 0.12, roll: -0.05, speed: 3.8,
     dens: 0.92, blk: 0.88, cross: 0.3, beam: 0.42, fog: 0.048, warm: 0.14, lamp: 1.15,

@@ -15,21 +15,24 @@ export function isDemoMode() {
 
 const date = (iso: string) => new Date(`${iso}T00:00:00.000Z`);
 
-const skill = (name: string) => ({
+const CLD = "https://res.cloudinary.com/demo/image/upload";
+
+/** Iconos DEMO: URL de Cloudinary (imagen), glifo corto o ninguno. */
+const skill = (name: string, icon: string | null = null) => ({
   name,
   slug: name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
-  icon: null,
+  icon,
 });
 
 export function getDemoPortfolio(): Portfolio {
   const skills = {
-    ts: skill("TypeScript"),
+    ts: skill("TypeScript", `${CLD}/sample.jpg`),
     next: skill("Next.js"),
     pg: skill("PostgreSQL"),
     prisma: skill("Prisma"),
     three: skill("Three.js"),
     node: skill("Node.js"),
-    py: skill("Python"),
+    py: skill("Python", "🐍"),
     docker: skill("Docker"),
   };
 
@@ -46,14 +49,23 @@ export function getDemoPortfolio(): Portfolio {
     title,
     slug: `demo-${n}`,
     shortDescription,
-    demoUrl: null,
+    demoUrl: isFeatured ? "https://example.com/" : null,
     isFeatured,
     displayOrder: n,
     startDate: date(start),
     endDate: end ? date(end) : null,
-    cover: null,
+    cover: {
+      secureUrl: `${CLD}/sample.jpg`,
+      alt: `Portada DEMO de ${title}`,
+      width: 1600,
+      height: 1000,
+    },
     skills: stack,
-    repositories: [{ type: "OTHER" as const, url: "https://github.com/", displayOrder: 0 }],
+    repositories: [
+      { type: "BACKEND" as const, url: `https://github.com/demo-${n}-api`, displayOrder: 0 },
+      { type: "FRONTEND" as const, url: `https://github.com/demo-${n}-web`, displayOrder: 1 },
+      { type: "OTHER" as const, url: `https://github.com/demo-${n}`, displayOrder: 2 },
+    ],
   });
 
   return {
@@ -63,10 +75,11 @@ export function getDemoPortfolio(): Portfolio {
       headline: "Titular de ejemplo: ingeniería de software full stack e IA aplicada",
       shortBio:
         "Texto de relleno para evaluar la composición. Aquí irá la biografía breve real, escrita desde el dashboard.",
-      biography: "Biografía de relleno.",
+      biography:
+        "DEMO · Primer párrafo de la biografía de relleno: sirve para evaluar el ritmo de lectura de un texto largo.\n\nDEMO · Segundo párrafo: el contenido real se escribe desde el dashboard y respeta los saltos de párrafo.",
       location: "Ciudad, País",
       email: "demo@example.com",
-      photoUrl: null,
+      photoUrl: `${CLD}/sample.jpg`,
       updatedAt: date("2026-11-16"),
       socialLinks: [
         { id: "demo-gh", platform: "GITHUB", label: "GitHub", url: "https://github.com/", displayOrder: 0 },
@@ -112,10 +125,10 @@ export function getDemoPortfolio(): Portfolio {
         institution: "Universidad de ejemplo",
         degree: "Titulación de ejemplo",
         fieldOfStudy: "Ingeniería informática",
-        description: null,
-        location: null,
+        description: "DEMO · Descripción de relleno de la formación.",
+        location: "Ciudad, País",
         type: "FORMAL",
-        credentialUrl: null,
+        credentialUrl: "https://example.com/credencial-demo",
         startDate: date("2020-03-01"),
         endDate: date("2025-12-01"),
         isCurrent: false,
@@ -127,7 +140,7 @@ export function getDemoPortfolio(): Portfolio {
         id: "demo-cat-1",
         name: "Backend",
         slug: "backend",
-        description: null,
+        description: "DEMO · Servicios, datos y colas.",
         displayOrder: 0,
         skills: [skills.node, skills.pg, skills.prisma, skills.py].map((s, i) => ({ ...s, id: `demo-sk-b${i}`, description: null, displayOrder: i })),
       },
@@ -135,7 +148,7 @@ export function getDemoPortfolio(): Portfolio {
         id: "demo-cat-2",
         name: "Frontend",
         slug: "frontend",
-        description: null,
+        description: "DEMO · Interfaces y experiencias interactivas.",
         displayOrder: 1,
         skills: [skills.ts, skills.next, skills.three].map((s, i) => ({ ...s, id: `demo-sk-f${i}`, description: null, displayOrder: i })),
       },
@@ -143,7 +156,7 @@ export function getDemoPortfolio(): Portfolio {
         id: "demo-cat-3",
         name: "Infraestructura",
         slug: "infraestructura",
-        description: null,
+        description: "DEMO · Contenedores y despliegue.",
         displayOrder: 2,
         skills: [skills.docker].map((s, i) => ({ ...s, id: `demo-sk-i${i}`, description: null, displayOrder: i })),
       },

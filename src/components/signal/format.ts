@@ -27,10 +27,17 @@ export const EDUCATION_LABEL: Record<string, string> = {
   OTHER: "Otro",
 };
 
-export const REPOSITORY_LABEL: Record<string, string> = {
-  BACKEND: "Repositorio backend",
-  FRONTEND: "Repositorio frontend",
-  OTHER: "Repositorio",
+export const PLATFORM_LABEL: Record<string, string> = {
+  GITHUB: "GitHub",
+  LINKEDIN: "LinkedIn",
+  EMAIL: "Correo",
+  WEBSITE: "Web",
+  X: "X",
+  YOUTUBE: "YouTube",
+  INSTAGRAM: "Instagram",
+  DISCORD: "Discord",
+  CUSTOM: "Otro",
+  OTHER: "Otro",
 };
 
 export const pad = (n: number) => String(n).padStart(2, "0");

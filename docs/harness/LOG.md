@@ -17,3 +17,8 @@ Cada vez que un agente falla o entrega algo incorrecto se anota **qué le faltó
 | 2026-11-18 | next dev / build | Next 16.4.3 detiene `dev` y `build` una vez con un aviso de vulnerabilidad y pide reintentar. | Saber que es esperado. | Principio de oro 13; `gate.sh` reintenta una vez. |
 | 2026-11-18 | codex / implementer | El sandbox `workspace-write` no tiene red: no alcanza Postgres local ni puede instalar. | Verificación con base de datos. | El planificador corre build/humo fuera del sandbox; las dependencias las instala el planificador antes de delegar. |
 | 2026-11-18 | planificador (Opus) | La dirección "Runtime" pasó tipos, lint, build y capturas, y el dueño la rechazó por no ser futurista. | Validar la dirección de arte con el dueño ANTES de implementarla. | Prototipos comparables antes de tocar `src/`; `ART-DIRECTION.md` vinculante solo tras su elección. |
+
+## 2026-11-19 — El gate verde no garantizaba el producto
+- Síntoma: foto, biografía, repos, iconos y credenciales del esquema no salían en la web y el gate pasaba.
+- Causa: no había capa de especificación ni comprobación de cobertura; los datos DEMO ocultaban los huecos.
+- Arreglo: `docs/product/SPEC.md` + `schema-map.json`, `check-schema-coverage.mjs` con trinquete en el gate, aserciones `expect`/`expectStatus` en ui-shots y una fixture que rellena todos los campos. R5 ahora cubre toda página pública.

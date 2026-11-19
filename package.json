@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "admin:create": "node --env-file=.env --experimental-strip-types --import ./scripts/register-ts-paths.mjs scripts/create-admin.ts"
+    "admin:create": "node --env-file=.env --experimental-strip-types --import ./scripts/register-ts-paths.mjs scripts/create-admin.ts",
+    "seed:fixture": "node --env-file=.env --experimental-strip-types --import ./scripts/register-ts-paths.mjs scripts/seed-fixture.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.10.1",

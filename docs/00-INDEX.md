@@ -2,6 +2,7 @@
 
 | Documento | Cuándo leerlo |
 |---|---|
+| `product/SPEC.md` + `product/schema-map.json` | **Antes de tocar cualquier página pública**: el esquema es el contrato; qué ruta muestra cada campo |
 | `PROGRESS.md` | Siempre, al empezar y al terminar |
 | `feature_list.json` | Siempre: qué funcionalidades existen y cuáles están verificadas |
 | `ARCHITECTURE.md` | Antes de tocar rutas, datos, caché, auth o la capa WebGL |

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Gate único: boundaries, typecheck, lint, build, budgets, secrets (y shots con `full`).
+# Gate único: boundaries, coverage, typecheck, lint, build, budgets, secrets (y shots con `full`).
 #   scripts/gate.sh [full]     GATE_STRICT=1 convierte el SKIP del build (sin Postgres) en FAIL.
 # Salida corta: una línea por paso; las últimas 40 líneas del log solo si falla.
 set -uo pipefail
@@ -43,6 +43,7 @@ secret_scan() {
 db_up() { (exec 3<>/dev/tcp/127.0.0.1/5434) 2>/dev/null; }
 
 step boundaries node scripts/check-boundaries.mjs
+step coverage node scripts/check-schema-coverage.mjs
 step typecheck node_modules/.bin/tsc --noEmit
 step lint node_modules/.bin/eslint
 

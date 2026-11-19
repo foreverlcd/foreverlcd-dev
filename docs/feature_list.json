@@ -236,6 +236,87 @@
         "/api/health ok en *.vercel.app"
       ],
       "passes": false
+    },
+    {
+      "id": "har-schema-coverage",
+      "category": "harness",
+      "description": "El gate falla si un campo del esquema no está mapeado o una pareja campo×ruta nueva queda sin mostrar (trinquete)",
+      "steps": [
+        "node scripts/check-schema-coverage.mjs",
+        "Quitar un campo de schema-map.json → sale 1 con remedio"
+      ],
+      "passes": false
+    },
+    {
+      "id": "pub-about",
+      "category": "public",
+      "description": "Sección #sobre-mi con foto (next/image), biografía completa, ubicación, correo y redes activas",
+      "steps": [
+        "pnpm seed:fixture --yes",
+        "node scripts/ui-shots.mjs scripts/ui-plans/coverage.json",
+        "Revisión visual con datos reales"
+      ],
+      "passes": false
+    },
+    {
+      "id": "pub-featured",
+      "category": "public",
+      "description": "#proyectos muestra los destacados con portada, insignia DESTACADO, fechas, skills enlazadas, repos, demo y enlace a /proyectos (N)",
+      "steps": [
+        "Fixture cargada",
+        "Aserciones de / en coverage.json"
+      ],
+      "passes": false
+    },
+    {
+      "id": "pub-projects-index",
+      "category": "public",
+      "description": "/proyectos lista todos los proyectos publicados con portada, fechas y skills, con filtro por skill; los borradores no salen",
+      "steps": [
+        "Fixture cargada",
+        "Aserciones de /proyectos en coverage.json"
+      ],
+      "passes": false
+    },
+    {
+      "id": "pub-project-full",
+      "category": "public",
+      "description": "/proyectos/[slug] completa: portada, galería con dimensiones reales, fechas mes-año, skills, repos por tipo, demo y anterior/siguiente; borrador → 404",
+      "steps": [
+        "Fixture cargada",
+        "Aserciones de /proyectos/<slug> y expectStatus 404"
+      ],
+      "passes": false
+    },
+    {
+      "id": "pub-stack-skill",
+      "category": "public",
+      "description": "/stack/[slug]: nombre, icono, descripción, categoría y proyectos publicados que usan la skill",
+      "steps": [
+        "Fixture cargada",
+        "Aserciones de /stack/<slug>"
+      ],
+      "passes": false
+    },
+    {
+      "id": "pub-path-complete",
+      "category": "public",
+      "description": "#trayectoria muestra description, location y credentialUrl de formación, fieldOfStudy solo si difiere y ninguna etiqueta huérfana",
+      "steps": [
+        "Fixture cargada",
+        "Aserciones de #trayectoria"
+      ],
+      "passes": false
+    },
+    {
+      "id": "pub-skill-icons",
+      "category": "public",
+      "description": "Skill.icon: URL de Cloudinary como imagen decorativa de 20 px, texto ≤4 caracteres como glifo, otro valor ignorado",
+      "steps": [
+        "Fixture con ambos tipos de icono",
+        "Aserciones de #stack"
+      ],
+      "passes": false
     }
   ]
 }

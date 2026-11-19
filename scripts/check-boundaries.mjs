@@ -111,7 +111,8 @@ for (const abs of files) {
   }
 
   // R5
-  if (file === "src/app/page.tsx" || /^src\/app\/proyectos\/.+\/page\.tsx$/.test(file)) {
+  // Toda página pública (fuera de /admin y /api) es estática.
+  if (/^src\/app\/(?!admin\/|api\/)(?:.+\/)?page\.tsx$/.test(file)) {
     const fd = /export\s+const\s+dynamic\s*=\s*["']force-dynamic["']/.exec(code);
     if (fd)
       report(file, lineOf(code, fd.index), "R5", "la web pública es estática (plan gratuito); revalida con revalidatePath");

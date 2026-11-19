@@ -1,7 +1,11 @@
 #!/usr/bin/env node
 // Capturas de navegador con WebGL (swiftshader por defecto; GPU=1 usa la GPU real) a partir de un plan JSON.
 // Uso: node scripts/ui-shots.mjs scripts/ui-plans/smoke.json   (BASE_URL sobrescribe baseUrl)
-// Plan: { name, baseUrl, runs:[{name,viewport:{w,h},reducedMotion?,mobile?}], steps:[{goto|waitFor|scrollTo|hover|click|fill|wait|shot|text}] }
+// Plan: { name, baseUrl, runs:[{name,viewport:{w,h},reducedMotion?,mobile?}], steps:[{goto|waitFor|scrollTo|hover|click|fill|wait|shot|text|expect|expectStatus}] }
+// Aserciones (cada fallo cuenta como error y el run imprime `aserciones ok N/M`):
+//   { "expect": { "selector": "css", "text"?: "subcadena", "count"?: n, "min"?: n,
+//                 "attr"?: { "name": "src", "includes": "res.cloudinary.com" } } }
+//   { "expectStatus": { "path": "/x", "status": 404 } }   (fetch directo, sin navegador)
 // Guarda en .shots/<plan>/<run>-<nn>-<shot>.png; sale con 1 si hay pageerror o errores de consola.
 // CHROME_BIN fuerza un binario; si no, usa el Chromium de Playwright.
 import fs from "node:fs";
@@ -43,6 +47,36 @@ const browser = await chromium
     process.exit(1);
   });
 
+// Aserciones: lanzan Error con el motivo; el bucle de pasos lo registra junto al paso.
+async function runExpect(page, e) {
+  // Con `text`, el selector se filtra por ese texto: `count: 0` significa "ningún elemento lo contiene".
+  const base = page.locator(e.selector);
+  const loc = e.text !== undefined ? base.filter({ hasText: e.text }) : base;
+  const what = e.text !== undefined ? `${e.selector} con el texto "${e.text}"` : e.selector;
+  const count = await loc.count();
+  if (e.count !== undefined && count !== e.count) {
+    throw new Error(`se esperaban ${e.count} elementos y hay ${count} (${what})`);
+  }
+  if (e.min !== undefined && count < e.min) {
+    throw new Error(`se esperaban al menos ${e.min} elementos y hay ${count} (${what})`);
+  }
+  if (e.count === undefined && e.min === undefined && count === 0) {
+    throw new Error(`no existe ${what}; la página no lo renderiza`);
+  }
+  if (e.attr && count > 0) {
+    const read = (els, name) => els.map((el) => el.getAttribute(name) ?? "");
+    const values = await loc.evaluateAll(read, e.attr.name);
+    if (!values.some((v) => v.includes(e.attr.includes))) {
+      throw new Error(`ningún ${what} tiene ${e.attr.name} que incluya "${e.attr.includes}"`);
+    }
+  }
+}
+
+async function runExpectStatus({ path: p, status }) {
+  const res = await fetch(new URL(p, baseUrl + "/"), { redirect: "manual" });
+  if (res.status !== status) throw new Error(`${p} respondió ${res.status} y se esperaba ${status}`);
+}
+
 const safe = (s) => String(s).replace(/[^a-zA-Z0-9_-]+/g, "-").replace(/^-|-$/g, "") || "x";
 let failed = false;
 
@@ -71,6 +105,8 @@ try {
     });
 
     let n = 0;
+    let assertOk = 0;
+    let assertTotal = 0;
     const texts = [];
     for (const step of plan.steps ?? []) {
       try {
@@ -99,10 +135,19 @@ try {
         } else if (step.text) {
           const t = (await page.locator(step.text).first().innerText({ timeout: 5000 })).replace(/\s+/g, " ").trim();
           texts.push(`${step.text}: ${t.slice(0, 200)}`);
+        } else if (step.expect) {
+          assertTotal++;
+          await runExpect(page, step.expect);
+          assertOk++;
+        } else if (step.expectStatus) {
+          assertTotal++;
+          await runExpectStatus(step.expectStatus);
+          assertOk++;
         }
       } catch (e) {
         errors++;
-        logs.push(`step ${JSON.stringify(step)} falló: ${String(e.message).split("\n")[0]}`);
+        const kind = step.expect || step.expectStatus ? "aserción" : "paso";
+        logs.push(`${kind} ${JSON.stringify(step)} falló: ${String(e.message).split("\n")[0]}`);
       }
     }
 
@@ -137,6 +182,7 @@ try {
 
     console.log(`[${run.name}] status=${status ?? "n/a"} fps=${fps ?? "n/a"} errores=${errors}`);
     console.log(`  gpu ${renderer ?? "n/a"}`);
+    console.log(`  aserciones ok ${assertOk}/${assertTotal}`);
     for (const t of texts) console.log(`  text ${t}`);
     for (const l of logs) console.log(`  ${l}`);
     if (errors) failed = true;

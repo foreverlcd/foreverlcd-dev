@@ -49,3 +49,13 @@ export function formatStamp(iso: string) {
     timeZone: "UTC",
   }).format(new Date(iso)) + " UTC";
 }
+
+/** Iniciales: primera palabra y la de índice ceil(n/2) (3 y 4 palabras: la 1.ª y la 3.ª). */
+export function initialsOf(name: string) {
+  const words = name.trim().split(/\s+/).filter(Boolean);
+  if (words.length === 0) return "";
+  const second = words[Math.min(Math.ceil(words.length / 2), words.length - 1)];
+  return words.length === 1
+    ? words[0][0].toUpperCase()
+    : `${words[0][0]}.${second[0]}`.toUpperCase();
+}

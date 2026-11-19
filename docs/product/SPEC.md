@@ -27,7 +27,7 @@
 
 ## Reglas de presentación
 - **`Skill.icon`** (texto ≤ 150): si es una URL `https://res.cloudinary.com/...` se muestra como imagen de 20 px con `alt=""` (decorativa, porque el nombre va al lado). Si es otro texto corto (≤ 4 caracteres, p. ej. un emoji), se muestra como glifo. Cualquier otro valor se ignora.
-- **Fechas:** solo años en listas; en la ficha de proyecto, "mes año" (`Intl.DateTimeFormat('es-PE')`).
+- **Fechas:** solo años en listas; en la ficha de proyecto, mes abreviado y año ("feb — set 2023"; mismo mes y año → "feb 2023"; sin fin → "— actual").
 - **Repositorios:** etiqueta según `type`: `BACKEND` → "Backend", `FRONTEND` → "Frontend", `OTHER` → "Código".
 - **Imágenes:** siempre `next/image` con `width`/`height` reales del registro (sin CLS) y `alt` del registro.
 - **Vacíos:** un campo opcional vacío no deja etiquetas ni separadores huérfanos.

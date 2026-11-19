@@ -26,3 +26,6 @@ Cada vez que un agente falla o entrega algo incorrecto se anota **qué le faltó
 ## 2026-11-19 — Los datos reales vuelven a encontrar lo que la fixture no
 - La foto provisional (avatar de GitHub) daba 500 en `/`: `next/image` solo admite res.cloudinary.com y el dashboard aceptaba cualquier URL. Arreglo: `cloudinaryUrl` en la validación de las actions. ui-shots decía "No responde" ante un 500; ahora muestra el código y apunta a `.harness/dev.log`.
 - codex: las páginas nuevas exponían proyectos sin perfil publicado (la portada no). Arreglo: 404 y `generateStaticParams` vacío sin perfil. Lección: una regla de visibilidad global (pub-waiting) debe estar en SPEC.md, no solo en la portada.
+
+## 2026-11-19 — Especificidad: `.signal a` gana a una clase sola
+- El CTA relleno salía con texto claro sobre `--signal`: `.signal a { color: inherit }` (0,1,1) vence a `.sg-cta-fill` (0,1,0). Lo detectó la revisión visual, no el gate. Regla: en signal.css, las clases que colorean enlaces van prefijadas con `.signal`.

@@ -19,7 +19,8 @@ export const metadata: Metadata = {
 
 export default async function ProjectsIndexPage() {
   // Sin perfil publicado no se expone contenido (igual que la portada: pub-waiting).
-  if (!(await getPublishedProfile())) notFound();
+  const profile = await getPublishedProfile();
+  if (!profile) notFound();
   const projects = await getPublishedProjects();
 
   const skillMap = new Map<string, { slug: string; name: string }>();
@@ -31,12 +32,13 @@ export default async function ProjectsIndexPage() {
   const items = projects.map((project, index) => ({
     slug: project.slug,
     skillSlugs: project.skills.map((skill) => skill.slug),
-    card: <ProjectCard project={project} eager={index === 0} />,
+    isFeatured: project.isFeatured,
+    card: <ProjectCard project={project} index={index} eager={index === 0} />,
   }));
 
   return (
-    <div className="signal">
-      <SiteHeader />
+    <div className="signal sg-page">
+      <SiteHeader fullName={profile.fullName} />
       <main id="principal" className="mx-auto max-w-6xl px-(--pad) pt-12 pb-24">
         <p className="font-mono text-xs uppercase tracking-widest text-(--signal)">Índice</p>
         <h1 className="mt-3 mb-8 font-display text-[clamp(2rem,6.4vw,4.5rem)] leading-[0.98] tracking-[-0.045em] text-(--ink)">

@@ -2,18 +2,12 @@ import Image from "next/image";
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 
+import { ProjectPlate, SIGNAL_CYCLE } from "@/components/public/project-plate";
 import { RepoLinks } from "@/components/public/repo-links";
 import { SkillChip } from "@/components/public/skill-chip";
 import type { PublishedProject } from "@/server/portfolio/load-portfolio";
 
 import { formatRange } from "../format";
-
-/** Color de señal por proyecto: signal → uv → coral. */
-const SIGNAL_CYCLE = [
-  { sig: "var(--signal)", text: "var(--signal)" },
-  { sig: "var(--uv)", text: "var(--uv-text)" },
-  { sig: "var(--coral)", text: "var(--coral)" },
-];
 
 type Props = { projects: PublishedProject[]; total: number; kicker: ReactNode };
 
@@ -61,7 +55,9 @@ export function ProjectsSection({ projects, total, kicker }: Props) {
                     sizes="(max-width: 760px) 90vw, (max-width: 1024px) 50vw, 360px"
                     className="sg-pc"
                   />
-                ) : null}
+                ) : (
+                  <ProjectPlate title={project.title} index={i} className="sg-pc" />
+                )}
                 <p className="sg-pd">{project.shortDescription}</p>
                 {project.skills.length ? (
                   <ul className="sg-tags" aria-label="Tecnologías">

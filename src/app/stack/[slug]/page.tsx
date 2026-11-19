@@ -5,8 +5,10 @@ import "@/components/signal/signal.css";
 
 import { ProjectCard } from "@/components/public/project-card";
 import { SiteHeader } from "@/components/public/site-header";
+import { SkillChip } from "@/components/public/skill-chip";
 import { SkillIcon } from "@/components/public/skill-icon";
 import { getPublishedProfile } from "@/server/dal/profile/get-published-profile";
+import { getPublishedProjects } from "@/server/dal/projects/get-published-projects";
 import { getPublishedSkillBySlug } from "@/server/dal/skills/get-published-skill-by-slug";
 import { getPublishedSkillSlugs } from "@/server/dal/skills/get-published-skill-slugs";
 
@@ -34,13 +36,17 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 export default async function SkillPage({ params }: Params) {
   const { slug } = await params;
   // Sin perfil publicado no se expone contenido (igual que la portada: pub-waiting).
-  if (!(await getPublishedProfile())) notFound();
+  const profile = await getPublishedProfile();
+  if (!profile) notFound();
   const skill = await getPublishedSkillBySlug(slug);
   if (!skill) notFound();
+  const siblings = skill.category.skills.filter((sibling) => sibling.slug !== skill.slug);
+  // Posición global en el índice: la placa conserva el mismo color y número que en el resto del sitio.
+  const order = new Map((await getPublishedProjects()).map((project, index) => [project.slug, index]));
 
   return (
-    <div className="signal">
-      <SiteHeader />
+    <div className="signal sg-page">
+      <SiteHeader fullName={profile.fullName} />
       <main id="principal" className="mx-auto max-w-6xl px-(--pad) pt-12 pb-24">
         <Link
           href="/#stack"
@@ -62,16 +68,38 @@ export default async function SkillPage({ params }: Params) {
           Proyectos donde se usó ({skill.projects.length})
         </h2>
         {skill.projects.length === 0 ? (
-          <p className="text-(--ash)">Todavía no hay proyectos publicados con esta tecnología.</p>
+          <p className="sg-empty font-mono text-xs uppercase tracking-widest">
+            Aún sin proyectos publicados con {skill.name}
+          </p>
         ) : (
           <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {skill.projects.map((project, index) => (
               <li key={project.slug}>
-                <ProjectCard project={project} eager={index === 0} />
+                <ProjectCard project={project} index={order.get(project.slug) ?? index} eager={index === 0} />
               </li>
             ))}
           </ul>
         )}
+        {siblings.length > 0 && (
+          <>
+            <h2 className="mt-12 mb-5 border-t border-(--line) pt-4 font-mono text-xs uppercase tracking-widest text-(--ash)">
+              Más en {skill.category.name}
+            </h2>
+            <ul className="flex flex-wrap gap-2" aria-label={`Más en ${skill.category.name}`}>
+              {siblings.map((sibling) => (
+                <li key={sibling.slug}>
+                  <SkillChip skill={sibling} />
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+        <Link
+          href="/proyectos"
+          className="mt-10 inline-flex min-h-11 items-center border-b border-(--signal) font-mono text-xs uppercase tracking-widest text-(--signal) hover:text-(--ink)"
+        >
+          Ver todos los proyectos →
+        </Link>
       </main>
     </div>
   );

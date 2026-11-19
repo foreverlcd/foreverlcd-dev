@@ -11,7 +11,17 @@ export async function getPublishedSkillBySlug(slug: string) {
       slug: true,
       description: true,
       icon: true,
-      category: { select: { name: true } },
+      category: {
+        select: {
+          name: true,
+          // Hermanas de la misma categoría (solo campos públicos) para navegar sin salir del área.
+          skills: {
+            where: { isActive: true },
+            orderBy: { displayOrder: "asc" },
+            select: { name: true, slug: true, icon: true },
+          },
+        },
+      },
       projects: {
         where: { project: { status: "PUBLISHED" } },
         select: {

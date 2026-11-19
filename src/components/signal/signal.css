@@ -667,8 +667,54 @@ body:has(.signal) {
     grid-template-columns: 1fr;
   }
 
+  /* Foto 96x120 junto a los datos; la biografía debajo a ancho completo. */
+  .sg-about {
+    grid-template-columns: 106px minmax(0, 1fr);
+    grid-template-areas:
+      "p f"
+      "b b"
+      "s s";
+    gap: 16px;
+  }
+
+  .sg-about:not(:has(.sg-frame)) {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "f"
+      "b"
+      "s";
+  }
+
+  .sg-about-text {
+    display: contents;
+  }
+
   .sg-frame {
-    width: min(70%, 16rem);
+    grid-area: p;
+    width: 106px;
+  }
+
+  .sg-frame-box {
+    padding: 5px;
+  }
+
+  .sg-frame-img {
+    margin-top: 0;
+  }
+
+  .sg-bio-full {
+    grid-area: b;
+  }
+
+  .sg-facts {
+    grid-area: f;
+    align-self: start;
+    margin-top: 0;
+  }
+
+  .sg-about .sg-socials {
+    grid-area: s;
+    margin-top: 0;
   }
 }
 
@@ -867,6 +913,16 @@ body:has(.signal) {
       ". g c"
       ". l c";
     align-content: start;
+    padding: 16px 0 18px;
+  }
+
+  .sg-pt {
+    padding-right: 40px;
+    font-size: clamp(22px, 2.4vw, 36px);
+  }
+
+  .sg-pn {
+    padding-top: 0.5em;
   }
 
   .sg-pc {
@@ -879,10 +935,12 @@ body:has(.signal) {
     padding-top: 0;
   }
 
+  /* La flecha va en la línea del título. */
   .sg-arr {
-    grid-area: y;
+    grid-area: t;
     justify-self: end;
-    align-self: center;
+    align-self: start;
+    padding-top: 0.2em;
     margin-right: 16px;
   }
 }
@@ -987,11 +1045,11 @@ body:has(.signal) {
   max-width: 100%;
   padding-bottom: 0.08em;
   border-bottom: 2px solid var(--signal);
-  font-family: var(--f-display);
-  font-weight: 700;
-  font-size: clamp(16px, 4.2vw, 64px);
-  letter-spacing: -0.05em;
-  line-height: 1.1;
+  font-family: var(--m);
+  font-weight: 500;
+  font-size: clamp(18px, 3vw, 40px);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
   overflow-wrap: anywhere;
   transition: color 0.25s;
 }
@@ -1006,7 +1064,37 @@ body:has(.signal) {
 
 /* Correos largos: dos líneas cortadas en "@" y un cuerpo menor. */
 .sg-mail--long {
-  font-size: clamp(16px, 2.9vw, 44px);
+  font-size: clamp(16px, 2.4vw, 32px);
+}
+
+.sg-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: clamp(20px, 4svh, 32px);
+}
+
+.sg-ctas .sg-cta {
+  display: inline-flex;
+  justify-content: center;
+  min-height: 48px;
+  cursor: pointer;
+}
+
+.signal .sg-cta-fill {
+  background: var(--signal);
+  border-color: var(--signal);
+  color: var(--bg);
+}
+
+.signal .sg-cta-fill:hover {
+  background: transparent;
+  color: var(--signal);
+}
+
+button.sg-cta {
+  background: transparent;
+  color: var(--ink);
 }
 
 .sg-socials {
@@ -1021,6 +1109,7 @@ body:has(.signal) {
   align-items: center;
   min-height: 44px;
   min-width: 44px;
+  padding: 6px 2px;
   border-bottom: 1px solid var(--line);
 }
 
@@ -1315,14 +1404,17 @@ body:has(.signal) {
     display: none;
   }
 
+  /* Sin hueco muerto entre el nombre y el texto: la altura la fija el contenido. */
   .sg-hero {
+    min-height: 0;
     padding-top: max(13svh, 84px);
-    padding-bottom: calc(72px + env(safe-area-inset-bottom));
+    padding-bottom: calc(40px + env(safe-area-inset-bottom));
   }
 
   .sg-hero-foot {
     gap: 14px;
-    padding-top: 2svh;
+    margin-top: clamp(20px, 5svh, 44px);
+    padding-top: 0;
   }
 
   .sg-hero-meta {
@@ -1386,11 +1478,15 @@ body:has(.signal) {
   }
 
   .sg-mail {
-    font-size: clamp(15px, 5.4vw, 28px);
+    font-size: clamp(14px, 4.8vw, 24px);
   }
 
   .sg-mail--long {
-    font-size: clamp(14px, 5vw, 22px);
+    font-size: clamp(13px, 4.2vw, 20px);
+  }
+
+  .sg-ctas .sg-cta {
+    flex: 1 1 12rem;
   }
 
   .sg-mail-part {
@@ -1424,6 +1520,10 @@ body:has(.signal) {
 
   .sg-arr {
     display: none;
+  }
+
+  .sg-proj .sg-plate {
+    aspect-ratio: 16 / 6;
   }
 
   .sg-proj::before {
@@ -1514,5 +1614,222 @@ body:has(.signal) {
 
   .sg-ret {
     display: none;
+  }
+}
+
+/* ---------- Páginas públicas nuevas: lenguaje SIGNAL sin escena ---------- */
+
+/* Atmósfera estática: gradiente --uv tenue arriba a la derecha. */
+.sg-page {
+  background: radial-gradient(ellipse 70% 38% at 78% -6%, rgb(123 92 255 / 0.17), transparent 72%) no-repeat;
+}
+
+.sg-site-header {
+  position: relative;
+  border-bottom: 1px solid var(--line);
+  background: rgb(5 5 7 / 0.94);
+}
+
+/* Regla de ticks bajo la cabecera, como en la portada. */
+.sg-site-header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: 6px;
+  background: repeating-linear-gradient(90deg, var(--line) 0 1px, transparent 1px 12px) top / 100% 6px no-repeat;
+  pointer-events: none;
+}
+
+.sg-site-header .sg-brand {
+  flex-direction: row;
+  align-items: center;
+  gap: 14px;
+}
+
+/* Placa de proyecto sin portada. */
+.sg-plate {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--sig) 14%, transparent), transparent 68%),
+    radial-gradient(circle, color-mix(in srgb, var(--sig) 8%, transparent) 1px, transparent 1.5px) 0 0 / 10px 10px,
+    rgb(5 5 7 / 0.7);
+}
+
+.sg-plate-ini {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: clamp(32px, 7cqi, 64px);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--sig-text);
+}
+
+.sg-plate-c {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 0 solid var(--sig);
+}
+
+.sg-plate-c--tl {
+  left: 6px;
+  top: 6px;
+  border-width: 1px 0 0 1px;
+}
+
+.sg-plate-c--tr {
+  right: 6px;
+  top: 6px;
+  border-width: 1px 1px 0 0;
+}
+
+.sg-plate-c--bl {
+  left: 6px;
+  bottom: 6px;
+  border-width: 0 0 1px 1px;
+}
+
+.sg-plate-c--br {
+  right: 6px;
+  bottom: 6px;
+  border-width: 0 1px 1px 0;
+}
+
+.sg-plate-foot {
+  position: absolute;
+  left: 24px;
+  bottom: 8px;
+  font-size: 10px;
+  color: var(--ash);
+}
+
+.sg-plate--wide {
+  aspect-ratio: 16 / 6;
+}
+
+.sg-cardimg {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+
+@media (max-width: 639px) {
+  .sg-plate {
+    aspect-ratio: 16 / 6;
+  }
+}
+
+/* Índice: la primera tarjeta destacada ocupa 2 columnas cuando la rejilla de 3 se cierra. */
+@media (min-width: 1024px) {
+  .sg-wide .sg-plate,
+  .sg-wide .sg-cardimg {
+    aspect-ratio: 16 / 6;
+  }
+}
+
+.sg-plate {
+  container-type: inline-size;
+}
+
+/* Ficha: tira de metadatos. */
+.sg-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border: 1px solid var(--line);
+}
+
+.sg-meta > div {
+  min-width: 0;
+  padding: 12px 14px;
+  border-top: 1px solid var(--line);
+}
+
+.sg-meta > div:nth-child(-n + 2) {
+  border-top: 0;
+}
+
+.sg-meta > div:nth-child(even) {
+  border-left: 1px solid var(--line);
+}
+
+.sg-meta dt {
+  margin-bottom: 8px;
+  color: var(--ash);
+}
+
+.sg-meta dd {
+  margin: 0;
+}
+
+.sg-none {
+  color: var(--ash);
+}
+
+@media (min-width: 900px) {
+  .sg-meta {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .sg-meta > div {
+    border-top: 0;
+    border-left: 1px solid var(--line);
+  }
+
+  .sg-meta > div:first-child {
+    border-left: 0;
+  }
+}
+
+/* Ficha: anterior / siguiente. */
+.sg-pn-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 56px;
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+  transition: border-color 0.25s, color 0.25s;
+}
+
+.sg-pn-box:hover {
+  border-color: var(--signal);
+  color: var(--signal);
+}
+
+/* Estado vacío digno. */
+.sg-empty {
+  padding: 28px 20px;
+  border: 1px dashed var(--line);
+  color: var(--ash);
+}
+
+.sg-plate--flush {
+  border-width: 0 0 1px;
+}
+
+.sg-proj .sg-plate {
+  width: min(100%, 360px);
+}
+
+@media (min-width: 1025px) {
+  .sg-proj .sg-plate {
+    width: 300px;
+  }
+}
+
+@media (max-width: 760px) {
+  .sg-proj .sg-plate {
+    width: 100%;
   }
 }

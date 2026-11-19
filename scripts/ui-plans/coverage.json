@@ -50,7 +50,7 @@
     { "expect": { "selector": "main a[href='https://example.com/ada/aurora-api']", "min": 1 } },
     { "expect": { "selector": "main a[href='https://example.com/aurora']", "min": 1 } },
     { "expect": { "selector": "main img[src*='res.cloudinary.com']", "min": 3 } },
-    { "expect": { "selector": "main", "text": "febrero de 2023" } },
+    { "expect": { "selector": "main", "text": "feb — set 2023" } },
     { "expect": { "selector": "main a[href='/stack/typescript']", "min": 1 } },
 
     { "goto": "/stack/typescript" },

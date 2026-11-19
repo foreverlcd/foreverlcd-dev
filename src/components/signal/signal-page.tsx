@@ -2,7 +2,8 @@ import type { CSSProperties } from "react";
 
 import type { Portfolio } from "@/server/portfolio/load-portfolio";
 
-import { formatStamp, pad } from "./format";
+import { formatStamp, initialsOf, pad } from "./format";
+import { CopyEmail } from "./copy-email";
 import { Hud } from "./hud";
 import { ReadingToggle } from "./reading-toggle";
 import { AboutSection } from "./sections/about-section";
@@ -43,16 +44,6 @@ function splitName(fullName: string): string[] {
   };
   search(0, groups, []);
   return best;
-}
-
-/** Iniciales: primera palabra y la de índice ceil(n/2) (3 y 4 palabras: la 1.ª y la 3.ª). */
-function initialsOf(name: string) {
-  const words = name.trim().split(/\s+/).filter(Boolean);
-  if (words.length === 0) return "";
-  const second = words[Math.min(Math.ceil(words.length / 2), words.length - 1)];
-  return words.length === 1
-    ? words[0][0].toUpperCase()
-    : `${words[0][0]}.${second[0]}`.toUpperCase();
 }
 
 type Section = { id: string; label: string };
@@ -268,6 +259,14 @@ export function SignalPage({ portfolio }: { portfolio: Portfolio }) {
                   <wbr />
                   <span className="sg-mail-part">{email.slice(email.indexOf("@"))}</span>
                 </a>
+              ) : null}
+              {email ? (
+                <div className="sg-ctas" data-rv>
+                  <a className="sg-cta sg-cta-fill" href={`mailto:${email}`}>
+                    Escribir un correo <span aria-hidden="true">→</span>
+                  </a>
+                  <CopyEmail email={email} />
+                </div>
               ) : null}
               {socials.length ? (
                 <ul className="sg-socials sg-mono" data-rv>

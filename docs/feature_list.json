@@ -235,7 +235,7 @@
         "prisma migrate deploy",
         "/api/health ok en *.vercel.app"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "har-schema-coverage",

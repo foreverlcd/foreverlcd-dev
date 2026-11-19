@@ -6,6 +6,7 @@ import "@/components/signal/signal.css";
 import { ProjectCard } from "@/components/public/project-card";
 import { SiteHeader } from "@/components/public/site-header";
 import { SkillIcon } from "@/components/public/skill-icon";
+import { getPublishedProfile } from "@/server/dal/profile/get-published-profile";
 import { getPublishedSkillBySlug } from "@/server/dal/skills/get-published-skill-by-slug";
 import { getPublishedSkillSlugs } from "@/server/dal/skills/get-published-skill-slugs";
 
@@ -14,6 +15,7 @@ export const revalidate = 86400;
 type Params = { params: Promise<{ slug: string }> };
 
 export async function generateStaticParams() {
+  if (!(await getPublishedProfile())) return [];
   const slugs = await getPublishedSkillSlugs();
   return slugs.map((slug) => ({ slug }));
 }
@@ -31,6 +33,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
 export default async function SkillPage({ params }: Params) {
   const { slug } = await params;
+  // Sin perfil publicado no se expone contenido (igual que la portada: pub-waiting).
+  if (!(await getPublishedProfile())) notFound();
   const skill = await getPublishedSkillBySlug(slug);
   if (!skill) notFound();
 

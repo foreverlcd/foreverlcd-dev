@@ -12,7 +12,7 @@
 | `/proyectos/[slug]` | Ficha completa del proyecto | Project completo: portada, galería, descripción, fechas, skills, repositorios por tipo, demo y navegación anterior/siguiente |
 | `/stack/[slug]` | **Nueva.** Página de cada skill: qué es y en qué proyectos se usó | Skill (nombre, icono, descripción, categoría) y los Project publicados que la usan |
 
-Todas son estáticas (SSG/ISR, `revalidate = 86400`) y las mutaciones del dashboard las revalidan con `revalidatePath`. Comparten la misma cabecera, navegación y lenguaje SIGNAL (`docs/ART-DIRECTION.md`). La escena WebGL completa solo existe en `/`; las demás páginas usan, como mucho, una versión ligera (HUD, reglas, una figura de partículas pequeña) y deben verse perfectamente sin WebGL.
+**Sin perfil publicado no se expone nada:** `/` muestra el estado de espera y las demás rutas devuelven 404 (y no se pregeneran). Todas son estáticas (SSG/ISR, `revalidate = 86400`) y las mutaciones del dashboard las revalidan con `revalidatePath`. Comparten la misma cabecera, navegación y lenguaje SIGNAL (`docs/ART-DIRECTION.md`). La escena WebGL completa solo existe en `/`; las demás páginas usan, como mucho, una versión ligera (HUD, reglas, una figura de partículas pequeña) y deben verse perfectamente sin WebGL.
 
 ## Secciones de `/`, en orden
 1. **Hero:** `fullName` (en partículas y en texto real), `headline`, `shortBio`, `location`, CTA a proyectos y a contacto. El nombre se presenta completo, con el número de palabras que tenga: de 3 o más palabras se reparten en 2 líneas equilibradas, sin deformar la tipografía.

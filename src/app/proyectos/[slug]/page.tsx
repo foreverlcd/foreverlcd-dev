@@ -7,6 +7,7 @@ import { formatMonthRange } from "@/components/public/dates";
 import { RepoLinks } from "@/components/public/repo-links";
 import { SiteHeader } from "@/components/public/site-header";
 import { SkillChip } from "@/components/public/skill-chip";
+import { getPublishedProfile } from "@/server/dal/profile/get-published-profile";
 import { getPublishedProjectBySlug } from "@/server/dal/projects/get-published-project-by-slug";
 import { getPublishedProjectNeighbors } from "@/server/dal/projects/get-published-project-neighbors";
 import { getPublishedProjectSlugs } from "@/server/dal/projects/get-published-project-slugs";
@@ -14,6 +15,7 @@ import { getPublishedProjectSlugs } from "@/server/dal/projects/get-published-pr
 export const revalidate = 86400;
 
 export async function generateStaticParams() {
+  if (!(await getPublishedProfile())) return [];
   const slugs = await getPublishedProjectSlugs();
   return slugs.map((slug) => ({ slug }));
 }
@@ -58,6 +60,8 @@ function Block({ label, children }: { label: string; children: React.ReactNode }
 
 export default async function ProjectPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+  // Sin perfil publicado no se expone contenido (igual que la portada: pub-waiting).
+  if (!(await getPublishedProfile())) notFound();
   const project = await getPublishedProjectBySlug(slug);
   if (!project) notFound();
   const { previous, next } = await getPublishedProjectNeighbors(slug);

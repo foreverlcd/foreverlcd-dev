@@ -5,7 +5,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/server/auth/require-admin";
 import { failure, readForm, validationFailure, type ActionState } from "./action-state";
-import { NIL_UUID, isChecked, parseIdList, revalidatePortfolio, slugify } from "./common";
+import { NIL_UUID, cloudinaryUrl, isChecked, parseIdList, revalidatePortfolio, slugify } from "./common";
 
 const projectSchema = z.object({
   id: z.string().optional(),
@@ -32,7 +32,7 @@ const imageSchema = z.object({
   projectId: z.uuid(),
   type: z.enum(["COVER", "GALLERY"]),
   publicId: z.string().min(1).max(255),
-  secureUrl: z.url(),
+  secureUrl: cloudinaryUrl,
   width: z.coerce.number().int().positive(),
   height: z.coerce.number().int().positive(),
   format: z.string().min(1).max(20),

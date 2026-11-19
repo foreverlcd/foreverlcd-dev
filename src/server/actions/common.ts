@@ -4,6 +4,15 @@ import { z } from "zod";
 
 import { prisma } from "@/lib/prisma";
 
+/**
+ * URL de imagen que next/image puede servir: solo https://res.cloudinary.com (next.config.ts remotePatterns).
+ * Otro host haría fallar el render de la página pública (500 en build o regeneración).
+ */
+export const cloudinaryUrl = z.url("Introduce una URL válida.").refine((value) => {
+  const url = new URL(value);
+  return url.protocol === "https:" && url.hostname === "res.cloudinary.com";
+}, "La imagen debe estar en Cloudinary (https://res.cloudinary.com/...). Súbela con el botón de subida.");
+
 export const NIL_UUID = "00000000-0000-0000-0000-000000000000";
 
 export function revalidatePortfolio(slug?: string) {

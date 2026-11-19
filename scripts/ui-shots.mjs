@@ -22,8 +22,12 @@ const baseUrl = (process.env.BASE_URL ?? plan.baseUrl ?? "http://localhost:3000"
 const outDir = path.join(".shots", plan.name ?? path.basename(planFile, ".json"));
 fs.mkdirSync(outDir, { recursive: true });
 
-const reachable = await fetch(baseUrl).then((r) => r.status < 500).catch(() => false);
-if (!reachable) {
+const probe = await fetch(baseUrl).then((r) => r.status).catch(() => 0);
+if (probe >= 500) {
+  console.error(`${baseUrl} responde ${probe}: la página falla al renderizar. Mira el log del servidor (.harness/dev.log).`);
+  process.exit(1);
+}
+if (!probe) {
   console.error(`No responde ${baseUrl}. Arranca el servidor (scripts/init.sh o pnpm start) o define BASE_URL.`);
   process.exit(1);
 }

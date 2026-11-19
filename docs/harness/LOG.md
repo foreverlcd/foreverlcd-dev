@@ -22,3 +22,7 @@ Cada vez que un agente falla o entrega algo incorrecto se anota **qué le faltó
 - Síntoma: foto, biografía, repos, iconos y credenciales del esquema no salían en la web y el gate pasaba.
 - Causa: no había capa de especificación ni comprobación de cobertura; los datos DEMO ocultaban los huecos.
 - Arreglo: `docs/product/SPEC.md` + `schema-map.json`, `check-schema-coverage.mjs` con trinquete en el gate, aserciones `expect`/`expectStatus` en ui-shots y una fixture que rellena todos los campos. R5 ahora cubre toda página pública.
+
+## 2026-11-19 — Los datos reales vuelven a encontrar lo que la fixture no
+- La foto provisional (avatar de GitHub) daba 500 en `/`: `next/image` solo admite res.cloudinary.com y el dashboard aceptaba cualquier URL. Arreglo: `cloudinaryUrl` en la validación de las actions. ui-shots decía "No responde" ante un 500; ahora muestra el código y apunta a `.harness/dev.log`.
+- codex: las páginas nuevas exponían proyectos sin perfil publicado (la portada no). Arreglo: 404 y `generateStaticParams` vacío sin perfil. Lección: una regla de visibilidad global (pub-waiting) debe estar en SPEC.md, no solo en la portada.

@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import "@/components/signal/signal.css";
 
 import { ProjectCard } from "@/components/public/project-card";
 import { SiteHeader } from "@/components/public/site-header";
+import { getPublishedProfile } from "@/server/dal/profile/get-published-profile";
 import { getPublishedProjects } from "@/server/dal/projects/get-published-projects";
 
 import { ProjectFilter } from "./project-filter";
@@ -16,6 +18,8 @@ export const metadata: Metadata = {
 };
 
 export default async function ProjectsIndexPage() {
+  // Sin perfil publicado no se expone contenido (igual que la portada: pub-waiting).
+  if (!(await getPublishedProfile())) notFound();
   const projects = await getPublishedProjects();
 
   const skillMap = new Map<string, { slug: string; name: string }>();

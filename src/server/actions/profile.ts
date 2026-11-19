@@ -4,7 +4,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/server/auth/require-admin";
 import { failure, readForm, validationFailure, type ActionState } from "./action-state";
-import { revalidatePortfolio } from "./common";
+import { cloudinaryUrl, revalidatePortfolio } from "./common";
 
 const profileSchema = z.object({
   fullName: z.string().trim().min(1, "El nombre es obligatorio.").max(120),
@@ -13,7 +13,7 @@ const profileSchema = z.object({
   biography: z.string().trim(),
   location: z.string().trim().max(120).nullable(),
   email: z.email("Introduce un correo válido.").nullable().or(z.literal("")),
-  photoUrl: z.url("Introduce una URL válida.").nullable().or(z.literal("")),
+  photoUrl: cloudinaryUrl.nullable().or(z.literal("")),
   photoPublicId: z.string().max(255).nullable(),
 });
 

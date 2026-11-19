@@ -9,6 +9,9 @@
   - `BETTER_AUTH_SECRET`: generada y marcada como sensitive.
   - `BETTER_AUTH_URL`.
   - **Faltan** `CLOUDINARY_*`, que el dueño introduce en su terminal.
+- **Previews (una por rama con PR):** usan su propia rama de Neon, `preview` (copia de `main` del 2026-11-19, en otro endpoint), con `DATABASE_URL` y `BETTER_AUTH_SECRET` propios del entorno Preview. Así una preview nunca toca los datos de producción. Sin estas variables, el build de la preview falla en `src/lib/prisma.ts` ("DATABASE_URL is not defined").
+  - Si una rama trae migraciones nuevas, aplícalas a esa rama antes de probar: `DATABASE_URL="$(neonctl connection-string preview --project-id snowy-water-03510300)" pnpm exec prisma migrate deploy`.
+  - Las previews están protegidas por Vercel Authentication: solo las ve el dueño con su sesión.
 - **Regla:** las cadenas de conexión nunca se guardan en archivos ni se imprimen. Se piden en el momento con `neonctl connection-string --project-id snowy-water-03510300 [--pooled]`.
 
 ### Por CLI (lo que se hizo)

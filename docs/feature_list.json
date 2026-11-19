@@ -317,6 +317,16 @@
         "Aserciones de #stack"
       ],
       "passes": true
+    },
+    {
+      "id": "adm-profile-photo",
+      "category": "admin",
+      "description": "La foto de perfil se sube como archivo (Cloudinary firmado, carpeta profile), reemplaza y borra la anterior, y guardar el perfil no la borra",
+      "steps": [
+        "node --env-file=.env scripts/ui-shots.mjs scripts/ui-plans/admin-photo.json",
+        "4/4 aserciones con un cloud_name válido"
+      ],
+      "passes": true
     }
   ]
 }

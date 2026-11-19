@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { registerProjectImage } from "@/server/actions/projects";
 import { initialActionState } from "@/server/actions/action-state";
+import { uploadImage } from "./cloudinary-upload";
 import { inputClass, primaryButtonClass } from "./styles";
 
 type ProjectImageUploadProps = {
@@ -10,42 +11,6 @@ type ProjectImageUploadProps = {
   /** Position for a new gallery image (appended after the existing ones). */
   nextOrder?: number;
 };
-
-type CloudinarySignature = {
-  apiKey: string;
-  timestamp: number;
-  folder: string;
-  signature: string;
-  cloudName: string;
-  message?: string;
-};
-
-async function requestSignature(): Promise<CloudinarySignature> {
-  const response = await fetch("/api/admin/cloudinary/signature", {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({ folder: "projects" }),
-  });
-  const signature = await response.json();
-  if (!response.ok) throw new Error(signature.message || "Subidas no disponibles.");
-  return signature;
-}
-
-async function uploadToCloudinary(file: File, signature: CloudinarySignature) {
-  const upload = new FormData();
-  upload.set("file", file);
-  upload.set("api_key", signature.apiKey);
-  upload.set("timestamp", String(signature.timestamp));
-  upload.set("folder", signature.folder);
-  upload.set("signature", signature.signature);
-  const response = await fetch(`https://api.cloudinary.com/v1_1/${signature.cloudName}/image/upload`, {
-    method: "POST",
-    body: upload,
-  });
-  const image = await response.json();
-  if (!response.ok) throw new Error(image.error?.message || "Falló la subida.");
-  return image;
-}
 
 export function ProjectImageUpload({ projectId, nextOrder = 0 }: ProjectImageUploadProps) {
   const router = useRouter();
@@ -58,8 +23,7 @@ export function ProjectImageUpload({ projectId, nextOrder = 0 }: ProjectImageUpl
     try {
       const file = form.get("file");
       if (!(file instanceof File) || !file.size) throw new Error("Selecciona una imagen.");
-      const signature = await requestSignature();
-      const image = await uploadToCloudinary(file, signature);
+      const image = await uploadImage(file, "projects");
       const registration = new FormData();
       const fields = {
         projectId,
@@ -72,7 +36,7 @@ export function ProjectImageUpload({ projectId, nextOrder = 0 }: ProjectImageUpl
         alt: String(form.get("alt")),
         displayOrder: String(nextOrder),
       };
-      for (const [key, value] of Object.entries(fields)) registration.set(key, value);
+      for (const [key, value] of Object.entries(fields)) registration.set(key, String(value));
       const result = await registerProjectImage(initialActionState, registration);
       if (!result.ok) throw new Error(result.message);
       setMessage({ ok: true, text: "Imagen subida y registrada." });

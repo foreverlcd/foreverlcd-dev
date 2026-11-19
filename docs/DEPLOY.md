@@ -1,5 +1,27 @@
 # Despliegue (gratis): Vercel Hobby + Neon Postgres + Cloudinary
 
+## Estado actual (2026-11-19)
+- **Producción:** https://foreverlcd.vercel.app (proyecto Vercel `foreverlcd`, equipo `foreverlcds-projects`). Rama de producción `main`, con el repositorio de GitHub conectado: cada push a `main` despliega.
+- **Ajustes:** preset Next.js y Node 24.x (fijados por API; el proyecto se creó como "Other" y Node 26).
+- **Neon:** proyecto `foreverlcd` (`snowy-water-03510300`), `aws-us-east-1`, Postgres 18, base `neondb` y rol `neondb_owner`. Migraciones aplicadas.
+- **Variables de producción:**
+  - `DATABASE_URL`: pooled y marcada como sensitive.
+  - `BETTER_AUTH_SECRET`: generada y marcada como sensitive.
+  - `BETTER_AUTH_URL`.
+  - **Faltan** `CLOUDINARY_*`, que el dueño introduce en su terminal.
+- **Regla:** las cadenas de conexión nunca se guardan en archivos ni se imprimen. Se piden en el momento con `neonctl connection-string --project-id snowy-water-03510300 [--pooled]`.
+
+### Por CLI (lo que se hizo)
+```bash
+neonctl projects create --name foreverlcd --region-id aws-us-east-1 --pg-version 18
+DATABASE_URL="$(neonctl connection-string --project-id <id>)" pnpm exec prisma migrate deploy   # directa
+vercel project create foreverlcd && vercel link --yes --project foreverlcd && vercel git connect --yes
+vercel api /v9/projects/foreverlcd -X PATCH -F framework=nextjs -F nodeVersion=24.x
+vercel env add <NOMBRE> --environment production --sensitive --yes < archivo_temporal_600   # stdin desde archivo; con pipe directo llega vacío
+```
+- **Despliegue desde GitHub, no desde la carpeta local** (así nunca sube `.env.local`): `POST /v13/deployments` con `gitSource {type: github, ref: main, repoId}` (`vercel api ... --input -`).
+- **Las variables nuevas solo aplican en el siguiente despliegue.**
+
 Todo sin tarjeta ni dominio propio. La URL final queda como `https://<proyecto>.vercel.app`.
 
 ## Una sola vez (requiere tus cuentas)

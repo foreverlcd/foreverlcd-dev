@@ -29,3 +29,8 @@ Cada vez que un agente falla o entrega algo incorrecto se anota **qué le faltó
 
 ## 2026-11-19 — Especificidad: `.signal a` gana a una clase sola
 - El CTA relleno salía con texto claro sobre `--signal`: `.signal a { color: inherit }` (0,1,1) vence a `.sg-cta-fill` (0,1,0). Lo detectó la revisión visual, no el gate. Regla: en signal.css, las clases que colorean enlaces van prefijadas con `.signal`.
+
+## 2026-11-19 — Un campo de texto donde debía haber una subida
+- El dueño lo vio al ir a cargar contenido: la foto de perfil pedía "URL de foto" e "ID de foto". Publicar exige foto, así que en la práctica no podía publicar; y guardar el perfil con esos campos vacíos borraba la foto.
+- El gate y las capturas no lo detectaban: ningún plan subía archivos. Arreglo: `ProfilePhotoUpload` + action `setProfilePhoto` (borra la foto anterior), helper `cloudinary-upload.ts` compartido, paso `upload` en ui-shots y plan `admin-photo.json` (subida real).
+- La subida real destapó además un `CLOUDINARY_CLOUD_NAME` inexistente en la configuración local.

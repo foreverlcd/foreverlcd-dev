@@ -3,6 +3,7 @@ import { PageHeader } from "@/components/admin/page-header";
 import { ActionForm } from "@/components/admin/action-form";
 import { TextAreaField, TextField } from "@/components/admin/fields";
 import { InlineForm } from "@/components/admin/inline-form";
+import { ProfilePhotoUpload } from "@/components/admin/profile-photo-upload";
 import { emptyStateClass, monoLabelClass } from "@/components/admin/styles";
 import { setProfilePublished, updateProfile } from "@/server/actions/profile";
 import { requireAdmin } from "@/server/auth/require-admin";
@@ -35,6 +36,9 @@ export default async function ProfilePage() {
           />
         </section>
       )}
+      {profile ? (
+        <ProfilePhotoUpload photoUrl={profile.photoUrl} alt={profile.fullName} />
+      ) : null}
       <ActionForm action={updateProfile} className="mt-8 grid max-w-3xl gap-4">
         <TextField name="fullName" label="Nombre" defaultValue={profile?.fullName} required />
         <TextField name="headline" label="Titular" defaultValue={profile?.headline} required />
@@ -47,8 +51,6 @@ export default async function ProfilePage() {
         <TextAreaField name="biography" label="Biografía" defaultValue={profile?.biography} rows={6} />
         <TextField name="location" label="Ubicación" defaultValue={profile?.location} />
         <TextField name="email" label="Correo" type="email" defaultValue={profile?.email} />
-        <TextField name="photoUrl" label="URL de foto" type="url" defaultValue={profile?.photoUrl} />
-        <TextField name="photoPublicId" label="ID de foto" defaultValue={profile?.photoPublicId} />
       </ActionForm>
     </>
   );

@@ -124,6 +124,8 @@ try {
         }
         else if (step.hover) await page.locator(step.hover).first().hover();
         else if (step.click) await page.locator(step.click).first().click();
+        // { "upload": { "selector": "input[type=file]", "file": "ruta/relativa/al/repo.png" } }
+        else if (step.upload) await page.locator(step.upload.selector).first().setInputFiles(step.upload.file);
         else if (step.fill) {
           const { selector, value, env } = step.fill;
           const v = env ? process.env[env] : value;
